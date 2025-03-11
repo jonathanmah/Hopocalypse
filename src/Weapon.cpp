@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-
+#include "HitboxDebugger.h"
 #include "Weapon.h"
 #include "RandomUtil.h"
 static constexpr float PI = 3.141592;
@@ -11,19 +11,22 @@ static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -PI/2.f; // -pi/2 pi radians ,
 // muzzle flash or rocket leaving behind
 
 // when constructing a weapon, there should be 2 states, in hands, or floating above box
-Weapon::Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData): sprite(*animData.texture), projectileData(projectileData), weaponData(weaponData) {
+Weapon::Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData): sprite(*animData.texture), projectileData(projectileData), weaponData(weaponData), muzzlePosition({0,0}) {
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setScale({weaponData.scale, weaponData.scale});
 }
 
+// --------------------- RECOIL AND SPREAD -------------------------------
+// Increase the bullet spread
 inline void Weapon::IncreaseSpread() {
     weaponData.spreadDeviationCurr = std::min(weaponData.spreadDeviationCurr+weaponData.spreadDeviationGrowth, weaponData.spreadDeviationMax);
 }
-
+// Decrease the bullet spread
 inline void Weapon::DecreaseSpread() {
     weaponData.spreadDeviationCurr = std::max(weaponData.spreadDeviationCurr-weaponData.spreadDeviationDecay,0.f);
 }
 
+// Adjusts the target position with bullet spread factored in
 sf::Vector2f Weapon::GetTargetWithSpread(sf::Vector2f mousePosGlobal) {
     float offset = RandomUtil::GetRandomFloat(weaponData.spreadDeviationCurr, weaponData.spreadDeviationCurr);
     // facing right, perpendicular up direction for (x,y) is (y,-x), (-y,x) for facing left
@@ -34,33 +37,17 @@ sf::Vector2f Weapon::GetTargetWithSpread(sf::Vector2f mousePosGlobal) {
          mousePosGlobal.y + perpendicular.y*deviationScalar};
 }
 
-sf::Vector2f Weapon::GetMuzzlePosition(sf::Vector2f normalizedDirection) {
-    // take character position
-    // get normal direction
-    // use scalar towardsd normal direction
-    // use additional projectile offsets to position
-    // return the end vector
-    sf::Vector2f res = sprite.getPosition() + normalizedDirection*weaponData.muzzleOffsetScalar;
-    res.x += weaponData.muzzlePosOffsetX;
-    res.y += weaponData.muzzlePosOffsetY;
-    return res;
-}
-
-// ENTRY POINT FROM CHARACTER CLASS
-void Weapon::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
-    // Update transformations / any other derived overrides
-    UpdateBase(characterPosition, mousePosGlobal, deltaTime);
-    
-    // update projectile list, 
-    if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        // 
-        AttemptShoot(projectiles, characterPosition, mousePosGlobal, deltaTime);
-    } else {
-        DecreaseSpread();
+// Updates the position of the recoil to come back using ratio of time remaining/total 
+// time and scalar to move with opposite normalized
+void Weapon::UpdateRecoilReturn(float deltaTime) {
+    if (weaponData.recoilTimeRemain > 0.f){
+        sf::Vector2f opposite{-relative.x, -relative.y};
+        sprite.move(opposite.normalized() * (weaponData.recoilOffsetScalar*(weaponData.recoilTimeRemain/weaponData.recoilTimeTotal)));
     }
-    weaponData.timeSinceShot += deltaTime;
+    weaponData.recoilTimeRemain = std::max(weaponData.recoilTimeRemain - deltaTime, 0.f);
 }
 
+// Sets the recoil position after shooting, resets recoil timer to return to original position
 void Weapon::SetPositionPostRecoil() {
     // opposite vector of (x,y) is (-x,-y)
     if(weaponData.recoilTimeRemain > 0) return;
@@ -71,35 +58,12 @@ void Weapon::SetPositionPostRecoil() {
     weaponData.recoilTimeRemain = weaponData.recoilTimeTotal;
 }
 
-void Weapon::UpdateRecoilReturn(float deltaTime) {
-    if (weaponData.recoilTimeRemain > 0.f){
-        sf::Vector2f opposite{-relative.x, -relative.y};
-        sprite.move(opposite.normalized() * (weaponData.recoilOffsetScalar*(weaponData.recoilTimeRemain/weaponData.recoilTimeTotal)));
-    }
-    weaponData.recoilTimeRemain = std::max(weaponData.recoilTimeRemain - deltaTime, 0.f);
-    std::cout << weaponData.recoilTimeRemain << std::endl;
-}
+// --------------------- ^^^^ RECOIL AND SPREAD ^^^ -------------------------------
 
-// SHOOT FUNC /  UPDATE SPREAD / RECOIL / PROJECTILE LIST 
-void Weapon::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
-    if (weaponData.timeSinceShot > weaponData.fireRate) {
-        // adjust mousePosGlobal
-        // would have to calculate the offset based off of the perp vector
-        // maybe increment an offset RANGE, and calculate random offset between 
-        // modify target pos by finding the normal
-        //sf::Vector2f targetPos = {mousePosGlobal.x+, mousePosGlobal.y+weaponData.basePosOffsetY}
-        projectiles.push_back(ProjectileFactory::CreateProjectile(this, GetPosition(), relative, GetTargetWithSpread(mousePosGlobal)));
-        IncreaseSpread();
-        weaponData.timeSinceShot = 0.f;
-        // set back recoil
-        SetPositionPostRecoil();
-    }
-}
+// --------------------- BASE TRANSFORMATIONS / UPDATES  ----------------------------
 
-void Weapon::UpdateBase(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
-    UpdateBaseTransformations(characterPosition, mousePosGlobal, deltaTime);
-}
-
+// Rotates the base of the weapon to point towards the cursor
+// should probably refactor this into a util
 void Weapon::RotateBaseToMouseGlobal(){
     float radians = atan2(relative.y, relative.x);
     if(radians > MIRROR_NEG_Y_AXIS_BOUND || radians < MIRROR_POS_Y_AXIS_BOUND)
@@ -111,15 +75,99 @@ void Weapon::RotateBaseToMouseGlobal(){
     sprite.setRotation(angle);
 }
 
-// Updates the position and pointing direction
-void Weapon::UpdateBaseTransformations(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
+// ALL TRANSLATIONS AND ROTATIONS are done here, including recoil.
+// Sets the latest relative vector from origin of weapon to mouse position
+void Weapon::UpdateBaseTransformations(sf::Vector2f characterPosition, float deltaTime) {
     sprite.setPosition({characterPosition.x+weaponData.basePosOffsetX, characterPosition.y+weaponData.basePosOffsetY});
     UpdateRecoilReturn(deltaTime);
     relative = mousePosGlobal - GetPosition();
     RotateBaseToMouseGlobal();
+    SetMuzzlePosition();
 }
 
-//#todo repetitive code
+// Virtual method for updates to the weapon.
+// Any updates to weapon texture, position outside of shooting should be done called from here
+// Derived classes that override this
+// RPG : set new sub rectangle to display texture without rocket loaded
+void Weapon::UpdateBase(sf::Vector2f characterPosition, float deltaTime) {
+    UpdateBaseTransformations(characterPosition, deltaTime);
+}
+// --------------------- ^ BASE TRANSFORMATIONS ^ ----------------------------
+
+
+
+
+// ------------------------- WEAPON EFFECTS ------------------------- WEAPON EFFECTS -------------------------/////
+
+
+void Weapon::AddMuzzleFlashEffect(){
+    muzzleFlash.emplace_back(
+        std::make_unique<MuzzleFlash>(MuzzleFlash{MuzzleFlash::GetNextFlash(),muzzlePosition,relative.normalized(),.3f}));
+}
+
+void Weapon::UpdateMuzzleFlashes(float deltaTime) {
+    bool isComplete = false;
+    for(auto it = muzzleFlash.begin(); it != muzzleFlash.end();) {
+        if((*it)->Update(muzzlePosition, relative.normalized(), deltaTime)){
+            it = muzzleFlash.erase(it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+
+// ------------------------- WEAPON EFFECTS ^ ------------------------- WEAPON EFFECTS ^ -------------------------
+
+// ------------------------ SHOOTING CORE / PROJECTILE CREATION ---------------------------------------------------
+
+// creates projecitle, update recoil/spread
+void Weapon::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, float deltaTime) {
+    if (weaponData.timeSinceShot > weaponData.fireRate) {
+
+        // maybe pass effects as a reference to use the same factory as projectile.
+        // call it derived ProjectileEffectsFactory
+        //projectiles.push_back(ProjectileFactory::CreateProjectile(this, GetPosition(), relative, GetTargetWithSpread(mousePosGlobal)));
+        CreateProjectile(projectiles);
+        IncreaseSpread();
+        weaponData.timeSinceShot = 0.f;
+        SetPositionPostRecoil();
+        AddMuzzleFlashEffect();
+    }
+}
+
+// Get base weapon origin, use scalar and offset values to get muzzle position
+void Weapon::SetMuzzlePosition() {
+    muzzlePosition = sprite.getPosition() + relative.normalized()*weaponData.muzzleOffsetScalar;
+    muzzlePosition.x += weaponData.muzzlePosOffsetX;
+    muzzlePosition.y += weaponData.muzzlePosOffsetY;
+}
+// ------------------------ ^ SHOOTING CORE / PROJECTILE CREATION ^ ---------------------------------------------------
+
+// ------------------------ UPDATE ENTRY POINT FROM CHARACTER ---------------------------------------------------
+
+void Weapon::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+    UpdateMuzzleFlashes(deltaTime); // update effects
+    SetMousePosGlobal(mousePosGlobal);
+    // Update transformations / any other derived overrides
+    UpdateBase(characterPosition, deltaTime);
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        AttemptShoot(projectiles, characterPosition, deltaTime); 
+    } else {
+        DecreaseSpread();
+    }
+    weaponData.timeSinceShot += deltaTime;
+}
+// ------------------------ ^ UPDATE ENTRY POINT FROM CHARACTER ^ ---------------------------------------------------
+
+
+// ------------------------- DRAW ------------------------- DRAW ------------------------------
+void Weapon::DrawMuzzleFlashes(sf::RenderWindow& window) {
+    for(auto it = muzzleFlash.begin(); it != muzzleFlash.end();++it) {
+        (*it)->Draw(window);
+    }
+}
+
 void DrawHitbox(sf::Sprite& sprite, sf::RenderWindow& window) {
     sf::FloatRect bounds = sprite.getGlobalBounds();
     sf::RectangleShape rect(sf::Vector2f(bounds.size));
@@ -132,162 +180,175 @@ void DrawHitbox(sf::Sprite& sprite, sf::RenderWindow& window) {
 
 void Weapon::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
+    DrawMuzzleFlashes(window);
     //DrawHitbox(sprite, window);
 }
+// ------------------------  DRAW ^ ----------------------- DRAW ------------------------------
 
 
 
-AK47::AK47() : 
-Weapon(AnimUtil::WeaponAnim::AK47anim, 
-        {
-            AnimUtil::ProjectileAnim::RegularBullet::anim,
-            20.f, // speed
-            50.f, // damage 
-            1.f, // bullet scale
-            1, // collateral count
-        }, 
-        {
-            1.f, //scale 
-            0.f, // baseOffsetX
-            18.f, // baseOffsetY
-            0.f, // x offset from muzzle
-            -2.5f, // y offset from muzzle (pre recoil translation)
-            50.f, // muzzleOffsetscalar
-            0.15f, // fireRate
-            .15f, // time since last bullet fired
-            0.f, // current accumulated spread offset
-            .12f, // spread offset max
-            .01f, //  spread offset growth
-            .015f, // spread offset decay
-            .0f, // time left until gun returns back to original position after recoil
-            .15f, // total time gun takes to return back
-            5.f, // amount of offset, vector created using this scalar opposite point direction
+
+// ------------------------- AK47 ------------------------- AK47 ------------------------------
+// AK47::AK47() : 
+// Weapon(AnimUtil::WeaponAnim::AK47anim, 
+//         {
+//             AnimUtil::ProjectileAnim::RegularBullet::anim,
+//             20.f, // speed
+//             50.f, // damage 
+//             1.f, // bullet scale
+//             1, // collateral count
+//         }, 
+//         {
+//             1.f, //scale 
+//             0.f, // baseOffsetX
+//             18.f, // baseOffsetY
+//             0.f, // x offset from muzzle
+//             -2.5f, // y offset from muzzle (pre recoil translation)
+//             50.f, // muzzleOffsetscalar
+//             0.15f, // fireRate
+//             .15f, // time since last bullet fired
+//             0.f, // current accumulated spread offset
+//             .12f, // spread offset max
+//             .01f, //  spread offset growth
+//             .015f, // spread offset decay
+//             .0f, // time left until gun returns back to original position after recoil
+//             .15f, // total time gun takes to return back
+//             5.f, // amount of offset, vector created using this scalar opposite point direction
             
 
-        }
-    )
-{
-    sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
-}
+//         }
+//     )
+// {
+//     sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
+// }
+// ------------------------- AK47 ^ ------------------------- AK47 ^ ------------------------------
 
 
-FAMAS::FAMAS() : 
-Weapon(AnimUtil::WeaponAnim::FAMASanim, 
-        {
-            AnimUtil::ProjectileAnim::RegularBullet::anim,
-            40.f, // speed
-            100.f, // damage 
-            1.f, // bullet scale
-            1, // collateral count
-        }, 
-        {
-            .95f, //scale 
-            0.f, // baseOffsetX
-            21.f, // baseOffsetY
-            0.f, // x offset from muzzle
-            -9.f, // y offset from muzzle
-            50.f, // muzzleOffsetscalar
-            0.06f, // fireRate
-            .06f, // time since last bullet fired
-            0.f, // current accumulated spread offset
-            .12f, // spread offset max
-            .01f, //  spread offset growth
-            .015f, // spread offset decay
-            .0f, // time left until gun returns back to original position after recoil
-            .10f, // total time gun takes to return back
-            4.f, // amount of offset, vector created using this scalar opposite point direction
-        }
-    ), burstFireCounter(0)
-{
-    sprite.setOrigin({sprite.getLocalBounds().size.x / 3.6f, sprite.getLocalBounds().size.y / 2});
-}
-void FAMAS::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
-    if (weaponData.timeSinceShot > weaponData.fireRate) {
-        weaponData.fireRate = 0.10f;
-        projectiles.push_back(ProjectileFactory::CreateProjectile(this, GetPosition(), relative, GetTargetWithSpread(mousePosGlobal)));
-        IncreaseSpread();
-        weaponData.timeSinceShot = 0.f;
-        SetPositionPostRecoil();
-        if(++burstFireCounter >=3) {
-            weaponData.fireRate =  0.3f;
-            burstFireCounter = 0;
-        }
-    }
-}
+// // ------------------------- Famas --------------------------- Famas ----------------------------
+// Famas::Famas() : 
+// Weapon(AnimUtil::WeaponAnim::famasAnim, 
+//         {
+//             AnimUtil::ProjectileAnim::RegularBullet::anim,
+//             40.f, // speed
+//             100.f, // damage 
+//             1.f, // bullet scale
+//             1, // collateral count
+//         }, 
+//         {
+//             .95f, //scale 
+//             0.f, // baseOffsetX
+//             21.f, // baseOffsetY
+//             0.f, // x offset from muzzle
+//             -9.f, // y offset from muzzle
+//             50.f, // muzzleOffsetscalar
+//             0.06f, // fireRate
+//             .06f, // time since last bullet fired
+//             0.f, // current accumulated spread offset
+//             .12f, // spread offset max
+//             .01f, //  spread offset growth
+//             .015f, // spread offset decay
+//             .0f, // time left until gun returns back to original position after recoil
+//             .10f, // total time gun takes to return back
+//             4.f, // amount of offset, vector created using this scalar opposite point direction
+//         }
+//     ), burstFireCounter(0)
+// {
+//     sprite.setOrigin({sprite.getLocalBounds().size.x / 3.6f, sprite.getLocalBounds().size.y / 2});
+// }
+// void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, float deltaTime) {
+//     if (weaponData.timeSinceShot > weaponData.fireRate) {
+//         weaponData.fireRate = 0.10f;
+//         projectiles.push_back(ProjectileFactory::CreateProjectile(this, GetPosition(), relative, GetTargetWithSpread(mousePosGlobal)));
+//         IncreaseSpread();
+//         weaponData.timeSinceShot = 0.f;
+//         SetPositionPostRecoil();
+//         AddMuzzleFlashEffect();
+//         if(++burstFireCounter >=3) {
+//             weaponData.fireRate =  0.3f;
+//             burstFireCounter = 0;
+//         }
+//     }
+// }
+// ------------------------- Famas ^ ---------------------------Famas ^ -------------------------
 
-Barrett50::Barrett50() : 
-Weapon(AnimUtil::WeaponAnim::Barrett50anim, 
-        {
-            AnimUtil::ProjectileAnim::RegularBullet::anim,
-            70.f, // speed
-            150.f, // damage 
-            2.5f, // bullet scale
-            5, // collateral count
-        }, 
-        {
-            .95f, //scale 
-            0.f, // baseOffsetX
-            12.f, // baseOffsetY
-            0.f, // x offset from muzzle
-            -4.f, // y offset from muzzle
-            80.f, // muzzleOffsetscalar
-            .9f, // fireRate
-            .9f, // time since last bullet fired
-            0.f, // current accumulated spread offset
-            .0f, // spread offset max
-            .0f, //  spread offset growth
-            .0f, // spread offset decay
-            0.f, // time left until gun returns back to original position after recoil
-            .9f, // total time gun takes to return back
-            12.f, // amount of offset, vector created using this scalar opposite point direction
+
+// ------------------------- BARRET50 --------------------------- BARRET50 ----------------------------
+// Barrett50::Barrett50() : 
+// Weapon(AnimUtil::WeaponAnim::barrett50Anim, 
+//         {
+//             AnimUtil::ProjectileAnim::RegularBullet::anim,
+//             70.f, // speed
+//             150.f, // damage 
+//             2.5f, // bullet scale
+//             5, // collateral count
+//         }, 
+//         {
+//             .95f, //scale 
+//             0.f, // baseOffsetX
+//             16.f, // baseOffsetY
+//             0.f, // x offset from muzzle
+//             -4.f, // y offset from muzzle
+//             80.f, // muzzleOffsetscalar
+//             .9f, // fireRate
+//             .9f, // time since last bullet fired
+//             0.f, // current accumulated spread offset
+//             .0f, // spread offset max
+//             .0f, //  spread offset growth
+//             .0f, // spread offset decay
+//             0.f, // time left until gun returns back to original position after recoil
+//             .9f, // total time gun takes to return back
+//             12.f, // amount of offset, vector created using this scalar opposite point direction
             
-        }
-    )
-{
-    sprite.setOrigin({sprite.getLocalBounds().size.x / 3.2f, sprite.getLocalBounds().size.y / 2});
-}
+//         }
+//     )
+// {
+//     sprite.setOrigin({sprite.getLocalBounds().size.x / 3.2f, sprite.getLocalBounds().size.y / 2});
+// }
+
+// ------------------------- BARRET50 ^ --------------------------- BARRET50 ^ ----------------------------
+
+// ------------------------- RPG --------------------------- RPG ----------------------------
+// Rpg::Rpg() : 
+// Weapon(AnimUtil::WeaponAnim::rpgAnim, 
+//         {
+//             AnimUtil::WeaponAnim::rpgRocketAnim,
+//             8.f, // speed
+//             150.f, // damage 
+//             1.3f, // bullet scale
+//             5, // collateral count
+//         }, 
+//         {
+//             1.3f, //scale 
+//             0.f, // baseOffsetX
+//             3.f, // baseOffsetY
+//             0.f, // x offset from muzzle
+//             7.5f, // y offset from muzzle
+//             50.f, // muzzleOffsetscalar
+//             1.8f, // fireRate
+//             1.75f, // time since last bullet fired
+//             0.f, // current accumulated spread offset
+//             .0f, // spread offset max
+//             .0f, //  spread offset growth
+//             .0f, // spread offset decay
+//             0.f, // time left until gun returns back to original position after recoil
+//             .3f, // total time gun takes to return back
+//             15.f, // amount of offset, vector created using this scalar opposite point direction
+
+//         }
+//     )
+// {
+//     sprite.setOrigin({sprite.getLocalBounds().size.x / 2.4f, sprite.getLocalBounds().size.y / 2});
+// }
 
 
-RPG::RPG() : 
-Weapon(AnimUtil::WeaponAnim::RPGanim, 
-        {
-            AnimUtil::WeaponAnim::RPGrocketAnim,
-            20.f, // speed
-            150.f, // damage 
-            1.3f, // bullet scale
-            5, // collateral count
-        }, 
-        {
-            1.3f, //scale 
-            0.f, // baseOffsetX
-            3.f, // baseOffsetY
-            0.f, // x offset from muzzle
-            7.5f, // y offset from muzzle
-            50.f, // muzzleOffsetscalar
-            1.8f, // fireRate
-            1.75f, // time since last bullet fired
-            0.f, // current accumulated spread offset
-            .0f, // spread offset max
-            .0f, //  spread offset growth
-            .0f, // spread offset decay
-            0.f, // time left until gun returns back to original position after recoil
-            .9f, // total time gun takes to return back
-            15.f, // amount of offset, vector created using this scalar opposite point direction
-
-        }
-    )
-{
-    sprite.setOrigin({sprite.getLocalBounds().size.x / 2.4f, sprite.getLocalBounds().size.y / 2});
-}
-
-// set new sub rectangle to display texture without rocket loaded
-//void UpdateBase(sf::Vector2f characterPosition, sf::Vector2f mousePosRelative, float deltaTime) override;
-void RPG::UpdateBase(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
-    UpdateBaseTransformations(characterPosition, mousePosGlobal, deltaTime);
-    weaponData.timeSinceShot += deltaTime;
-    if(weaponData.timeSinceShot < weaponData.fireRate) {
-        sprite.setTextureRect(AnimUtil::WeaponAnim::RPGreloadRect);
-    } else {
-        sprite.setTextureRect(AnimUtil::WeaponAnim::RPGloadedRect);
-    }
-}
+// // set new sub rectangle to display texture without rocket loaded
+// void Rpg::UpdateBase(sf::Vector2f characterPosition, float deltaTime) {
+//     UpdateBaseTransformations(characterPosition, deltaTime);
+//     weaponData.timeSinceShot += deltaTime;
+//     if(weaponData.timeSinceShot < weaponData.fireRate) {
+//         sprite.setTextureRect(AnimUtil::WeaponAnim::rpgReloadRect);
+//     } else {
+//         sprite.setTextureRect(AnimUtil::WeaponAnim::rpgLoadedRect);
+//     }
+// }
+// ------------------------- RPG ^ --------------------------- RPG ^ ----------------------------

@@ -47,14 +47,13 @@ namespace AnimUtil {
     }
 
     namespace WeaponAnim {
- 
-        extern const AnimData AK47anim;
-        extern const AnimData FAMASanim;
-        extern const AnimData Barrett50anim;
-        extern const AnimData RPGanim;
-        extern const AnimData RPGrocketAnim;
-        extern const sf::IntRect RPGreloadRect;
-        extern const sf::IntRect RPGloadedRect;
+        extern const AnimData ak47Anim;
+        extern const AnimData famasAnim;
+        extern const AnimData barrett50Anim;
+        extern const AnimData rpgAnim;
+        extern const AnimData rpgRocketAnim;
+        extern const sf::IntRect rpgReloadRect;
+        extern const sf::IntRect rpgLoadedRect;
     }
 
     namespace BloodAnim {
@@ -75,5 +74,13 @@ namespace AnimUtil {
 
     namespace HudAnim {
         extern const AnimData hpBar;
+    }
+
+    namespace MuzzleFlashAnim {
+        extern const AnimData muzzleFlash1;
+        extern const AnimData muzzleFlash2;
+        extern const AnimData muzzleFlash3;
+        extern const AnimData muzzleFlash4;
+        extern const AnimData muzzleFlash5;
     }
 }

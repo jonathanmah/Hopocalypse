@@ -39,14 +39,14 @@ namespace AnimUtil {
     }
 
     namespace WeaponAnim { // tile sheet is 20x16 16px
-        const std::string texturePath = "../assets/textures/weapons.png"; 
-        const AnimData AK47anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 2*16},{4*16,28}), 0, 0, 1, .2f, 0.f};
-        const AnimData FAMASanim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8*16, 14*16},{4*16,3*16}), 0, 0, 1, .2f, 0.f};
-        const AnimData Barrett50anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 10*16-8},{6*16,3*16}), 0, 0, 1, .2f, 0.f};
-        const AnimData RPGanim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 12*16-8},{6*16,2*16}), 0, 0, 1, .2f, 0.f};
-        const AnimData RPGrocketAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 8},{2*16,1*16}), 0, 0, 1, .2f, 0.f};
-        const sf::IntRect RPGreloadRect({12*16, 12*16-8},{4*16,2*16});
-        const sf::IntRect RPGloadedRect({12*16, 12*16-8},{6*16,2*16});
+        const std::string texturePath = "../assets/textures/weapons_updated.png"; 
+        const AnimData ak47Anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 2*16},{4*16,28}), 0, 0, 1, .2f, 0.f};
+        const AnimData famasAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8*16, 14*16},{4*16,3*16}), 0, 0, 1, .2f, 0.f};
+        const AnimData barrett50Anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 10*16},{6*16,35}), 0, 0, 1, .2f, 0.f};
+        const AnimData rpgAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 12*16-8},{6*16,2*16}), 0, 0, 1, .2f, 0.f};
+        const AnimData rpgRocketAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 8},{2*16,1*16}), 0, 0, 1, .2f, 0.f};
+        const sf::IntRect rpgReloadRect({12*16, 12*16-8},{4*16,2*16});
+        const sf::IntRect rpgLoadedRect({12*16, 12*16-8},{6*16,2*16});
     }
 
     namespace BloodAnim {
@@ -72,7 +72,25 @@ namespace AnimUtil {
         const std::string texturePath = "../assets/textures/healthbar.png";
         const AnimData hpBar = {TextureUtil::LoadTexture(texturePath), sf::IntRect({3*16, 3*16},{3*16,1*16}), 0, 0, 6, .1f, 0.f};
     }
+
+
+    namespace MuzzleFlashAnim {
+        const std::string muzzleFlashPath = "../assets/textures/muzzleflashcopy.png";
+        // 192 wide
+        //24 for first, 220 where second one starts exactly, 413 for third
+        // 176 ends
+        //220-360 is y
+        const AnimData muzzleFlash1 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 0},{80,54}), 80, 0, 4, .01f, 0.f};
+        const AnimData muzzleFlash2 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 80},{80,54}), 80, 0, 4, .01f, 0.f};
+        const AnimData muzzleFlash3 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 160},{80,54}), 80, 0, 4, .01f, 0.f};
+        const AnimData muzzleFlash4 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 240},{80,54}), 80, 0, 4, .01f, 0.f};
+        const AnimData muzzleFlash5 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 320},{80,54}), 80, 0, 4, .01f, 0.f};
+    }
+
+
 }
+
+
 
 // Commonly used function for updating a sprite animation given delta time and animation
 // returns TRUE if it has reached it's last frame.  This can be used with iterator to remove in place after a

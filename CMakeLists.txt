@@ -20,8 +20,13 @@ set(SOURCES
     src/Footprint.cpp
     src/Hud.cpp
     src/MonsterFactory.cpp
-    src/ProjectileFactory.cpp
     src/RandomUtil.cpp
+    src/MuzzleFlash.cpp
+    src/HitboxDebugger.cpp
+    src/AK47.cpp
+    src/Famas.cpp
+    src/Barrett50.cpp
+    src/Rpg.cpp
 )
 
 # Create executable

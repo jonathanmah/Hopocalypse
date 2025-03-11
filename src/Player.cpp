@@ -4,6 +4,10 @@
 #include "Weapon.h"
 #include "Map.h"
 #include <iostream>
+#include "Ak47.h"
+#include "Famas.h"
+#include "Barrett50.h"
+#include "Rpg.h"
 
 /*
     Construct a player
@@ -15,7 +19,7 @@
     float timeSinceLastShot : time since last projectile fired, used with a weapons cooldown 
 */
 // default curr weapon to pistol later
-Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,position,100,5.f,3.5f), deathTimer(0.f), currWeapon(std::make_unique<AK47>(AK47())) {
+Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,position,100,5.f,3.5f), deathTimer(0.f), currWeapon(std::make_unique<Ak47>()) {
 }
 
 void Player::HandleDeath(float deltaTime) {
@@ -83,16 +87,16 @@ void Player::Move(PlayerState& state, std::vector<Footprint>& footprints, std::v
 
 void Player::CycleWeapons() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) {
-        currWeapon = std::make_unique<AK47>(AK47());
+        currWeapon = std::make_unique<Ak47>();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
-        currWeapon = std::make_unique<FAMAS>(FAMAS());
+        currWeapon = std::make_unique<Famas>();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
-        currWeapon = std::make_unique<Barrett50>(Barrett50());
+        currWeapon = std::make_unique<Barrett50>();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F)) {
-        currWeapon = std::make_unique<RPG>(RPG());
+        currWeapon = std::make_unique<Rpg>();
     }
 }
 

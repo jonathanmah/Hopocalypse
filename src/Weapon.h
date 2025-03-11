@@ -3,10 +3,10 @@
 #include <random>
 #include "AnimUtil.h"
 #include "Projectile.h"
-#include "ProjectileFactory.h"
 #include "RandomUtil.h"
+#include "MuzzleFlash.h"
 
-
+class AK47;
 class Projectile;
 
 struct ProjectileData {
@@ -45,7 +45,10 @@ protected:
     sf::Sprite sprite;
     WeaponData weaponData;
     ProjectileData projectileData;
+    std::vector<std::unique_ptr<MuzzleFlash>> muzzleFlash;
     sf::Vector2f relative; // relative vector from weapon origin to global mouse pos
+    sf::Vector2f muzzlePosition; // Position of the weapon muzzle
+    sf::Vector2f mousePosGlobal;
 
     void RotateBaseToMouseGlobal();
     void IncreaseSpread();
@@ -53,18 +56,26 @@ protected:
     sf::Vector2f GetTargetWithSpread(sf::Vector2f mousePosGlobal);
     void SetPositionPostRecoil();
     void UpdateRecoilReturn(float deltaTime);
+    void SetMuzzlePosition();
+    inline void SetMousePosGlobal(sf::Vector2f mousePos){mousePosGlobal = mousePos;}
+    void UpdateMuzzleFlashes(float deltaTime);
+    void DrawMuzzleFlashes(sf::RenderWindow& window);
 
 public:
     Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData);
+    virtual ~Weapon() = default; //DONT REALLY GET WHY NEED THIS IDK YET NEED2LEARN
     void Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);
+    virtual void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) = 0;
+    virtual void AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, float deltaTime);
+    virtual void UpdateBase(sf::Vector2f characterPosition, float deltaTime);
+    virtual void AddMuzzleFlashEffect();
 
-    virtual void AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime);
-    virtual void UpdateBase(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime);
 
-    void UpdateBaseTransformations(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime);
+    void UpdateBaseTransformations(sf::Vector2f characterPosition, float deltaTime);
     void Draw(sf::RenderWindow& window);
+    
     inline void SetPosition(sf::Vector2f position) {sprite.setPosition(position);}
-    sf::Vector2f GetMuzzlePosition(sf::Vector2f normalizedDirection);
+    inline sf::Vector2f GetMuzzlePosition() {return muzzlePosition;};
 
     inline ProjectileData GetProjectileData() {return projectileData;};
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}
@@ -72,30 +83,30 @@ public:
     inline sf::FloatRect GetGlobalBounds() {return sprite.getGlobalBounds();}
 };
 
-class AK47 : public Weapon {
+// class AK47 : public Weapon {
 
-public:
-    AK47();
-};
+// public:
+//     AK47();
+// };
 
-class FAMAS : public Weapon {
-private:
-    int burstFireCounter;
-public:
-    FAMAS();
-    void AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) override;
-};
+// class Famas : public Weapon {
+// private:
+//     int burstFireCounter;
+// public:
+//     Famas();
+//     void AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, float deltaTime) override;
+// };
 
-class Barrett50 : public Weapon {
+// class Barrett50 : public Weapon {
 
-public:
-    Barrett50();
-};
+// public:
+//     Barrett50();
+// };
 
-class RPG : public Weapon {
+// class Rpg : public Weapon {
 
-public:
-    RPG();
-    void UpdateBase(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) override;
-};
+// public:
+//     Rpg();
+//     void UpdateBase(sf::Vector2f characterPosition, float deltaTime) override;
+// };
     
