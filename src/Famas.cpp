@@ -15,12 +15,12 @@ Weapon(AnimUtil::WeaponAnim::famasAnim,
             0.f, // baseOffsetX
             21.f, // baseOffsetY
             0.f, // x offset from muzzle
-            -9.f, // y offset from muzzle
-            50.f, // muzzleOffsetscalar
+            -1.8f, // y offset from muzzle
+            45.f, // muzzleOffsetscalar
             0.06f, // fireRate
             .06f, // time since last bullet fired
             0.f, // current accumulated spread offset
-            .12f, // spread offset max
+            .05f, // spread offset max
             .01f, //  spread offset growth
             .015f, // spread offset decay
             .0f, // time left until gun returns back to original position after recoil
@@ -32,12 +32,11 @@ Weapon(AnimUtil::WeaponAnim::famasAnim,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3.6f, sprite.getLocalBounds().size.y / 2});
 }
 void Famas::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles){
-    sf::Vector2f baseOriginToTarget = (mousePosGlobal - GetPosition()).normalized();
-    projectiles.emplace_back(std::make_unique<Projectile>(Projectile(GetProjectileData(), muzzlePosition,baseOriginToTarget)));
-    std::cout << "entered famas create projectile" << std::endl;
+    sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
+    projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }
 
-void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::Vector2f characterPosition, float deltaTime) {
+void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
     std::cout << "entered famas attempt shoot" << std::endl;
     if (weaponData.timeSinceShot > weaponData.fireRate) {
         weaponData.fireRate = 0.10f;

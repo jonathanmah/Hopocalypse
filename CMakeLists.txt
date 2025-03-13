@@ -27,6 +27,8 @@ set(SOURCES
     src/Famas.cpp
     src/Barrett50.cpp
     src/Rpg.cpp
+    src/Shell.cpp
+    src/BatchRenderer.cpp
 )
 
 # Create executable

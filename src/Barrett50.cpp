@@ -15,7 +15,7 @@ Weapon(AnimUtil::WeaponAnim::barrett50Anim,
             16.f, // baseOffsetY
             0.f, // x offset from muzzle
             -4.f, // y offset from muzzle
-            80.f, // muzzleOffsetscalar
+            67.f, // muzzleOffsetscalar
             .9f, // fireRate
             .9f, // time since last bullet fired
             0.f, // current accumulated spread offset
@@ -33,6 +33,6 @@ Weapon(AnimUtil::WeaponAnim::barrett50Anim,
 }
 
 void Barrett50::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
-    sf::Vector2f baseOriginToTarget = (mousePosGlobal - GetPosition()).normalized();
-    projectiles.emplace_back(std::make_unique<Projectile>(Projectile(GetProjectileData(), muzzlePosition,baseOriginToTarget)));
+    sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
+    projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }

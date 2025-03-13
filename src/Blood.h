@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "AnimUtil.h"
+#include "BatchRenderer.h"
 
 class Footprint;
 class GroundBlood;
@@ -20,7 +21,7 @@ public:
     static void Update(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, float deltaTime); // update new prints and footprint transparency
     static AnimData GetNextSprayAnim();
     static void RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, 
-        std::vector<Footprint>& footprints, sf::RenderWindow& window); // render footprint vector
+        std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window); // render footprint vector
     void Draw(sf::RenderWindow& window);
     void SetPosition(sf::Vector2f position);
     static void UpdateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 

@@ -47,7 +47,7 @@ void Character::DrawHitbox(sf::RenderWindow& window) {
 // Render the character and HP bar
 void Character::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
-    DrawHitbox(window);
+    //DrawHitbox(window);
     if(health > 0){
         hud.Draw(window);
     }

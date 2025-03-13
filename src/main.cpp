@@ -11,6 +11,7 @@
 #include "Footprint.h"
 #include "MonsterFactory.h"
 #include "RandomUtil.h"
+#include "BatchRenderer.h"
 
 ////////// ENV SETUP IGNORE //////////////////// ENV SETUP IGNORE //////////
 void SetRandomMonsterSpawn(std::vector<Monster>& monsters, int count){
@@ -19,8 +20,8 @@ void SetRandomMonsterSpawn(std::vector<Monster>& monsters, int count){
 }
 
 void SetSingleTest(std::vector<Monster>& monsters){
-    Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 1.f};
-    bigDemon.disabledMovement = true;
+    Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 3.f};
+    bigDemon.disabledMovement = false;
     monsters.push_back(std::move(bigDemon));
 }
 
@@ -53,12 +54,14 @@ void LoadPlayers(std::vector<Player>& players) {
 }
 
 void LoadMonsters(std::vector<Monster>& monsters) {
-    //SetRandomMonsterSpawn(monsters, 100);
-    SetCollateralLineup(monsters);
-    // Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 1.f};
+    // SetRandomMonsterSpawn(monsters, 100);
+    // SetCollateralLineup(monsters);
+    SetSingleTest(monsters);
+    
+    //Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 1.f};
     // Monster bigSlug{AnimUtil::MonsterAnim::BigSlugAnim::walkAnim, {-500,500}, 100, 20.f};
     // Monster smallDemon{AnimUtil::MonsterAnim::SmallDemonAnim::walkAnim, {200,800}, 100, 3.f};
-    // monsters.push_back(std::move(bigDemon));
+    //monsters.push_back(std::move(bigDemon));
     // monsters.push_back(std::move(bigSlug));
     // monsters.push_back(std::move(smallDemon));}
 }
@@ -107,6 +110,7 @@ int main() {
     RandomUtil::Initialize();
     // Setup Window
     sf::RenderWindow window = SetupWindow();
+    BatchRenderer batchRenderer{window};
     
     // Setup Map
     Map map{*TextureUtil::LoadTexture("../assets/textures/tilesheet.png")};
@@ -155,8 +159,6 @@ int main() {
         // update the blood spray and ground blood animations
         Blood::Update(bloodSpray, groundBlood, dt);
 
-        // #TODO this function is disgusting, we should refactor to have this as a class to access them rather than 
-        // passing so many repetitive parameters.
         UpdateSprites(players, monsters, dt, window, projectiles, bloodSpray, groundBlood, footprints);
 
         // clear previous frame before drawing new one
@@ -165,7 +167,7 @@ int main() {
         // render map
         map.Draw(window);
         // render blood objects
-        Blood::RenderBlood(bloodSpray, groundBlood, footprints, window);
+        Blood::RenderBlood(bloodSpray, groundBlood, footprints, batchRenderer, window);
         // render characters
         RenderSprites(players, monsters, window);
         // render projectiles

@@ -41,12 +41,12 @@ namespace AnimUtil {
     namespace WeaponAnim { // tile sheet is 20x16 16px
         const std::string texturePath = "../assets/textures/weapons_updated.png"; 
         const AnimData ak47Anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 2*16},{4*16,28}), 0, 0, 1, .2f, 0.f};
-        const AnimData famasAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8*16, 14*16},{4*16,3*16}), 0, 0, 1, .2f, 0.f};
+        const AnimData famasAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8*16, 14*16},{4*16,32}), 0, 0, 1, .2f, 0.f};
         const AnimData barrett50Anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 10*16},{6*16,35}), 0, 0, 1, .2f, 0.f};
-        const AnimData rpgAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 12*16-8},{6*16,2*16}), 0, 0, 1, .2f, 0.f};
+        const AnimData rpgAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({196, 196},{90,20}), 0, 0, 1, .2f, 0.f};
         const AnimData rpgRocketAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 8},{2*16,1*16}), 0, 0, 1, .2f, 0.f};
-        const sf::IntRect rpgReloadRect({12*16, 12*16-8},{4*16,2*16});
-        const sf::IntRect rpgLoadedRect({12*16, 12*16-8},{6*16,2*16});
+        const sf::IntRect rpgReloadRect({196, 196},{60,20});
+        const sf::IntRect rpgLoadedRect({196, 196},{90,20});
     }
 
     namespace BloodAnim {
@@ -86,10 +86,16 @@ namespace AnimUtil {
         const AnimData muzzleFlash4 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 240},{80,54}), 80, 0, 4, .01f, 0.f};
         const AnimData muzzleFlash5 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 320},{80,54}), 80, 0, 4, .01f, 0.f};
     }
-
+// 590 and 200
+    namespace EffectsAnim {
+        const std::string smokePath = "../assets/textures/smoke.png"; // 130,58
+        const AnimData rpgSmoke = {TextureUtil::LoadTexture(smokePath), sf::IntRect({0, 116},{75,60}), 55, 0, 4, 1.f, 0.f};
+    }
 
 }
 
+
+// func for returning int rect for mapping textures for batch rendering
 
 
 // Commonly used function for updating a sprite animation given delta time and animation
@@ -112,7 +118,7 @@ bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float de
         }
         animData.deltaTimeSum = 0.f;
         
-    };
+    }
     animData.deltaTimeSum += deltaTime;
     return false;
 }

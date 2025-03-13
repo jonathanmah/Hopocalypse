@@ -6,7 +6,7 @@ Weapon(AnimUtil::WeaponAnim::ak47Anim,
         {
             AnimUtil::ProjectileAnim::RegularBullet::anim,
             20.f, // speed
-            50.f, // damage 
+            1.f, // damage 
             1.f, // bullet scale
             1, // collateral count
         }, 
@@ -15,8 +15,8 @@ Weapon(AnimUtil::WeaponAnim::ak47Anim,
             0.f, // baseOffsetX
             18.f, // baseOffsetY
             0.f, // x offset from muzzle
-            -2.5f, // y offset from muzzle (pre recoil translation)
-            50.f, // muzzleOffsetscalar
+            -2.8f, // y offset from muzzle (pre recoil translation)
+            48.f, // muzzleOffsetscalar
             0.15f, // fireRate
             .15f, // time since last bullet fired
             0.f, // current accumulated spread offset
@@ -26,8 +26,8 @@ Weapon(AnimUtil::WeaponAnim::ak47Anim,
             .0f, // time left until gun returns back to original position after recoil
             .15f, // total time gun takes to return back
             5.f, // amount of offset, vector created using this scalar opposite point direction
-            
-
+            5.f, // shell offset x
+            -5.f, // shell offset y
         }
     )
 {
@@ -35,6 +35,6 @@ Weapon(AnimUtil::WeaponAnim::ak47Anim,
 }
 
 void Ak47::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
-    sf::Vector2f baseOriginToTarget = (mousePosGlobal - GetPosition()).normalized();
-    projectiles.emplace_back(std::make_unique<Projectile>(Projectile(GetProjectileData(), muzzlePosition,baseOriginToTarget)));
+    sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
+    projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }

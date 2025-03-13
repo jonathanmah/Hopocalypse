@@ -1,7 +1,9 @@
 #include "Blood.h"
 #include <iostream>
 #include <cmath>
+#include "RandomUtil.h"
 #include "Footprint.h"
+
 
 // 2PI = 360deg, PI = 180deg, PI/2 = 90deg, PI/4 = 45deg
 static constexpr float PI = 3.141592;
@@ -48,8 +50,11 @@ void Blood::Update(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& gro
             ++it;
         }
     }
+    int count = 0;
     for(GroundBlood& blood : groundBlood) {
-        blood.UpdateGroundBloodAnim(deltaTime);
+       blood.UpdateGroundBloodAnim(deltaTime);
+        count +=1;
+        std::cout << "calculated blood : " << count << std::endl;
     }
     // #TODO SAVE THIS FOR LATER, MAY NEED TO DELETE FOOTSTEPS LATER FOR PERFORMANCE
     // for(auto it = footprints.begin(); it != footprints.end();){ 
@@ -91,8 +96,7 @@ void Blood::Draw(sf::RenderWindow& window) {
 // use different blood spray animation each time a projectile hits
 AnimData Blood::GetNextSprayAnim() {
     static int animationIndex = 0;
-    AnimData animData = sprayAnimations[animationIndex];
-    animationIndex = (animationIndex+1)%6;
+    AnimData animData = sprayAnimations[RandomUtil::GetRandomInt(0,5)];
     return animData;
 }
 
@@ -110,18 +114,21 @@ void Blood::UpdateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatR
 
 
 // render all bloodspray, groundblood, and footprints
-void Blood::RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints, sf::RenderWindow& window) {
-    for(GroundBlood& blood: groundBlood) {
-        //blood.RenderCollider(window);
-        blood.Draw(window);
-        //DrawHitboxt(blood.sprite, window);
-    }
-    for(Blood& blood: bloodSpray) {
-        blood.Draw(window);
-    }
-    for(Footprint& footprint: footprints) {
-        footprint.Draw(window);
-    }
+void Blood::RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window) {
+    batchRenderer.BatchRender(groundBlood);
+    batchRenderer.BatchRender(footprints);
+    batchRenderer.BatchRender(bloodSpray);
+    // for(GroundBlood& blood: groundBlood) {
+    //     //blood.RenderCollider(window);
+    //     blood.Draw(window);
+    //     //DrawHitboxt(blood.sprite, window);
+    // }
+    // for(Blood& blood: bloodSpray) {
+    //     blood.Draw(window);
+    // }
+    // for(Footprint& footprint: footprints) {
+    //     footprint.Draw(window);
+    // }
 }
 
 // Returns true if the global bounds of an object intersects with the ground blood
@@ -153,6 +160,7 @@ void GroundBlood::UpdateGroundBloodAnim(float deltaTime) {
         int posX = (animData.currFrame%3)*500;
         int posY = (animData.currFrame/3)*500;
         sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
+        std::cout << "IN UPDATE posX,Y : " << posX << ", " << posY << std::endl;
         animData.currFrame++;
         if (animData.currFrame >= animData.totalFrames) {
             animData.currFrame = -1;
@@ -164,7 +172,7 @@ void GroundBlood::UpdateGroundBloodAnim(float deltaTime) {
 // Same logic as rotating the bloodspray with projectiles, but this also rotates the collider
 void GroundBlood::SetRotation(sf::Vector2f incomingProjectilePos) {
     sf::Vector2f difference = GetPosition() - incomingProjectilePos;
-    float radians = atan2(difference.y, difference.x) + ON_HIT_GROUND_ROTATION_OFFSET;
+    float radians = atan2(difference.y, difference.x) + RandomUtil::GetRandomFloat(0,60.f);
     sf::Angle angle = sf::radians(radians);
     sprite.setRotation(angle);
     sprite.move(difference.normalized()* ON_HIT_GROUND_POSITION_OFFSET);
