@@ -20,6 +20,7 @@
 */
 // default curr weapon to pistol later
 Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,position,100,5.f,3.5f), deathTimer(0.f), currWeapon(std::make_unique<Ak47>()) {
+
 }
 
 void Player::HandleDeath(float deltaTime) {

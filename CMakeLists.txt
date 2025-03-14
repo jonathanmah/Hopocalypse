@@ -29,10 +29,13 @@ set(SOURCES
     src/Rpg.cpp
     src/Shell.cpp
     src/BatchRenderer.cpp
+    src/RenderUtil.cpp
 )
+add_subdirectory(external/tinyxml2)
 
 # Create executable
 add_executable(sfml-app ${SOURCES})
 
 #Tells the linker what specific library files to link, it will look in the directories you specified with link_directories
 target_link_libraries(sfml-app SFML::Audio SFML::Graphics SFML::Window SFML::Network SFML::System)
+target_link_libraries(sfml-app tinyxml2)
