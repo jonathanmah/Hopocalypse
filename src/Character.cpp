@@ -73,7 +73,7 @@ void Character::UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& proje
     for(auto it = projectiles.begin(); it != projectiles.end();){
         if(this->GetGlobalBounds().findIntersection((*it)->GetGlobalBounds()) && isAlive){
             if(!(*it)->HasHit(id)){
-                Blood::UpdateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), bloodSpray, groundBlood);
+                Blood::CreateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), bloodSpray, groundBlood);
                 UpdateHealth((*it)->GetDamage());
             }
             (*it)->UpdateProjectileStatus(projectiles, it, id);
@@ -108,6 +108,7 @@ void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, std::vector<Fo
         if (groundBloodCollision){
             footprintDecayTimer =  FOOTPRINT_DECAY_TIME; // refresh footprint timer after stepping in ground blood
         }
+        std::cout << "Push back footprint" << std::endl;
         footprints.push_back(Footprint{footprintData, GetGlobalBounds(), nextMoveNormalized, 
             !createLeftFootNext, footprintDecayTimer});
         

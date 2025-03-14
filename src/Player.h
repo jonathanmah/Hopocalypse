@@ -34,7 +34,6 @@ private:
     void SetMousePositions(sf::RenderWindow& window);
     void SetFacingDirection();
     void SetAnimDataByState(PlayerState newState);
-    //void Shoot(std::vector<std::unique_ptr<Projectile>>& projectiles);
     void CycleWeapons();
     
 

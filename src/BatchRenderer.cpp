@@ -4,31 +4,19 @@
 BatchRenderer::BatchRenderer(sf::RenderWindow& window) : window(window){
 }
 
-void BatchRenderer::addFrameToBatch(const sf::IntRect& textureFrame, const sf::Transform& transform, sf::Color colour) {
+// no transformations to object, but animated, so texture frame coordinates and colour change but 
+// global bounds never change
+void BatchRenderer::AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::array<sf::Vector2f, 4> cachedPosition, sf::Color colour) {
+    triangles.emplace_back(sf::Vertex{cachedPosition[0], colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y)}}); // top left 
+    triangles.emplace_back(sf::Vertex{cachedPosition[1], colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}}); // top right
+    triangles.emplace_back(sf::Vertex{cachedPosition[2], colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}}); // bottom left
     
-    sf::Vector2f topLeft = transform.transformPoint({0, 0});
-    sf::Vector2f bottomLeft = transform.transformPoint({0, static_cast<float>(textureFrame.size.y)});
-    sf::Vector2f topRight = transform.transformPoint({static_cast<float>(textureFrame.size.x), 0});
-    sf::Vector2f bottomRight = transform.transformPoint({static_cast<float>(textureFrame.size.x), static_cast<float>(textureFrame.size.y)});
-
-    // sf::VertexArray points(sf::PrimitiveType::Points, 4);
-    // set points for corners
-    // points[0] = sf::Vertex({topLeft, sf::Color::Red});     // Top left
-    // points[1] = sf::Vertex({bottomLeft, sf::Color::Blue}); // Bottom left
-    // points[2] = sf::Vertex({topRight, sf::Color::Green});  // Top right
-    // points[3] = sf::Vertex({bottomRight, sf::Color::Yellow}); // Bottom right
-    // window.draw(points);
-
-    triangles.emplace_back(sf::Vertex{topLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y)}});
-    triangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
-    triangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    
-    triangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    triangles.emplace_back(sf::Vertex{bottomRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    triangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
+    triangles.emplace_back(sf::Vertex{cachedPosition[2], colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}}); // bottom left
+    triangles.emplace_back(sf::Vertex{cachedPosition[3], colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}}); // bottom right
+    triangles.emplace_back(sf::Vertex{cachedPosition[1], colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}}); // top right
 }
 
-void BatchRenderer::addSpriteToBatch(const sf::Sprite& sprite) {
+void BatchRenderer::AddSpriteToBatch(const sf::Sprite& sprite) {
     sf::FloatRect bounds = sprite.getLocalBounds();
     sf::Transform transform = sprite.getTransform();
     sf::IntRect textureFrame{sprite.getTextureRect()};

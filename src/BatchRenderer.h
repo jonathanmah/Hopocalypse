@@ -7,26 +7,28 @@ private:
     sf::RenderWindow& window;
     std::vector<sf::Vertex> triangles;
 
-
-    void addFrameToBatch(const sf::IntRect& textureFrame, const sf::Transform& transform, sf::Color colour);
-    void addSpriteToBatch(const sf::Sprite& sprite);
+    void AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::array<sf::Vector2f, 4> cachedPosition, sf::Color colour);
+    void AddSpriteToBatch(const sf::Sprite& sprite);
 
 
 public:
     BatchRenderer(sf::RenderWindow& window);
 
     template <typename T>
-    void BatchRenderFrames(std::vector<T>& frameWrapper){
+    void BatchRenderStaticFrames(std::vector<T>& frameWrapper){
+        static int count = 0;
         triangles.clear();
         const sf::Texture* texture = nullptr;
         for (T& obj : frameWrapper) {
             if(texture == nullptr){
                 texture = obj.GetTexture();
             }
-            addFrameToBatch(obj.GetAnimData().textureFrame, obj.getTransform(), obj.GetColour());
+            AddStaticFrameToBatch(obj.GetAnimData().textureFrame, obj.GetCachedVertices(), obj.GetColour());
         }
         // batch draw to frame
+        //std::cout << "Drawing static frame : " <<count<< std::endl;
         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
+        count ++;
     }
 
     template <typename T>
@@ -40,7 +42,7 @@ public:
             if(texture == nullptr){
                 texture = &obj.GetSprite().getTexture();
             }
-            addSpriteToBatch(obj.GetSprite());
+            AddSpriteToBatch(obj.GetSprite());
         }
         // batch draw to frame
         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);

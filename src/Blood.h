@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "AnimUtil.h"
 #include "BatchRenderer.h"
+#include "RenderUtil.h"
 
 class Footprint;
 class GroundBlood;
@@ -9,11 +10,11 @@ class GroundBlood;
 class Blood : public sf::Transformable{
 
 protected:
-    //sf::Sprite sprite;
     AnimData animData;
     sf::Vector2f position;
     sf::Color colour;
-
+    std::array<sf::Vector2f, 4> cachedVertices;
+    
 
 public:
     static sf::Texture* texture;
@@ -31,8 +32,12 @@ public:
         std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window); // render footprint vector
     //void Draw(sf::RenderWindow& window);
     void SetPosition(sf::Vector2f position);
-    static void UpdateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 
+    static void CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 
         std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood);
+    bool UpdateBloodSprayAnim(float deltaTime);
+    void CachePositionVertices() {cachedVertices = RenderUtil::CalculatePositionVertices(animData.textureFrame, getTransform());}
+    inline std::array<sf::Vector2f, 4> GetCachedVertices() {return cachedVertices;}
+
 
     //inline sf::Sprite& GetSprite() { return sprite;}
     inline sf::Color& GetColour() {return colour;}

@@ -55,7 +55,7 @@ void LoadPlayers(std::vector<Player>& players) {
 
 void LoadMonsters(std::vector<Monster>& monsters) {
     // SetRandomMonsterSpawn(monsters, 100);
-    // SetCollateralLineup(monsters);
+    //SetCollateralLineup(monsters);
     SetSingleTest(monsters);
     
     //Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 1.f};

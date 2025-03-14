@@ -6,7 +6,6 @@
 #include "TextureUtil.h"
 
 
-
 static int bloodcount = 0;
 sf::Texture* Blood::texture = nullptr;
 
@@ -18,12 +17,12 @@ static constexpr float ON_HIT_GROUND_ROTATION_OFFSET = 0.f;
 static constexpr float ON_HIT_GROUND_POSITION_OFFSET = 10.f;
 
 const AnimData sprayAnimations[6] = {
-    AnimUtil::BloodAnim::splatAnim1, 
-    AnimUtil::BloodAnim::splatAnim2, 
-    AnimUtil::BloodAnim::splatAnim3,
-    AnimUtil::BloodAnim::splatAnim4, 
-    AnimUtil::BloodAnim::splatAnim5, 
-    AnimUtil::BloodAnim::splatAnim6
+    AnimUtil::BloodAnim::sprayAnim1, 
+    AnimUtil::BloodAnim::sprayAnim2, 
+    AnimUtil::BloodAnim::sprayAnim3,
+    AnimUtil::BloodAnim::sprayAnim4, 
+    AnimUtil::BloodAnim::sprayAnim5, 
+    AnimUtil::BloodAnim::sprayAnim6
 };
 
 /*
@@ -37,15 +36,11 @@ live here
 */
 
 // position center of character global bounds
-Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), colour(sf::Color::White), tempTexture(TextureUtil::LoadTexture("../assets/textures/blood.png")){
-    //sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
+Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), colour(sf::Color::White), tempTexture(TextureUtil::LoadTexture("../assets/textures/blood_atlas_update.png")){
     setOrigin({static_cast<float>(animData.textureFrame.size.x)/2.f, static_cast<float>(animData.textureFrame.size.y)/2.f});
-    //std::cout << "Texture Frame size : " << animData.textureFrame.size.x << "," << animData.textureFrame.size.y << std::endl;
-    //std::cout << "Localized Origin coordinates : " <<  animData.textureFrame.size.x/2.f << "," << animData.textureFrame.size.y/2.f << std::endl;
     setPosition({position.x, position.y});
     setScale({1.5f, 1.5f});
     bloodcount++;
-    //std::cout << "blood count : " << bloodcount << std::endl;
 }
 
 // For each bloodspray, update frame or delete it if it's finished the sequence
@@ -53,7 +48,7 @@ Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), col
 void Blood::Update(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, float deltaTime) {
     std::vector<Blood>::iterator it;
     for(auto it = bloodSpray.begin(); it != bloodSpray.end();){
-        if(AnimUtil::UpdateFrameAnim((*it).GetAnimData(), deltaTime)){
+        if((*it).UpdateBloodSprayAnim(deltaTime)){
             it = bloodSpray.erase(it);
         } else {
             ++it;
@@ -62,14 +57,6 @@ void Blood::Update(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& gro
     for(GroundBlood& blood : groundBlood) {
        blood.UpdateGroundBloodAnim(deltaTime);
     }
-    // #TODO SAVE THIS FOR LATER, MAY NEED TO DELETE FOOTSTEPS LATER FOR PERFORMANCE
-    // for(auto it = footprints.begin(); it != footprints.end();){ 
-    //     if((*it).Update(deltaTime)){ // would change Update to return true when it's expired
-    //         it = footprints.erase(it);
-    //     } else {
-    //         ++it;
-    //     }
-    // }
 }
 
 // Rotate the blood spray object based on the direction of the incoming projectile, so it looks like it sprays through the character
@@ -106,24 +93,52 @@ AnimData Blood::GetNextSprayAnim() {
 }
 
 // update blood spray and ground blood after projectile collision
-void Blood::UpdateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 
+void Blood::CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 
     std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood){
-
     Blood newBloodSpray(Blood::GetNextSprayAnim(), characterGlobalBounds.getCenter());
     newBloodSpray.SetRotation(incomingProjectilePos);
+    newBloodSpray.CachePositionVertices();
     bloodSpray.push_back(newBloodSpray);
-    GroundBlood newGroundBlood(AnimUtil::BloodAnim::trailAnim, characterGlobalBounds.getCenter());
+    GroundBlood newGroundBlood(AnimUtil::BloodAnim::groundAnim, characterGlobalBounds.getCenter());
     newGroundBlood.SetRotation(incomingProjectilePos);
+    newGroundBlood.CachePositionVertices();
     groundBlood.push_back(newGroundBlood);
 }
 
-
+sf::RectangleShape createBoundingBox(const std::array<sf::Vector2f,4> vertices);
 // render all bloodspray, groundblood, and footprints
 void Blood::RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window) {
-    batchRenderer.BatchRenderFrames(groundBlood);
-    batchRenderer.BatchRenderFrames(footprints);
-    batchRenderer.BatchRenderFrames(bloodSpray);
+    batchRenderer.BatchRenderStaticFrames(groundBlood);
+    batchRenderer.BatchRenderStaticFrames(footprints);
+    batchRenderer.BatchRenderStaticFrames(bloodSpray);
 }
+
+
+
+
+
+
+sf::RectangleShape createBoundingBox(const std::array<sf::Vector2f,4> vertices) {
+    float minX = vertices[0].x;
+    float minY = vertices[0].y;
+    float maxX = vertices[0].x;
+    float maxY = vertices[0].y;
+    for (int i = 1; i < 4; ++i) {
+        minX = std::min(minX, vertices[i].x);
+        minY = std::min(minY, vertices[i].y);
+        maxX = std::max(maxX, vertices[i].x);
+        maxY = std::max(maxY, vertices[i].y);
+    }
+    sf::RectangleShape boundingBox;
+    boundingBox.setPosition({minX, minY});
+    boundingBox.setSize(sf::Vector2f(maxX - minX, maxY - minY));
+    boundingBox.setOutlineColor(sf::Color::Red);
+    boundingBox.setOutlineThickness(2);
+    boundingBox.setFillColor(sf::Color::Transparent);
+    return boundingBox;
+}
+
+
 
 // Returns true if the global bounds of an object intersects with the ground blood
 bool GroundBlood::HasGroundBloodCollision(const sf::FloatRect& globalBounds, std::vector<GroundBlood>& groundBlood) {
@@ -143,9 +158,24 @@ GroundBlood::GroundBlood(AnimData animData, sf::Vector2f position) : Blood(animD
     collider.setPosition(GetPosition());
     collider.setScale({2.f,1.f});
     // overwrites completely 
-    setScale({.5f,.5f});
-    tempTexture = TextureUtil::LoadTexture("../assets/textures/ground_blood.png");
+    setScale({1.f,1.f});
 }
+
+bool Blood::UpdateBloodSprayAnim(float deltaTime) {
+    if(animData.deltaTimeSum >= animData.animSpeed) {
+        int textureCoordsPosX = 32 + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+        animData.textureFrame.position.x = textureCoordsPosX;
+        animData.currFrame++;
+        if (animData.currFrame >= animData.totalFrames) {
+            animData.currFrame = 0; 
+            return true;
+        }
+        animData.deltaTimeSum = 0.f;
+    }
+    animData.deltaTimeSum += deltaTime;
+    return false;
+}
+
 
 // use a unique hardcoded function to update frames because the ground blood frames are not stored linearly
 void GroundBlood::UpdateGroundBloodAnim(float deltaTime) {
@@ -153,8 +183,8 @@ void GroundBlood::UpdateGroundBloodAnim(float deltaTime) {
         return;
     animData.deltaTimeSum += deltaTime;
     if(animData.deltaTimeSum >= animData.animSpeed) {
-        int posX = (animData.currFrame%3)*500;
-        int posY = (animData.currFrame/3)*500;
+        int posX = (animData.currFrame%6)*210;
+        int posY = 850 + (animData.currFrame/6)*250;
         animData.textureFrame.position = {posX, posY};
         animData.currFrame++;
         if (animData.currFrame >= animData.totalFrames) {
@@ -163,6 +193,7 @@ void GroundBlood::UpdateGroundBloodAnim(float deltaTime) {
         animData.deltaTimeSum = 0.f;
     };
 }
+
 
 // Same logic as rotating the bloodspray with projectiles, but this also rotates the collider
 void GroundBlood::SetRotation(sf::Vector2f incomingProjectilePos) {

@@ -37,7 +37,6 @@ void Famas::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectil
 }
 
 void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
-    std::cout << "entered famas attempt shoot" << std::endl;
     if (weaponData.timeSinceShot > weaponData.fireRate) {
         weaponData.fireRate = 0.10f;
         this->CreateProjectile(projectiles);

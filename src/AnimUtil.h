@@ -13,7 +13,6 @@ struct AnimData {
 };
 
 namespace AnimUtil {
-    bool UpdateFrameAnim(AnimData& animData, float deltaTime);
     bool UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime);
 
     namespace PlayerAnim {
@@ -57,13 +56,14 @@ namespace AnimUtil {
     }
 
     namespace BloodAnim {
-        extern const AnimData splatAnim1;
-        extern const AnimData splatAnim2;
-        extern const AnimData splatAnim3;
-        extern const AnimData splatAnim4;
-        extern const AnimData splatAnim5;
-        extern const AnimData splatAnim6;
-        extern const AnimData grenadeSplat;
+        extern const AnimData sprayAnim1;
+        extern const AnimData sprayAnim2;
+        extern const AnimData sprayAnim3;
+        extern const AnimData sprayAnim4;
+        extern const AnimData sprayAnim5;
+        extern const AnimData sprayAnim6;
+        extern const AnimData grenadeSprayAnim;
+        extern const AnimData groundAnim;
         extern const AnimData trailAnim;
         
         namespace FootprintAnim {
