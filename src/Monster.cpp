@@ -5,13 +5,16 @@
 #include "Blood.h"
 #include <iostream>
 
+static int monster_count = 0;
 static constexpr float DEATH_DT_SUM_PER_FRAME = 0.2f;
 static constexpr int DEATH_ROTATE_PER_FRAME_DEG = 10;
 static constexpr float DISAPPEAR_TIME = 6.f;
 
 Monster::Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed) 
 : Character(animData, position, health, movementSpeed), deathDtSum(0.f), 
-timeSinceDeath(0.f), xAxisInverted(false), disabledMovement(false) {}
+timeSinceDeath(0.f), xAxisInverted(false), disabledMovement(false) {
+    monster_count++;
+}
 
 void Monster::HandleDeath(float deltaTime) {
     

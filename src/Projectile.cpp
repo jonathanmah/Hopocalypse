@@ -1,7 +1,7 @@
 #include "Projectile.h"
 #include <iostream>
 #include <cmath>
-
+static int projectile_count = 0;
 static constexpr float COLLATERAL_REDUCTION_FACTOR = 0.8f;
 /*
     Construct a projectile
@@ -20,6 +20,7 @@ collateralCount(projectileData.collateralCount), scale(projectileData.scale) {
     sprite.setScale({scale, scale});
     sprite.setOrigin({sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2});
     Rotate(velocity);
+    projectile_count++;
 }
 
 bool Projectile::HasHit(int characterId) {
@@ -46,6 +47,7 @@ void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
         it = projectiles.erase(it);
     }
+    projectile_count++;
 }
 
 

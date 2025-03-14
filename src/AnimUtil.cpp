@@ -51,7 +51,7 @@ namespace AnimUtil {
 
     namespace BloodAnim {
         const std::string texturePath = "../assets/textures/blood.png";
-        const float speed = .02f;
+        const float speed = 0.05f;
         const AnimData splatAnim1 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({1*16, 6*16},{6*16,7*16}), 7*16, 0, 9, speed, 0.f};
         const AnimData splatAnim2 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({10, 280},{6*16,6*16}), 7*16, 0, 10, speed, 0.f};
         const AnimData splatAnim3 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({1*16, 23*16},{6*16,7*16}), 7*16, 0, 8, speed, 0.f};
@@ -97,6 +97,26 @@ namespace AnimUtil {
 
 // func for returning int rect for mapping textures for batch rendering
 
+bool AnimUtil::UpdateFrameAnim(AnimData& animData, float deltaTime) {
+    std::cout << "Total Frames : " << animData.totalFrames << std::endl;
+    // if deltaTime >= animSpeed, ready for next frame
+    if(animData.deltaTimeSum >= animData.animSpeed) {
+        // update the sub rectangle of the texture to point to the next frame
+        int textureCoordsPosX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+        animData.textureFrame.position.x = textureCoordsPosX;
+        std::cout << "Current Frame : " << animData.currFrame << std::endl;
+        animData.currFrame++;
+        // if the last frame of a sequence has been rendered, loop back to the first one
+        if (animData.currFrame >= animData.totalFrames) {
+            animData.currFrame = 0; 
+            return true;
+        }
+        animData.deltaTimeSum = 0.f;
+        
+    }
+    animData.deltaTimeSum += deltaTime;
+    return false;
+}
 
 // Commonly used function for updating a sprite animation given delta time and animation
 // returns TRUE if it has reached it's last frame.  This can be used with iterator to remove in place after a
@@ -106,6 +126,8 @@ namespace AnimUtil {
 //  animSpeed determines how long a single frame will be rendered for in seconds, multiple passes will render the same frame.
 bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime) {
     // if deltaTime >= animSpeed, ready for next frame
+    
+
     if(animData.deltaTimeSum >= animData.animSpeed) {
         // update the sub rectangle of the texture to point to the next frame
         int textureCoordsPosX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0

@@ -2,9 +2,12 @@
 #include "Footprint.h"
 #include <iostream>
 #include <cmath>
+#include "TextureUtil.h"
 
+static int footprint_count = 0;
 static constexpr float FOOTPRINT_OFFSET_PIXELS = 8.f;
 static constexpr float PI = 3.141592;
+
 
 /*
 Construct a footprint
@@ -20,21 +23,24 @@ Footprint::Footprint(AnimData animData, const sf::FloatRect& globalBounds, sf::V
         createLeftFoot(createLeftFoot) {
     
     // Create footprint, apply transformations
-    sprite.setScale({0.3f, 0.3f});
-    sprite.move({globalBounds.size.x/2, globalBounds.size.y});
-    sprite.setRotation(direction.angle());
+    setScale({0.3f, 0.3f});
+    move({globalBounds.size.x/2, globalBounds.size.y});
+    setRotation(direction.angle());
     sf::Angle angle(sf::radians(PI/2));
-    sprite.rotate(angle);
+    rotate(angle);
+    tempTexture = TextureUtil::LoadTexture("../assets/textures/footprints.png");
     
     // adjust the footprints apart with a perpendicular vector for direction and offset for magnitude
     if(createLeftFoot){
-        sprite.move(sf::Vector2f{direction.y, -direction.x}*FOOTPRINT_OFFSET_PIXELS);
+        move(sf::Vector2f{direction.y, -direction.x}*FOOTPRINT_OFFSET_PIXELS);
     } else {
-        sprite.move(sf::Vector2f{-direction.y, direction.x}*FOOTPRINT_OFFSET_PIXELS);
+        move(sf::Vector2f{-direction.y, direction.x}*FOOTPRINT_OFFSET_PIXELS);
     }
     // slowly adjust the alpha channel to make footprints disappear over time until a character walks on blood again
-    sf::Color colour = sprite.getColor();
+    // sf::Color colour = getColor();
     float decayTimeRatio = (FOOTPRINT_DECAY_TIME-footprintDecayTimer) / FOOTPRINT_DECAY_TIME;
     float newAlphaChannel = (1-decayTimeRatio) * 255;
-    sprite.setColor(sf::Color{colour.r, colour.g, colour.b, static_cast<u_int8_t>(newAlphaChannel)});
+    colour.a = static_cast<u_int8_t>(newAlphaChannel); //sf::Color{colour.r, colour.g, colour.b, static_cast<u_int8_t>(newAlphaChannel)});
+    footprint_count++;
+    std::cout << 'footprint count : ' << footprint_count << std::endl;
 }

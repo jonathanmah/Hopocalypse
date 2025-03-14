@@ -13,7 +13,7 @@ struct AnimData {
 };
 
 namespace AnimUtil {
-
+    bool UpdateFrameAnim(AnimData& animData, float deltaTime);
     bool UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime);
 
     namespace PlayerAnim {
