@@ -4,6 +4,7 @@
 #include "AnimUtil.h"
 #include "Character.h"
 #include "Weapon.h"
+#include "BatchRenderer.h"
 
 class Character;
 class Weapon;
@@ -32,7 +33,7 @@ public:
     void Draw(sf::RenderWindow& window);
 
     static void UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles);
-    static void RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::RenderWindow& window);
+    static void RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window);
 
     // creating this to make virtual function that can be overidden by rpg for explosions
     virtual void UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 

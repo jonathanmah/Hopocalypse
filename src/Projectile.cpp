@@ -94,10 +94,12 @@ void Projectile::Draw(sf::RenderWindow& window) {
 }
 
 // render all projectiles
-void Projectile::RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, sf::RenderWindow& window) {
-    for (std::unique_ptr<Projectile>& projectile : projectiles) {
-        projectile->Draw(window);
-    }
+void Projectile::RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window) {
+    
+    batchRenderer.BatchRenderSprites(projectiles);
+    // for (std::unique_ptr<Projectile>& projectile : projectiles) {
+    //     projectile->Draw(window);
+    // }
 }
 
 RPGrocket::RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)

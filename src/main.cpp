@@ -21,7 +21,7 @@ void SetRandomMonsterSpawn(std::vector<Monster>& monsters, int count){
 
 void SetSingleTest(std::vector<Monster>& monsters){
     Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 3.f};
-    bigDemon.disabledMovement = false;
+    bigDemon.disabledMovement = true;
     monsters.push_back(std::move(bigDemon));
 }
 
@@ -49,8 +49,8 @@ sf::RenderWindow SetupWindow() {
 }
 
 void LoadPlayers(std::vector<Player>& players) {
-    Player princess(AnimUtil::PlayerAnim::PrincessAnim::standAnim, {1200/2,700/2});
-    players.push_back(std::move(princess));
+    Player bunny(AnimUtil::PlayerAnim::BunnyAnim::standAnim, {1200/2,700/2});
+    players.push_back(std::move(bunny));
 }
 
 void LoadMonsters(std::vector<Monster>& monsters) {
@@ -171,7 +171,7 @@ int main() {
         // render characters
         RenderSprites(players, monsters, window);
         // render projectiles
-        Projectile::RenderProjectiles(projectiles, window);
+        Projectile::RenderProjectiles(projectiles, batchRenderer, window);
         // display to screen after finished rendering
         window.display();
         

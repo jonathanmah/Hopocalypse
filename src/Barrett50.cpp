@@ -12,7 +12,7 @@ Weapon(AnimUtil::WeaponAnim::barrett50Anim,
         {
             .95f, //scale 
             0.f, // baseOffsetX
-            16.f, // baseOffsetY
+            22.f, // baseOffsetY
             0.f, // x offset from muzzle
             -4.f, // y offset from muzzle
             67.f, // muzzleOffsetscalar

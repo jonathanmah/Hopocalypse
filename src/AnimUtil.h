@@ -22,6 +22,13 @@ namespace AnimUtil {
             extern const AnimData deathAnim;
             extern const AnimData hitAnim;
         }
+        namespace BunnyAnim {
+            extern const AnimData standAnim;
+            extern const AnimData walkAnim;
+            extern const AnimData shootingWalkAnim;
+            extern const AnimData shootingStandAnim;
+            extern const AnimData deathAnim;
+        }
     }
 
     namespace MonsterAnim {

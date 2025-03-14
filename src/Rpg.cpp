@@ -12,7 +12,7 @@ Weapon(AnimUtil::WeaponAnim::rpgAnim,
         {
             1.3f, //scale 
             0.f, // baseOffsetX
-            3.f, // baseOffsetY
+            9.f, // baseOffsetY
             0.f, // x offset from muzzle
             0.f, // y offset from muzzle
             40.f, // muzzleOffsetscalar

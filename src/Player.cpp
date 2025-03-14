@@ -19,13 +19,13 @@
     float timeSinceLastShot : time since last projectile fired, used with a weapons cooldown 
 */
 // default curr weapon to pistol later
-Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,position,100,5.f,3.5f), deathTimer(0.f), currWeapon(std::make_unique<Ak47>()) {
+Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,position,100,5.f,1.f), deathTimer(0.f), currWeapon(std::make_unique<Ak47>()) {
 
 }
 
 void Player::HandleDeath(float deltaTime) {
     if(Player::currState != PlayerState::DEATH){
-        animData = AnimUtil::PlayerAnim::PrincessAnim::deathAnim;
+        animData = AnimUtil::PlayerAnim::BunnyAnim::standAnim;
         Player::currState = PlayerState::DEATH;
     }
     if(Player::deathTimer < animData.animSpeed*animData.totalFrames) {
@@ -36,10 +36,10 @@ void Player::HandleDeath(float deltaTime) {
 
 void Player::SetFacingDirection() {
     if(mousePosRelative.x < 0){
-        sprite.setScale({-scale, scale});
+        sprite.setScale({scale, scale});
     }
     else {
-        sprite.setScale({scale, scale});
+        sprite.setScale({-scale, scale});
     }
 }
 
@@ -71,6 +71,17 @@ void Player::Move(PlayerState& state, std::vector<Footprint>& footprints, std::v
         if (sprite.getPosition().y + movementSpeed <= MapBounds::BOTTOM) {
             nextMove.y += 1;
         }
+    }
+    if(triggerHappy > 2.5f && state == PlayerState::WALK){
+        state = PlayerState::SHOOTING_WALK;
+    } else if (triggerHappy > 2.5) {
+        state = PlayerState::SHOOTING_STAND;
+    }
+
+    if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+        triggerHappy += deltaTime;
+    } else {
+        triggerHappy = 0;
     }
     if(nextMove.length() > 0){
         sf::Vector2f nextMoveNormalized = nextMove.normalized();
@@ -114,17 +125,24 @@ void Player::SetMousePositions(sf::RenderWindow& window) {
 void Player::SetAnimDataByState(PlayerState newState) {
     switch(newState) {
         case PlayerState::STAND:
-            animData = AnimUtil::PlayerAnim::PrincessAnim::standAnim;
+            animData = AnimUtil::PlayerAnim::BunnyAnim::standAnim;
             break;
         case PlayerState::WALK:
-            animData = AnimUtil::PlayerAnim::PrincessAnim::walkAnim;
+            animData = AnimUtil::PlayerAnim::BunnyAnim::walkAnim;
             break;
         case PlayerState::HIT:
-            animData = AnimUtil::PlayerAnim::PrincessAnim::hitAnim;
+            animData = AnimUtil::PlayerAnim::BunnyAnim::walkAnim;
+            break;
+        case PlayerState::SHOOTING_WALK:
+            animData = AnimUtil::PlayerAnim::BunnyAnim::shootingWalkAnim;
+            break;
+        case PlayerState::SHOOTING_STAND:
+            animData = AnimUtil::PlayerAnim::BunnyAnim::shootingStandAnim;
             break;
         case PlayerState::DEATH:
             break;
     }
+    
     currState = newState;
 }
 
@@ -190,11 +208,10 @@ void Player::DrawHitbox(sf::RenderWindow& window) {
     DrawBounds(window, GetFootCollider(), sf::Color::Magenta, 3.0f);
 }
 
-// Render a player, hitbox, and weapon?
+// Render a player, hitbox, and weapon
 void Player::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
-    //DrawHitbox(window);
-    // #TODO THIS should be currentWeapon.Draw().  and use setweapon somewhere
+    DrawHitbox(window);
     if(Player::isAlive){
         currWeapon->Draw(window);
     }

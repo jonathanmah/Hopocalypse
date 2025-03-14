@@ -13,7 +13,7 @@ Weapon(AnimUtil::WeaponAnim::famasAnim,
         {
             .95f, //scale 
             0.f, // baseOffsetX
-            21.f, // baseOffsetY
+            27.f, // baseOffsetY
             0.f, // x offset from muzzle
             -1.8f, // y offset from muzzle
             45.f, // muzzleOffsetscalar

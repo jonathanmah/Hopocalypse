@@ -11,6 +11,8 @@ class Monster;
 
 enum class PlayerState {
     WALK,
+    SHOOTING_WALK,
+    SHOOTING_STAND,
     HIT,
     DEATH,
     STAND
@@ -22,6 +24,7 @@ private:
     PlayerState currState;
     std::unique_ptr<Weapon> currWeapon;
     float deathTimer;
+    float triggerHappy;
     // relative to the character
     sf::Vector2f mousePosRelative;
     // global space

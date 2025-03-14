@@ -108,7 +108,6 @@ void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, std::vector<Fo
         if (groundBloodCollision){
             footprintDecayTimer =  FOOTPRINT_DECAY_TIME; // refresh footprint timer after stepping in ground blood
         }
-        std::cout << "Push back footprint" << std::endl;
         footprints.push_back(Footprint{footprintData, GetGlobalBounds(), nextMoveNormalized, 
             !createLeftFootNext, footprintDecayTimer});
         

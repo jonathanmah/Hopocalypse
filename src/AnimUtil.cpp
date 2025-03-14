@@ -16,6 +16,14 @@ namespace AnimUtil {
             const AnimData deathAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8,144},{24,16}), 32, 0, 5, .1f, 0.f};
             const AnimData hitAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8,112},{16,16}), 32, 0, 3, .1f, 0.f};
         }
+        namespace BunnyAnim {
+            const std::string bunnypath = "../assets/textures/characters/bunny_white_update.png";
+            const AnimData standAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
+            const AnimData walkAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
+            const AnimData shootingWalkAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
+            const AnimData shootingStandAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
+        }//756,637//168" y="728
+
     }
 
     namespace MonsterAnim {
@@ -70,10 +78,10 @@ namespace AnimUtil {
         //const AnimData trailAnim = {TextureUtil::LoadTexture("../assets/textures/ground_blood.png"), sf::IntRect({3*16, 0},{28*16,28*16}), 28*16, 0, 9, .01f, 0.f};
 
         // 850 y begin, 250 coord y, 210 x
-        namespace FootprintAnim {
-            const std::string texturePath = "../assets/textures/footprints.png";
-            const AnimData playerLeft = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 0},{2*16,4*16}), 0, 0, 1, speed, 0.f};
-            const AnimData playerRight = {TextureUtil::LoadTexture(texturePath), sf::IntRect({3*16, 0},{2*16,4*16}), 0, 0, 1, speed, 0.f};
+        namespace FootprintAnim { // 0,0, 35,45
+            const std::string texturePath = "../assets/textures/blood_atlas_update.png";
+            const AnimData playerLeft = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 0},{35,45}), 0, 0, 1, speed, 0.f};
+            const AnimData playerRight = {TextureUtil::LoadTexture(texturePath), sf::IntRect({35, 0},{35,45}), 0, 0, 1, speed, 0.f};
         }
     }
 

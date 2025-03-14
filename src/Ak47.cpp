@@ -13,7 +13,7 @@ Weapon(AnimUtil::WeaponAnim::ak47Anim,
         {
             1.f, //scale 
             0.f, // baseOffsetX
-            18.f, // baseOffsetY
+            24.f, // baseOffsetY
             0.f, // x offset from muzzle
             -2.8f, // y offset from muzzle (pre recoil translation)
             48.f, // muzzleOffsetscalar

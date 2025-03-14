@@ -22,12 +22,11 @@ Footprint::Footprint(AnimData animData, const sf::FloatRect& globalBounds, sf::V
         createLeftFoot(createLeftFoot) {
     
     // Create footprint, apply transformations
-    setScale({0.3f, 0.3f});
+    setScale({0.45f, 0.45f});
     move({globalBounds.size.x/2, globalBounds.size.y});
     setRotation(direction.angle());
     sf::Angle angle(sf::radians(PI/2));
     rotate(angle);
-    tempTexture = TextureUtil::LoadTexture("../assets/textures/footprints.png");
     // adjust the footprints apart with a perpendicular vector for direction and offset for magnitude
     if(createLeftFoot){
         move(sf::Vector2f{direction.y, -direction.x}*FOOTPRINT_OFFSET_PIXELS);
