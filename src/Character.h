@@ -4,6 +4,7 @@
 #include "Blood.h"
 #include "Hud.h"
 #include "Footprint.h"
+#include "AoE.h"
 #include <SFML/Graphics.hpp>
 
 class Projectile;
@@ -24,7 +25,7 @@ protected:
 
     Character(AnimData animData, sf::Vector2f position, int health, float movementSpeed = 5.f, float scale = 3.f, int id = -1);
     virtual void DrawHitbox(sf::RenderWindow& window);
-    void UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood);
+    void UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<AoE>>& aoe);
     void UpdateHealth(int damage);
 public:
     bool isAlive;

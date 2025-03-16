@@ -68,7 +68,7 @@ void LoadMonsters(std::vector<Monster>& monsters) {
 }
 
 void UpdateSprites(std::vector<Player>& players, std::vector<Monster>& monsters, float deltaTime, sf::RenderWindow& window, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints) {
+    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints, std::vector<std::unique_ptr<AoE>>& aoe) {
     for (Player& player : players) {
         // update player movement/animations, projectiles shot, create footprints intersecting with ground blood
         player.Update(deltaTime, monsters, window, footprints, groundBlood, projectiles);
@@ -76,7 +76,7 @@ void UpdateSprites(std::vector<Player>& players, std::vector<Monster>& monsters,
     // #TODO this inplace deletion with iterators and funcs return a flag is common, maybe util func?
     // Update Monsters
     for(auto it = monsters.begin(); it != monsters.end();){
-        if((*it).Update(deltaTime, players, projectiles, bloodSpray, groundBlood)){
+        if((*it).Update(deltaTime, players, projectiles, bloodSpray, groundBlood, aoe)){
             it = monsters.erase(it);
         } else {
             ++it;
@@ -133,7 +133,7 @@ int main() {
     std::vector<Blood> bloodSpray;
     std::vector<GroundBlood> groundBlood;
     std::vector<Footprint> footprints;
-    std::vector<AoE> aoe;
+    std::vector<std::unique_ptr<AoE>> aoe;
     
     // clock for tracking elapsed time, begins with default constructor
     sf::Clock clock;
@@ -161,8 +161,9 @@ int main() {
 
         // update the blood spray and ground blood animations
         Blood::Update(bloodSpray, groundBlood, dt);
+        AoE::UpdateAoE(aoe, dt);
 
-        UpdateSprites(players, monsters, dt, window, projectiles, bloodSpray, groundBlood, footprints);
+        UpdateSprites(players, monsters, dt, window, projectiles, bloodSpray, groundBlood, footprints, aoe);
 
         // clear previous frame before drawing new one
         window.clear(sf::Color::Black);
@@ -176,6 +177,7 @@ int main() {
         // render projectiles
         Projectile::RenderProjectiles(projectiles, batchRenderer, window, true);
         // display to screen after finished rendering
+        AoE::RenderAoE(aoe, batchRenderer, window, true);
         window.display();
         
     }

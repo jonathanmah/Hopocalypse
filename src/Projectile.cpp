@@ -30,8 +30,8 @@ bool Projectile::HasHit(int characterId) {
     return false;
 }
 
-
-void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId) {
+// logic to update when a projectile collides
+void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId) {
     if(GetCollateralCount() > 1) {
         if(HasHit(characterId)){
             ++it;
@@ -41,11 +41,9 @@ void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>
         SetDamage(GetDamage()*COLLATERAL_REDUCTION_FACTOR);
         hitCharacters.insert(characterId);
         ++it;
-        std::cout << "entered update" << std::endl;
     } else {
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
         it = projectiles.erase(it);
-        std::cout << "erased rocket" << std::endl;
     }
     projectile_count++;
 }

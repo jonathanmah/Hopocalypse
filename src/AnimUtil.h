@@ -92,8 +92,10 @@ public:
         static const AnimData muzzleFlash3;
         static const AnimData muzzleFlash4;
         static const AnimData muzzleFlash5;
+        static const AnimData explosion;
         static const SubRectData rpgBackfire;
         static const SubRectData rpgSmoke;
+    
     };
 
     struct ProjectileAnim {

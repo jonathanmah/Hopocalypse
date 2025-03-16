@@ -69,14 +69,23 @@ For all projectiles in the game:
         // just do something simple like a push_back(Blood::func()) that returns a new blood object)
         remove projectile from array
 */ 
-void Character::UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood) {
+// logic for ALL characters
+void Character::UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<AoE>>& aoe) {
     for(auto it = projectiles.begin(); it != projectiles.end();){
+        
+        // DETECTS IF HIT HERE GLOBAL BOUNDS OF MONSTER VS GLOBAL BOUNDS OF PROJECTILE, NEED TO UPDATE.
+        // maybe run another loop through AOE, and determine what to do to intersections with it
+        // elsewhere, just use this as an entry for creating the AOE
         if(this->GetGlobalBounds().findIntersection((*it)->GetGlobalBounds()) && isAlive){
             if(!(*it)->HasHit(id)){
                 Blood::CreateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), bloodSpray, groundBlood);
+                
+                // UPDATES DAMAGE ELSWHERE. AFTER EXPLOSION LOOPS. this just for 
+                // projectile making contact.x
                 UpdateHealth((*it)->GetDamage());
             }
-            (*it)->UpdateProjectileStatus(projectiles, it, id);
+            // ADD NEW AOE HERE
+            (*it)->UpdateProjectileStatus(projectiles, it, aoe, id);
         } else {
             ++it;
         }

@@ -35,8 +35,8 @@ void Monster::HandleDeath(float deltaTime) {
 }
 
 bool Monster::Update(float deltaTime, std::vector<Player>& players, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& bloodTrail) {
-    Monster::UpdateCollisions(projectiles, bloodSpray, bloodTrail);
+    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<AoE>>& aoe) {
+    Monster::UpdateCollisions(projectiles, bloodSpray, groundBlood, aoe);
     hud.Update(health, GetGlobalBounds());
     if(isAlive) {
         AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);

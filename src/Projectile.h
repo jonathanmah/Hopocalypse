@@ -6,6 +6,7 @@
 #include "Weapon.h"
 #include "BatchRenderer.h"
 #include "HitboxDebugger.h"
+#include "AoE.h"
 
 class Character;
 class Weapon;
@@ -41,7 +42,7 @@ public:
     // THIS UPDATE BELOW IS ON COLLISION
     // creating this to make virtual function that can be overidden by rpg for explosions
     virtual void UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-        std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId);
+        std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId);
     void Rotate(sf::Vector2f velocity);
     void SetPosition(sf::Vector2f position);
 

@@ -101,7 +101,6 @@ void Rpg::Draw(sf::RenderWindow& window) {
 
 RPGrocket::RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
 : Projectile(projectileData, position, normalized) {
-    std::cout << "created RPG rocket" << std::endl;
 }
 
 void RPGrocket::UpdatePosition(float deltaTime) {
@@ -111,9 +110,10 @@ void RPGrocket::UpdatePosition(float deltaTime) {
 }
 
 void RPGrocket::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId) {
+    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId) {
     // set a detonate flag?? handle explosives somehow?
     //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
+    sf::Vector2f pos = (*it)->GetPosition();
+    aoe.emplace_back(std::make_unique<AoE>(AnimUtil::WeaponFxAnim::explosion,pos));
     it = projectiles.erase(it);
-    std::cout << "erased rocket" << std::endl;
 }

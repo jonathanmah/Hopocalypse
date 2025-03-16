@@ -8,6 +8,7 @@ static const std::string& dungeon = "../assets/textures/tilesheet.png";
 static const std::string& projectiles = "../assets/textures/weapons/projectiles_atlas.png";
 static const std::string& weapons = "../assets/textures/weapons/weapons.png";
 static const std::string& blood = "../assets/textures/fx/blood_atlas.png";
+static const std::string& explosionTexture = "../assets/textures/fx/explosion.png";
 
 // PLAYER
 const AnimData AnimUtil::PlayerAnim::stand = {TextureUtil::GetTexture(player), sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
@@ -84,6 +85,8 @@ const SubRectData AnimUtil::WeaponFxAnim::rpgSmoke = {
     
     }, .05f 
 };
+
+const AnimData AnimUtil::WeaponFxAnim::explosion = {TextureUtil::GetTexture(explosionTexture), sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5};
 //         // SMOKE ANIMATIONS RPG/SNIPER
 //         // 1 50x53 541 632
 //         // 2 50x53 671, 632
@@ -212,9 +215,12 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
         if(animData.deltaTimeSum >= animData.animSpeed) {
             // update the sub rectangle of the texture to point to the next frame
 
+            std::cout << "Curr frame before increment : " << animData.currFrame << std::endl;
             // frame spacing is inclusive of frame, amount to increment x each frame
-            int posX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+            int posX = animData.textureFrame.position.x + (animData.currFrame % animData.rowLength) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+            std::cout << "Pos X : " << posX << std::endl;
             int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.textureFrame.size.y; // get the Y
+            std::cout << "Pos Y : " << posY << std::endl;
             sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
             
             animData.currFrame++;
