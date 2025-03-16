@@ -12,6 +12,7 @@
 #include "MonsterFactory.h"
 #include "RandomUtil.h"
 #include "BatchRenderer.h"
+#include "AoE.h"
 
 ////////// ENV SETUP IGNORE //////////////////// ENV SETUP IGNORE //////////
 void SetRandomMonsterSpawn(std::vector<Monster>& monsters, int count){
@@ -20,14 +21,14 @@ void SetRandomMonsterSpawn(std::vector<Monster>& monsters, int count){
 }
 
 void SetSingleTest(std::vector<Monster>& monsters){
-    Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {400,400}, 100, 3.f};
+    Monster bigDemon{AnimUtil::BigDemonAnim::walk, {400,400}, 100, 3.f};
     bigDemon.disabledMovement = true;
     monsters.push_back(std::move(bigDemon));
 }
 
 void SetCollateralLineup(std::vector<Monster>& monsters){
     for(float i = 0; i < 5; i++) {
-        Monster bigDemon{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, {150+100*i,300}, 100, 1.f};
+        Monster bigDemon{AnimUtil::BigDemonAnim::walk, {150+100*i,300}, 100, 1.f};
         bigDemon.disabledMovement = true;
         monsters.push_back(std::move(bigDemon));
     }
@@ -49,7 +50,7 @@ sf::RenderWindow SetupWindow() {
 }
 
 void LoadPlayers(std::vector<Player>& players) {
-    Player bunny(AnimUtil::PlayerAnim::BunnyAnim::standAnim, {1200/2,700/2});
+    Player bunny(AnimUtil::PlayerAnim::stand, {1200/2,700/2});
     players.push_back(std::move(bunny));
 }
 
@@ -108,12 +109,13 @@ void RenderSprites(std::vector<Player>& players, std::vector<Monster>& monsters,
 
 int main() {
     RandomUtil::Initialize();
+    TextureUtil::SetStaticMemberTextures();
     // Setup Window
     sf::RenderWindow window = SetupWindow();
     BatchRenderer batchRenderer{window};
     
     // Setup Map
-    Map map{*TextureUtil::LoadTexture("../assets/textures/tilesheet.png")};
+    Map map{*TextureUtil::GetTexture("../assets/textures/tilesheet.png")};
     map.Load();
 
 
@@ -131,6 +133,7 @@ int main() {
     std::vector<Blood> bloodSpray;
     std::vector<GroundBlood> groundBlood;
     std::vector<Footprint> footprints;
+    std::vector<AoE> aoe;
     
     // clock for tracking elapsed time, begins with default constructor
     sf::Clock clock;
@@ -154,7 +157,7 @@ int main() {
         map.Update(dt);
 
         // update position of all projectiles (#TODO projectile animations)
-        Projectile::UpdateProjectiles(projectiles);
+        Projectile::UpdateProjectiles(projectiles, dt);
 
         // update the blood spray and ground blood animations
         Blood::Update(bloodSpray, groundBlood, dt);
@@ -171,7 +174,7 @@ int main() {
         // render characters
         RenderSprites(players, monsters, window);
         // render projectiles
-        Projectile::RenderProjectiles(projectiles, batchRenderer, window);
+        Projectile::RenderProjectiles(projectiles, batchRenderer, window, true);
         // display to screen after finished rendering
         window.display();
         

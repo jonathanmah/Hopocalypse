@@ -42,11 +42,11 @@ std::vector<Monster> MonsterFactory::GetMonsters(int spawnCount) {
  
         int monsterType = monsterDist(gen);
         if(monsterType == 1) {
-            monsters.push_back(Monster{AnimUtil::MonsterAnim::BigDemonAnim::walkAnim, position, 100, 1.f});
+            monsters.push_back(Monster{AnimUtil::BigDemonAnim::walk, position, 100, 1.f});
         } else if (monsterType == 2) {
-            monsters.push_back(Monster{AnimUtil::MonsterAnim::BigSlugAnim::walkAnim, position, 100, .6f});
+            monsters.push_back(Monster{AnimUtil::SlugAnim::walk, position, 100, .6f});
         } else if (monsterType == 3) {
-            monsters.push_back(Monster{AnimUtil::MonsterAnim::SmallDemonAnim::walkAnim, position, 100, 1.5f});
+            monsters.push_back(Monster{AnimUtil::SmallDemonAnim::walk, position, 100, 1.5f});
         }
     }
     return monsters;

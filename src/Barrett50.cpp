@@ -1,14 +1,24 @@
 #include "Barrett50.h"
 
+static const ProjectileData barrett50BulletReg = {
+    AnimUtil::ProjectileAnim::barrett50BulletReg,
+    65.f, // speed
+    150.f, // damage 
+    1.5f, // bullet scale
+    5, // collateral count
+};
+
+static const ProjectileData barrett50BulletUpgrade = {
+    AnimUtil::ProjectileAnim::barrett50BulletUpgrade,
+    65.f, // speed
+    400.f, // damage 
+    .4f, // bullet scale
+    100, // collateral count
+};
+
 Barrett50::Barrett50() : 
-Weapon(AnimUtil::WeaponAnim::barrett50Anim, 
-        {
-            AnimUtil::ProjectileAnim::RegularBullet::anim,
-            70.f, // speed
-            150.f, // damage 
-            2.5f, // bullet scale
-            5, // collateral count
-        }, 
+Weapon(AnimUtil::WeaponAnim::barrett50, 
+    barrett50BulletUpgrade,
         {
             .95f, //scale 
             0.f, // baseOffsetX

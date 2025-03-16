@@ -30,6 +30,7 @@ set(SOURCES
     src/Shell.cpp
     src/BatchRenderer.cpp
     src/RenderUtil.cpp
+    src/AoE.cpp
 )
 add_subdirectory(external/tinyxml2)
 

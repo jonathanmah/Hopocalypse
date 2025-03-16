@@ -2,9 +2,9 @@
 #include <iostream>
 
 Famas::Famas() : 
-Weapon(AnimUtil::WeaponAnim::famasAnim, 
+Weapon(AnimUtil::WeaponAnim::famas, 
         {
-            AnimUtil::ProjectileAnim::RegularBullet::anim,
+            AnimUtil::ProjectileAnim::medBulletReg,
             40.f, // speed
             100.f, // damage 
             1.f, // bullet scale

@@ -99,10 +99,10 @@ void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, std::vector<Fo
     if((groundBloodCollision || footprintDecayTimer > 0.01f) && footprintDtSumFrame >= FOOTPRINT_DT_RATE){
         AnimData footprintData;
         if(createLeftFootNext){
-            footprintData = AnimUtil::BloodAnim::FootprintAnim::playerLeft;
+            footprintData = AnimUtil::BloodAnim::leftFootprint;
             createLeftFootNext = false;
         } else {
-            footprintData = AnimUtil::BloodAnim::FootprintAnim::playerRight;
+            footprintData = AnimUtil::BloodAnim::rightFootprint;
             createLeftFootNext = true;
         }
         if (groundBloodCollision){

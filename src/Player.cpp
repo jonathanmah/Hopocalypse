@@ -25,7 +25,7 @@ Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,po
 
 void Player::HandleDeath(float deltaTime) {
     if(Player::currState != PlayerState::DEATH){
-        animData = AnimUtil::PlayerAnim::BunnyAnim::standAnim;
+        animData = AnimUtil::PlayerAnim::stand;
         Player::currState = PlayerState::DEATH;
     }
     if(Player::deathTimer < animData.animSpeed*animData.totalFrames) {
@@ -125,19 +125,19 @@ void Player::SetMousePositions(sf::RenderWindow& window) {
 void Player::SetAnimDataByState(PlayerState newState) {
     switch(newState) {
         case PlayerState::STAND:
-            animData = AnimUtil::PlayerAnim::BunnyAnim::standAnim;
+            animData = AnimUtil::PlayerAnim::stand;
             break;
         case PlayerState::WALK:
-            animData = AnimUtil::PlayerAnim::BunnyAnim::walkAnim;
+            animData = AnimUtil::PlayerAnim::walk;
             break;
         case PlayerState::HIT:
-            animData = AnimUtil::PlayerAnim::BunnyAnim::walkAnim;
+            animData = AnimUtil::PlayerAnim::walk;
             break;
         case PlayerState::SHOOTING_WALK:
-            animData = AnimUtil::PlayerAnim::BunnyAnim::shootingWalkAnim;
+            animData = AnimUtil::PlayerAnim::shootWalk;
             break;
         case PlayerState::SHOOTING_STAND:
-            animData = AnimUtil::PlayerAnim::BunnyAnim::shootingStandAnim;
+            animData = AnimUtil::PlayerAnim::shootStand;
             break;
         case PlayerState::DEATH:
             break;
@@ -211,7 +211,7 @@ void Player::DrawHitbox(sf::RenderWindow& window) {
 // Render a player, hitbox, and weapon
 void Player::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
-    DrawHitbox(window);
+    //DrawHitbox(window);
     if(Player::isAlive){
         currWeapon->Draw(window);
     }

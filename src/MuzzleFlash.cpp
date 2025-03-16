@@ -6,11 +6,11 @@ static constexpr float MIRROR_NEG_Y_AXIS_BOUND = PI/2.f; // pi/2 radians , great
 static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -PI/2.f; // -pi/2 pi radians , less than -half of pi
 
 const AnimData flashAnimations[5] = {
-    AnimUtil::MuzzleFlashAnim::muzzleFlash1, 
-    AnimUtil::MuzzleFlashAnim::muzzleFlash2, 
-    AnimUtil::MuzzleFlashAnim::muzzleFlash3, 
-    AnimUtil::MuzzleFlashAnim::muzzleFlash4, 
-    AnimUtil::MuzzleFlashAnim::muzzleFlash5, 
+    AnimUtil::WeaponFxAnim::muzzleFlash1, 
+    AnimUtil::WeaponFxAnim::muzzleFlash2, 
+    AnimUtil::WeaponFxAnim::muzzleFlash3, 
+    AnimUtil::WeaponFxAnim::muzzleFlash4, 
+    AnimUtil::WeaponFxAnim::muzzleFlash5, 
 };
 
 

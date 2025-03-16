@@ -16,6 +16,7 @@ struct ProjectileData {
     float damage;
     float scale;
     int collateralCount;
+    float acceleration = 1.f;
 };
 
 struct WeaponData {

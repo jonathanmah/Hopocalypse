@@ -4,6 +4,6 @@
 class TextureUtil {
 
 public:
-    static sf::Texture* LoadTexture(const std::string& texturePath);
-    static std::unordered_map<std::string, sf::IntRect> LoadTextureAtlas(const std::string& xmlPath);
+    static sf::Texture* GetTexture(const std::string& key);
+    static void SetStaticMemberTextures();
 };

@@ -4,6 +4,7 @@
 #include "BatchRenderer.h"
 #include "RenderUtil.h"
 
+class AnimUtil;
 class Footprint;
 class GroundBlood;
 
@@ -18,11 +19,6 @@ protected:
 
 public:
     static sf::Texture* texture;
-
-    // delete later
-    sf::Texture* tempTexture;
-    /// delete above
-
 
     Blood(AnimData animData, sf::Vector2f position);
     virtual void SetRotation(sf::Vector2f incomingProjectilePos);
@@ -41,7 +37,7 @@ public:
 
     //inline sf::Sprite& GetSprite() { return sprite;}
     inline sf::Color& GetColour() {return colour;}
-    inline sf::Texture* GetTexture() {return tempTexture;}//texture;}
+    inline sf::Texture* GetTexture() {return texture;}
     inline AnimData& GetAnimData() {return animData;}
     inline sf::Vector2f GetPosition() {return getPosition();}
     //inline sf::FloatRect GetGlobalBounds() {return getGlobalBounds();}

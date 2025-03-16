@@ -1,15 +1,25 @@
 #include "Ak47.h"
 #include <iostream>
 
+static const ProjectileData ak47BulletReg = {
+    AnimUtil::ProjectileAnim::medBulletReg,
+    20.f, // speed
+    1.f, // damage 
+    1.f, // bullet scale
+    1, // collateral count
+};
+
+static const ProjectileData ak47BulletUpgrade = {
+    AnimUtil::ProjectileAnim::redLaser,
+    20.f, // speed
+    60.f, // damage 
+    .2f, // bullet scale
+    1, // collateral count
+};
+
 Ak47::Ak47() : 
-Weapon(AnimUtil::WeaponAnim::ak47Anim, 
-        {
-            AnimUtil::ProjectileAnim::RegularBullet::anim,
-            20.f, // speed
-            1.f, // damage 
-            1.f, // bullet scale
-            1, // collateral count
-        }, 
+Weapon(AnimUtil::WeaponAnim::ak47, 
+        ak47BulletUpgrade, 
         {
             1.f, //scale 
             0.f, // baseOffsetX

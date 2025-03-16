@@ -14,7 +14,7 @@ static constexpr float COLLATERAL_REDUCTION_FACTOR = 0.8f;
 
 Projectile::Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
 : sprite(*projectileData.anim.texture), velocity(projectileData.speed*normalized), damage(projectileData.damage), 
-collateralCount(projectileData.collateralCount), scale(projectileData.scale) {
+collateralCount(projectileData.collateralCount), scale(projectileData.scale), acceleration(projectileData.acceleration) {
     sprite.setTextureRect(sf::IntRect(projectileData.anim.textureFrame.position, projectileData.anim.textureFrame.size));
     sprite.setPosition({position.x, position.y});
     sprite.setScale({scale, scale});
@@ -30,10 +30,8 @@ bool Projectile::HasHit(int characterId) {
     return false;
 }
 
-// this function is acting as a single iterator object
-// (*it).UpdateSingleProjectileStatus()
+
 void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId) {
-    //std::cout << "ENTERED BASE PROJECTILE CLASS" << std::endl;
     if(GetCollateralCount() > 1) {
         if(HasHit(characterId)){
             ++it;
@@ -43,9 +41,11 @@ void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>
         SetDamage(GetDamage()*COLLATERAL_REDUCTION_FACTOR);
         hitCharacters.insert(characterId);
         ++it;
+        std::cout << "entered update" << std::endl;
     } else {
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
         it = projectiles.erase(it);
+        std::cout << "erased rocket" << std::endl;
     }
     projectile_count++;
 }
@@ -64,56 +64,42 @@ void Projectile::Rotate(sf::Vector2f velocity) {
 Update the projectile position and rotation based on its velocity
 
 */
-void Projectile::UpdatePosition() {
+void Projectile::UpdatePosition(float deltaTime) {
     sprite.setPosition(GetPosition() + velocity);
     Rotate(velocity);
+
 }
 
 // Update the position of every projectile
-void Projectile::UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void Projectile::UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
     for(std::unique_ptr<Projectile>& projectile: projectiles) {
-        projectile->UpdatePosition();
+        projectile->UpdatePosition(deltaTime);
     }
 }
 
 // #DEV MODE - render the projectile hitbox
-void DrawHit(sf::Sprite& sprite, sf::RenderWindow& window) {
-    sf::FloatRect bounds = sprite.getGlobalBounds();
-    sf::RectangleShape rect(sf::Vector2f(bounds.size));
-    rect.setPosition(bounds.position);
-    rect.setFillColor(sf::Color::Transparent);
-    rect.setOutlineColor(sf::Color::Red);
-    rect.setOutlineThickness(2.0f);
-    window.draw(rect);
-}
+// void DrawHit(sf::Sprite& sprite, sf::RenderWindow& window) {
+//     sf::FloatRect bounds = sprite.getGlobalBounds();
+//     sf::RectangleShape rect(sf::Vector2f(bounds.size));
+//     rect.setPosition(bounds.position);
+//     rect.setFillColor(sf::Color::Transparent);
+//     rect.setOutlineColor(sf::Color::Red);
+//     rect.setOutlineThickness(2.0f);
+//     window.draw(rect);
+// }
 
 // render a projectile
 void Projectile::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
-    //DrawHit(sprite, window);
+    HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite);
 }
 
 // render all projectiles
-void Projectile::RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window) {
-    
+void Projectile::RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window, bool drawHitbox) {    
     batchRenderer.BatchRenderSprites(projectiles);
-    // for (std::unique_ptr<Projectile>& projectile : projectiles) {
-    //     projectile->Draw(window);
-    // }
-}
-
-RPGrocket::RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
-: Projectile(projectileData, position, normalized) {
-}
-
-void RPGrocket::UpdatePosition() {
-    sprite.setPosition(GetPosition() + velocity);
-    Rotate(velocity);
-}
-
-void RPGrocket::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId) {
-        // set a detonate flag?? handle explosives somehow?
-        //std::cout << "ENTERED DERIVED RPG CLASS" << std::endl;
-        it = projectiles.erase(it);
+    if(drawHitbox) {
+        for(auto& projectile : projectiles) {
+            HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, projectile->sprite);
+        }
     }
+}

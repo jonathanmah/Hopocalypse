@@ -21,16 +21,15 @@ public:
         const sf::Texture* texture = nullptr;
         for (T& obj : frameWrapper) {
             if(texture == nullptr){
-                texture = obj.GetTexture();
+                texture = obj->GetTexture();
             }
-            AddStaticFrameToBatch(obj.GetAnimData().textureFrame, obj.GetCachedVertices(), obj.GetColour());
+            AddStaticFrameToBatch(obj->GetAnimData().textureFrame, obj->GetCachedVertices(), obj->GetColour());
         }
-        // batch draw to frame
-        //std::cout << "Drawing static frame : " <<count<< std::endl;
         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
         count ++;
     }
 
+    // pass an object with sprite container member
     template <typename T>
     void BatchRenderSprites(std::vector<T>& spriteWrapper){
         // clear previous vertices
@@ -40,11 +39,12 @@ public:
         const sf::Texture* texture = nullptr;
         for (T& obj : spriteWrapper) {
             if(texture == nullptr){
-                texture = &obj.GetSprite().getTexture();
+                texture = &obj->GetSprite().getTexture();
             }
-            AddSpriteToBatch(obj.GetSprite());
+            AddSpriteToBatch(obj->GetSprite());
         }
         // batch draw to frame
         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
     }
+
 };

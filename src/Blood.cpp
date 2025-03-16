@@ -17,12 +17,12 @@ static constexpr float ON_HIT_GROUND_ROTATION_OFFSET = 0.f;
 static constexpr float ON_HIT_GROUND_POSITION_OFFSET = 10.f;
 
 const AnimData sprayAnimations[6] = {
-    AnimUtil::BloodAnim::sprayAnim1, 
-    AnimUtil::BloodAnim::sprayAnim2, 
-    AnimUtil::BloodAnim::sprayAnim3,
-    AnimUtil::BloodAnim::sprayAnim4, 
-    AnimUtil::BloodAnim::sprayAnim5, 
-    AnimUtil::BloodAnim::sprayAnim6
+    AnimUtil::BloodAnim::spray1, 
+    AnimUtil::BloodAnim::spray2, 
+    AnimUtil::BloodAnim::spray3,
+    AnimUtil::BloodAnim::spray4, 
+    AnimUtil::BloodAnim::spray5, 
+    AnimUtil::BloodAnim::spray6
 };
 
 /*
@@ -36,7 +36,7 @@ live here
 */
 
 // position center of character global bounds
-Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), colour(sf::Color::White), tempTexture(TextureUtil::LoadTexture("../assets/textures/blood_atlas_update.png")){
+Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), colour(sf::Color::White){
     setOrigin({static_cast<float>(animData.textureFrame.size.x)/2.f, static_cast<float>(animData.textureFrame.size.y)/2.f});
     setPosition({position.x, position.y});
     setScale({1.5f, 1.5f});
@@ -99,23 +99,21 @@ void Blood::CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatR
     newBloodSpray.SetRotation(incomingProjectilePos);
     newBloodSpray.CachePositionVertices();
     bloodSpray.push_back(newBloodSpray);
-    GroundBlood newGroundBlood(AnimUtil::BloodAnim::groundAnim, characterGlobalBounds.getCenter());
+    GroundBlood newGroundBlood(AnimUtil::BloodAnim::ground, characterGlobalBounds.getCenter());
     newGroundBlood.SetRotation(incomingProjectilePos);
     newGroundBlood.CachePositionVertices();
     groundBlood.push_back(newGroundBlood);
 }
 
 sf::RectangleShape createBoundingBox(const std::array<sf::Vector2f,4> vertices);
-// render all bloodspray, groundblood, and footprints
+// render all bloodspray, groundblood, and footprints in a single draw call
 void Blood::RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window) {
-    batchRenderer.BatchRenderStaticFrames(groundBlood);
-    batchRenderer.BatchRenderStaticFrames(footprints);
-    batchRenderer.BatchRenderStaticFrames(bloodSpray);
+    std::vector<Blood*> combinedBlood;
+    for(Footprint& blood : footprints) combinedBlood.push_back(&blood);
+    for(GroundBlood& blood : groundBlood) combinedBlood.push_back(&blood);
+    for (Blood& blood : bloodSpray) combinedBlood.push_back(&blood);
+    batchRenderer.BatchRenderStaticFrames(combinedBlood);
 }
-
-
-
-
 
 
 sf::RectangleShape createBoundingBox(const std::array<sf::Vector2f,4> vertices) {

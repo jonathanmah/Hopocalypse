@@ -5,6 +5,7 @@
 #include "Character.h"
 #include "Weapon.h"
 #include "BatchRenderer.h"
+#include "HitboxDebugger.h"
 
 class Character;
 class Weapon;
@@ -19,6 +20,7 @@ protected:
     sf::Vector2f velocity;
     float scale;
     float damage;
+    float acceleration;
     int collateralCount;
     std::unordered_set<int> hitCharacters;
 
@@ -29,30 +31,25 @@ public:
 
     bool HasHit(int characterId);
     // this should receive delta time, every frame it runs
-    virtual void UpdatePosition();
+    virtual void UpdatePosition(float deltaTime);
     void Draw(sf::RenderWindow& window);
 
-    static void UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles);
-    static void RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window);
+    // this update is for current moving
+    static void UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);
+    static void RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window, bool drawHitbox = false);
 
+    // THIS UPDATE BELOW IS ON COLLISION
     // creating this to make virtual function that can be overidden by rpg for explosions
     virtual void UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
         std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId);
     void Rotate(sf::Vector2f velocity);
     void SetPosition(sf::Vector2f position);
 
+    inline sf::Sprite& GetSprite() { return sprite;}
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}
     inline sf::FloatRect GetGlobalBounds() {return sprite.getGlobalBounds();}
     inline void SetDamage(float newDamage) {damage = newDamage;}
     inline float GetDamage() {return damage;}
     inline void DecrementCollateralCount() {collateralCount -= 1;}
     inline int GetCollateralCount() {return collateralCount;}
-};
-
-class RPGrocket : public Projectile {
-public:
-    RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized);
-    void UpdatePosition() override;
-    void UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-        std::vector<std::unique_ptr<Projectile>>::iterator& it, int characterId) override;
 };

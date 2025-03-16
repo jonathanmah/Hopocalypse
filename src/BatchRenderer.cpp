@@ -2,6 +2,7 @@
 #include <iostream>
 
 BatchRenderer::BatchRenderer(sf::RenderWindow& window) : window(window){
+    triangles.reserve(200); // allocate for 200 sprites 
 }
 
 // no transformations to object, but animated, so texture frame coordinates and colour change but 

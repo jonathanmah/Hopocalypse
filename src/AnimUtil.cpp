@@ -1,127 +1,195 @@
 #include <SFML/Graphics.hpp>
 #include "AnimUtil.h"
-#include "TextureUtil.h"
 #include <iostream>
 
-namespace AnimUtil {
-    namespace PlayerAnim {
+
+static const std::string& player = "../assets/textures/characters/bunny_white_update.png";
+static const std::string& dungeon = "../assets/textures/tilesheet.png";
+static const std::string& projectiles = "../assets/textures/weapons/projectiles_atlas.png";
+static const std::string& weapons = "../assets/textures/weapons/weapons.png";
+static const std::string& blood = "../assets/textures/fx/blood_atlas.png";
+
+// PLAYER
+const AnimData AnimUtil::PlayerAnim::stand = {TextureUtil::GetTexture(player), sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::walk = {TextureUtil::GetTexture(player), sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::shootStand = {TextureUtil::GetTexture(player), sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::shootWalk = {TextureUtil::GetTexture(player), sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
+
+// MONSTERS
+
+const AnimData AnimUtil::BigDemonAnim::walk = { TextureUtil::GetTexture(dungeon), sf::IntRect({148,432},{24,32}), 32, 0, 4, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::walk = { TextureUtil::GetTexture(dungeon), sf::IntRect({432,272},{16,24}), 16, 0, 4, .05f, 0.f};
+const AnimData AnimUtil::SlugAnim::walk = { TextureUtil::GetTexture(dungeon), sf::IntRect({368,374},{16,18}), 16, 0, 4, .1f, 0.f};
+
+
+
+
+// BLOOD
+const AnimData AnimUtil::BloodAnim::spray1 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 108},{96,112}), 112, 0, 9, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray2 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 300},{96,96}), 112, 0, 10, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray3 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 396},{96,96}), 112, 0, 8, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray4 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 500},{96,75}), 112, 0, 8, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray5 = {TextureUtil::GetTexture(blood), sf::IntRect({0, 570},{112,96}), 109, 0, 14, .02f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray6 = {TextureUtil::GetTexture(blood), sf::IntRect({0, 760},{112,96}), 109, 0, 10, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::ground = {TextureUtil::GetTexture(blood), sf::IntRect({0, 850},{210,250}), 0, 0, 9, .01f, 0.f};
+const AnimData AnimUtil::BloodAnim::leftFootprint = {TextureUtil::GetTexture(blood), sf::IntRect({0, 0},{35,45}), 0, 0, 1, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::rightFootprint = {TextureUtil::GetTexture(blood), sf::IntRect({35, 0},{35,45}), 0, 0, 1, .05f, 0.f};
+
+
+//         // MUZZLE FLASHES 
+//         // 1  TL 1272, 13 82x52 for 3 no space
+//         // 2 1273,96 83x47  for 3 no space
+//         // 3  1271, 171 85x53 for 3 no space
+//         // 4 1268,247 82x62 for 3 no space
+//         // 5 1273, 326 82x58 for 3 no space
+            // rpg back flash1 8,268 62x56
+            // rpg back flash2 75,269 61x60
+            // rpg back flash3 139,270 59x61
+const AnimData AnimUtil::WeaponAnim::ak47 = {TextureUtil::GetTexture(weapons), sf::IntRect({192, 32},{64,28}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::famas = {TextureUtil::GetTexture(weapons), sf::IntRect({128, 224},{64,32}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::barrett50 = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 160},{96,35}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::rpg = {TextureUtil::GetTexture(weapons), sf::IntRect({196, 196},{90,20}), 0, 0, 1, .2f, 0.f};
+const sf::IntRect AnimUtil::WeaponAnim::rpgReloadRect({196, 196},{60,20});
+const sf::IntRect AnimUtil::WeaponAnim::rpgLoadedRect({196, 196},{90,20});
+
+
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash1 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1272,13},{82,52}), 82, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash2 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1273,96},{83,47}), 83, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash3 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1271,171},{85,53}), 85, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash4 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1268,247},{82,62}), 82, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash5 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1273,326},{82,58}), 82, 0, 3, .1f, 0.f};
+  // rpg back flash1 8,268 62x56
+            // rpg back flash2 75,269 61x60
+            // rpg back flash3 139,270 59x61
+const SubRectData AnimUtil::WeaponFxAnim::rpgBackfire =  {
+{
+    // sf::IntRect{{8,268},{62,56}},
+    // sf::IntRect{{70,268},{62,100}},
+    // sf::IntRect{{8,268},{62,80}}
+    sf::IntRect{{1270,9},{65,56}},
+    sf::IntRect{{1354,9},{63,50}},
+    sf::IntRect{{1435,11},{58,53}}
+}, .02f
+};
+
+const SubRectData AnimUtil::WeaponFxAnim::rpgSmoke = {
+    {
+    sf::IntRect{{541,632},{50,53}},
+    sf::IntRect{{671,632},{50,53}},
+    sf::IntRect{{798,632},{50,53}},
+    sf::IntRect{{928,626},{50,62}},
+    sf::IntRect{{1049,623},{60,70}},
+    sf::IntRect{{1174,617},{67,73}},
+    sf::IntRect{{1303,623},{67,74}},
+    
+    }, .05f 
+};
+//         // SMOKE ANIMATIONS RPG/SNIPER
+//         // 1 50x53 541 632
+//         // 2 50x53 671, 632
+//         // 3 50x53 798, 632 
+//         // 4 50x62 928, 626
+//         // 5 60x70 1049, 623
+//         // 6 67x73 1174, 617
+//         // 7 67x74 1303, 623
+//         // 8 70x69 1425, 623
+
+
+//static const std::array<sf::IntRect, 3> rpgBackfire;
+  //      static const std::array<sf::IntRect, 8> rpgSmoke;
+
+
+const AnimData AnimUtil::ProjectileAnim::medBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({109,7},{19,9})};
+const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({4,4},{36,17})};
+const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({135,7},{34,10})};
+const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({442,540},{158,41})};
+const AnimData AnimUtil::ProjectileAnim:: redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
+
+//         // get ready for some projectile coordinates :D
+
+//         // rpg rocket 4,4  36x17
+//         // rpg upgraded rocket 41,2, 34x18
+//         // small pistol bullet 90,8, 9x7
+//         // med bullet, 109,7, 19x9
+//         // long bullet, 135,7, 34x10
+//         // shotgun bullet, 177,7 16x10 
+//         // grenade launcher ammo, 0,23 18x12
+//         // grenade launcher upgraded ammo, 29,24 , 17x10
+//         // frag 2, 198 22x21
+//         // stun grenade 3,225 13x23
+//         // smoke grenade 23,225 13x23
+//         // laser red 12,46 126x71 hit 21,70 104x20
+//         // laser yellow 192,47 124x71 hit 196,72 same
+//         // laser orange 365,45 121x70 hit 374,72 same
+//         // laser purple 553,47, 121x70 hit 558,72 same
+//         // laser white 729, 49, 109x58 hit 732, 72 same
+//         // green sniper 158x41 442,540
+
+//         // laser pistol bullet 1070, 69 118x103, hit 1107,102 42x30
+//         // black outline laser 1073,188 119x65, hit 1095,204 83x33 
+//         // flame bullet 1058,312 146x69 hit 1064,333 117x31
         
-        // have an init texture atlases function to create textures for each
-        // look up if texture pointer is much space, can leave anim data as is... 
-        
-        namespace PrincessAnim {
-            const std::string texturePath = "../assets/textures/characters/MiniPrincess.png";
-            const AnimData walkAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8,48},{16,16}), 32, 0, 6, .1f, 0.f};
-            const AnimData standAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8,16},{16,16}), 32, 0, 4, .1f, 0.f};
-            const AnimData deathAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8,144},{24,16}), 32, 0, 5, .1f, 0.f};
-            const AnimData hitAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8,112},{16,16}), 32, 0, 3, .1f, 0.f};
-        }
-        namespace BunnyAnim {
-            const std::string bunnypath = "../assets/textures/characters/bunny_white_update.png";
-            const AnimData standAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
-            const AnimData walkAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
-            const AnimData shootingWalkAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
-            const AnimData shootingStandAnim = {TextureUtil::LoadTexture(bunnypath), sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
-        }//756,637//168" y="728
 
-    }
+//         // MUZZLE FLASHES 
+//         // 1  TL 1272, 13 82x52 for 3 no space
+//         // 2 1273,96 83x47  for 3 no space
+//         // 3  1271, 171 85x53 for 3 no space
+//         // 4 1268,247 82x62 for 3 no space
+//         // 5 1273, 326 82x58 for 3 no space
+            // rpg back flash1 8,268 62x56
+            // rpg back flash2 75,269 61x60
+            // rpg back flash3 139,270 59x61
+//         // SMOKE ANIMATIONS RPG/SNIPER
+//         // 1 50x53 541 632
+//         // 2 50x53 671, 632
+//         // 3 50x53 798, 632 
+//         // 4 50x62 928, 626
+//         // 5 60x70 1049, 623
+//         // 6 67x73 1174, 617
+//         // 7 67x74 1303, 623
+//         // 8 70x69 1425, 623
 
-    namespace MonsterAnim {
-        const std::string texturePath = "../assets/textures/tilesheet.png";
-        namespace BigDemonAnim {
-            const AnimData walkAnim = { TextureUtil::LoadTexture(texturePath), sf::IntRect({20+32*4,27*16}, {24,32}),32, 0, 4, .1f, 0.f};
-            const AnimData standAnim = { TextureUtil::LoadTexture(texturePath), sf::IntRect({20,27*16}, {24,32}), 32, 0, 4, .1f, 0.f};
-        }
-        namespace SmallDemonAnim {
-            const AnimData walkAnim = { TextureUtil::LoadTexture(texturePath), sf::IntRect({27*16,17*16},{16,24}), 16, 0, 4, .05f, 0.f};
-            const AnimData standAnim = { TextureUtil::LoadTexture(texturePath), sf::IntRect({27*16,17*16},{16,24}), 16, 0, 4, .05f, 0.f};
-        }
-        namespace BigSlugAnim {
-            const AnimData walkAnim = { TextureUtil::LoadTexture(texturePath), sf::IntRect({23*16,23*16+6},{16,18}), 16, 0, 4, .1f, 0.f};
-            const AnimData& standAnim = walkAnim;
-        }
-    }
+//         // Lightning Animations
+//         // 237x54 18,790
+//         // 237x53 18, 847
+//         // 231x57 21,903
+//         // 227x67 22,959
+//         // 226x64 21, 1026
+//         // 237x55 20, 1092
+//         // 228x54 22, 1162
+//         // 230x57 22, 1218
 
-    namespace ProjectileAnim {
-        const std::string texturePath = "../assets/textures/orange_bullets.png";
-        namespace RegularBullet {
-            const AnimData anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({22*16, 3*16},{16,16}), 0, 0, 1, .1f, 0.f};
-         // 12 x 
-        }
-    }
+//         // Flamethrower animations
 
-    namespace WeaponAnim { // tile sheet is 20x16 16px
-        const std::string texturePath = "../assets/textures/weapons_updated.png"; 
-        const AnimData ak47Anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 2*16},{4*16,28}), 0, 0, 1, .2f, 0.f};
-        const AnimData famasAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({8*16, 14*16},{4*16,32}), 0, 0, 1, .2f, 0.f};
-        const AnimData barrett50Anim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 10*16},{6*16,35}), 0, 0, 1, .2f, 0.f};
-        const AnimData rpgAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({196, 196},{90,20}), 0, 0, 1, .2f, 0.f};
-        const AnimData rpgRocketAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({12*16, 8},{2*16,1*16}), 0, 0, 1, .2f, 0.f};
-        const sf::IntRect rpgReloadRect({196, 196},{60,20});
-        const sf::IntRect rpgLoadedRect({196, 196},{90,20});
-    }
+//         // middle loop
+//         // 1 306x138 724,728
+//         // 2 ben
+//         // 3 ben
+//         // 4 ben
+//         // 5 ben 
+//         // 6 ben
 
-    namespace BloodAnim {
-        const std::string texturePath = "../assets/textures/blood_atlas_update.png";
-        //const float speed = 0.05f;
-        const float speed = 0.05f;
-        /// 128 wide 
-        const AnimData sprayAnim1 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({32, 108},{96,112}), 112, 0, 9, speed, 0.f};
-        const AnimData sprayAnim2 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({32, 300},{96,96}), 112, 0, 10, speed, 0.f};
-        const AnimData sprayAnim3 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({32, 396},{96, 96}), 112, 0, 8, speed, 0.f};
-        const AnimData sprayAnim4 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({32, 500},{96,75}), 112, 0, 8, speed, 0.f};
-        const AnimData sprayAnim5 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 570},{112,96}), 109, 0, 14, .02f, 0.f};
-        const AnimData sprayAnim6 = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 760},{112,96}), 109, 0, 10, speed, 0.f};
-        //const AnimData grenadeSprayAnim = {TextureUtil::LoadTexture(texturePath), sf::IntRect({105, 0},{110,6*16}), 7*16, 0, 7, speed, 0.f};
-        const AnimData groundAnim = {TextureUtil::LoadTexture("../assets/textures/blood_atlas_update.png"), sf::IntRect({0, 850},{210,250}), 0, 0, 9, .01f, 0.f};
-        //const AnimData groundAnim = {TextureUtil::LoadTexture("../assets/textures/blood_atlas_update.png"), sf::IntRect({0, 850},{210,250}), 0, 0, 9, .01f, 0.f};
-        //const AnimData trailAnim = {TextureUtil::LoadTexture("../assets/textures/ground_blood.png"), sf::IntRect({3*16, 0},{28*16,28*16}), 28*16, 0, 9, .01f, 0.f};
+//         // start
+//         // 1 same as middle 368 with same y
+//         // 2 
+//         // 3 
+//         // 4
+//         // 5
+//         // 6
 
-        // 850 y begin, 250 coord y, 210 x
-        namespace FootprintAnim { // 0,0, 35,45
-            const std::string texturePath = "../assets/textures/blood_atlas_update.png";
-            const AnimData playerLeft = {TextureUtil::LoadTexture(texturePath), sf::IntRect({0, 0},{35,45}), 0, 0, 1, speed, 0.f};
-            const AnimData playerRight = {TextureUtil::LoadTexture(texturePath), sf::IntRect({35, 0},{35,45}), 0, 0, 1, speed, 0.f};
-        }
-    }
-
-    namespace HudAnim {
-        const std::string texturePath = "../assets/textures/healthbar.png";
-        const AnimData hpBar = {TextureUtil::LoadTexture(texturePath), sf::IntRect({3*16, 3*16},{3*16,1*16}), 0, 0, 6, .1f, 0.f};
-    }
+//         // end
+//         // 1 296x141 1136,736
+//         // 2 301x129 1106,900
+//         // 3 296x130 1108, 1087
 
 
-    namespace MuzzleFlashAnim {
-        const std::string muzzleFlashPath = "../assets/textures/muzzleflashcopy.png";
-        // 192 wide
-        //24 for first, 220 where second one starts exactly, 413 for third
-        // 176 ends
-        //220-360 is y
-        const AnimData muzzleFlash1 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 0},{80,54}), 80, 0, 4, .01f, 0.f};
-        const AnimData muzzleFlash2 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 80},{80,54}), 80, 0, 4, .01f, 0.f};
-        const AnimData muzzleFlash3 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 160},{80,54}), 80, 0, 4, .01f, 0.f};
-        const AnimData muzzleFlash4 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 240},{80,54}), 80, 0, 4, .01f, 0.f};
-        const AnimData muzzleFlash5 = {TextureUtil::LoadTexture(muzzleFlashPath), sf::IntRect({0, 320},{80,54}), 80, 0, 4, .01f, 0.f};
-    }
-// 590 and 200
-    namespace EffectsAnim {
-        const std::string smokePath = "../assets/textures/smoke.png"; // 130,58
-        const AnimData rpgSmoke = {TextureUtil::LoadTexture(smokePath), sf::IntRect({0, 116},{75,60}), 55, 0, 4, 1.f, 0.f};
-    }
-
-}
-
-
-// Commonly used function for updating a sprite animation given delta time and animation
-// returns TRUE if it has reached it's last frame.  This can be used with iterator to remove in place after a
-// sequence ends
-
-// NOTE: this tracks a deltaTimeSum to track time passed since loading a frame
-//  animSpeed determines how long a single frame will be rendered for in seconds, multiple passes will render the same frame.
+// // Commonly used function for updating a sprite animation given delta time and animation
+// // returns TRUE if it has reached it's last frame.  This can be used with iterator to remove in place after a
+// // sequence ends
+// // NOTE: this tracks a deltaTimeSum to track time passed since loading a frame
+// //  animSpeed determines how long a single frame will be rendered for in seconds, multiple passes will render the same frame.
 bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime) {
     // if deltaTime >= animSpeed, ready for next frame
-    
-
     if(animData.deltaTimeSum >= animData.animSpeed) {
         // update the sub rectangle of the texture to point to the next frame
         int textureCoordsPosX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
@@ -138,3 +206,45 @@ bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float de
     animData.deltaTimeSum += deltaTime;
     return false;
 }
+
+bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime){
+        // if deltaTime >= animSpeed, ready for next frame
+        if(animData.deltaTimeSum >= animData.animSpeed) {
+            // update the sub rectangle of the texture to point to the next frame
+
+            // frame spacing is inclusive of frame, amount to increment x each frame
+            int posX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+            int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.textureFrame.size.y; // get the Y
+            sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
+            
+            animData.currFrame++;
+            // if the last frame of a sequence has been rendered, loop back to the first one
+            if (animData.currFrame >= animData.totalFrames) {
+                animData.currFrame = 0; 
+                return true; // return true when done
+            }
+            animData.deltaTimeSum = 0.f;
+            
+        }
+        animData.deltaTimeSum += deltaTime;
+        return false;
+}
+
+// update a subrectangle vector, and hide when it's done 
+void AnimUtil::UpdateSubRect(SubRectData& subRectData, float deltaTime) {
+    if(subRectData.hide) return;
+    if(subRectData.deltaTimeSum >= subRectData.animSpeed) {
+        subRectData.currFrame++;
+        if(subRectData.currFrame >= subRectData.frameSequence.size()){
+            subRectData.currFrame = 0;
+            if(subRectData.repeat){
+                return;
+            } else {
+                subRectData.hide = true;
+            }
+        }
+        subRectData.deltaTimeSum = 0.f;
+    }
+    subRectData.deltaTimeSum += deltaTime;
+}
+
