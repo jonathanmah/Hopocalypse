@@ -1,9 +1,10 @@
-#include "AnimUtil.h"
+#include <iostream>
 #include "Player.h"
+#include "Monster.h"
+#include "GameState.h"
 #include "Projectile.h"
 #include "Weapon.h"
 #include "Map.h"
-#include <iostream>
 #include "Ak47.h"
 #include "Famas.h"
 #include "Barrett50.h"
@@ -43,39 +44,39 @@ void Player::SetFacingDirection() {
     }
 }
 
-void Player::Move(PlayerState& state, std::vector<Footprint>& footprints, std::vector<GroundBlood>& groundBlood, float deltaTime) { 
-    state = PlayerState::STAND;
+void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) { 
+    playerState = PlayerState::STAND;
     sf::Vector2f nextMove = {0,0};
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
-        state = PlayerState::WALK;
+        playerState = PlayerState::WALK;
         if (sprite.getPosition().x - movementSpeed >= MapBounds::LEFT){
             nextMove.x += -1;
         }
         //sprite.setScale({-scale, scale}); 
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
-        state = PlayerState::WALK;
+        playerState = PlayerState::WALK;
         if (sprite.getPosition().x + movementSpeed <= MapBounds::RIGHT){
             nextMove.x += 1;
         }
         //sprite.setScale({scale, scale}); 
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
-        state = PlayerState::WALK;
+        playerState = PlayerState::WALK;
         if (sprite.getPosition().y - movementSpeed >= MapBounds::TOP){
             nextMove.y += -1;   
         }
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)) {
-        state = PlayerState::WALK;
+        playerState = PlayerState::WALK;
         if (sprite.getPosition().y + movementSpeed <= MapBounds::BOTTOM) {
             nextMove.y += 1;
         }
     }
-    if(triggerHappy > 2.5f && state == PlayerState::WALK){
-        state = PlayerState::SHOOTING_WALK;
+    if(triggerHappy > 2.5f && playerState == PlayerState::WALK){
+        playerState = PlayerState::SHOOTING_WALK;
     } else if (triggerHappy > 2.5) {
-        state = PlayerState::SHOOTING_STAND;
+        playerState = PlayerState::SHOOTING_STAND;
     }
 
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
@@ -85,17 +86,12 @@ void Player::Move(PlayerState& state, std::vector<Footprint>& footprints, std::v
     }
     if(nextMove.length() > 0){
         sf::Vector2f nextMoveNormalized = nextMove.normalized();
-        Character::UpdateFootprints(nextMoveNormalized, footprints, groundBlood, deltaTime);
+        Character::UpdateFootprints(nextMoveNormalized, state, deltaTime);
         sprite.move(nextMoveNormalized * Player::movementSpeed);
     }
     CycleWeapons();
     SetFacingDirection();
 }
-
-// 
-// void Player::UpdateWeaponPosition(sf::RenderWindow& window, float deltaTime) {
-//     currWeapon->Update(GetPosition(), mousePosRelative.normalized(), deltaTime);
-// }
 
 void Player::CycleWeapons() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) {
@@ -118,9 +114,6 @@ void Player::SetMousePositions(sf::RenderWindow& window) {
     mousePosRelative = mousePosGlobal - GetPosition();
 }
 
-// void Player::Shoot(std::vector<std::unique_ptr<Projectile>>& projectiles) {
-//     currWeapon->Shoot(projectiles, mousePosRelative.normalized(), mousePosGlobal);
-// }
 // change anim data depending on player state
 void Player::SetAnimDataByState(PlayerState newState) {
     switch(newState) {
@@ -147,10 +140,9 @@ void Player::SetAnimDataByState(PlayerState newState) {
 }
 
 
-void Player::Update(float deltaTime, std::vector<Monster>& monsters, sf::RenderWindow& window, 
-    std::vector<Footprint>& footprints, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<Projectile>>& projectiles) { 
+void Player::Update(GameState& state, float deltaTime){
     // set relative mouse position first
-    Player::SetMousePositions(window);
+    Player::SetMousePositions(state.window);
 
     // If Player is marked as dead, update state and death anim
     if (!Player::isAlive) {
@@ -158,16 +150,16 @@ void Player::Update(float deltaTime, std::vector<Monster>& monsters, sf::RenderW
         return;
     }
     // #TODO need to figure out how to deal with states better maybe...later problem
-    PlayerState state = PlayerState::STAND;
+    PlayerState playerState = PlayerState::STAND;
     
     // check for actions that may change state, if all good then can move?
     // Handle key presses for movement, update footprints
-    Player::Move(state, footprints, groundBlood, deltaTime);
+    Player::Move(playerState, state, deltaTime);
 
-    currWeapon->Update(GetPosition(), mousePosGlobal, projectiles, deltaTime);
+    currWeapon->Update(GetPosition(), mousePosGlobal, state.projectiles, deltaTime);
    
-    if (Player::currState != state) {
-        Player::SetAnimDataByState(state);
+    if (Player::currState != playerState) {
+        Player::SetAnimDataByState(playerState);
     }
     // update player animation
     AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
@@ -176,7 +168,7 @@ void Player::Update(float deltaTime, std::vector<Monster>& monsters, sf::RenderW
     hud.Update(health, Player::GetGlobalBounds());
 
     // set isAlive flag if a monster has intersected
-    Player::CheckDeath(monsters);
+    Player::CheckDeath(state.monsters);
 }
 
 // marks a player as Dead

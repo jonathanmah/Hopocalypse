@@ -1,8 +1,7 @@
-
-#include "Footprint.h"
 #include <iostream>
 #include <cmath>
 #include "TextureUtil.h"
+#include "Footprint.h"
 
 static constexpr float FOOTPRINT_OFFSET_PIXELS = 8.f;
 static constexpr float PI = 3.141592;

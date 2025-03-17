@@ -8,7 +8,8 @@
 #include "HitboxDebugger.h"
 #include "AoE.h"
 
-class Character;
+class GameState;
+//class Character;
 class Weapon;
 struct ProjectileData;
 
@@ -36,8 +37,8 @@ public:
     void Draw(sf::RenderWindow& window);
 
     // this update is for current moving
-    static void UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);
-    static void RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window, bool drawHitbox = false);
+    static void UpdateProjectiles(GameState& state, float deltaTime);
+    static void RenderProjectiles(GameState& state, bool drawHitbox = false);
 
     // THIS UPDATE BELOW IS ON COLLISION
     // creating this to make virtual function that can be overidden by rpg for explosions

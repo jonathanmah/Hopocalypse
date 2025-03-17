@@ -37,3 +37,19 @@ void BatchRenderer::AddSpriteToBatch(const sf::Sprite& sprite) {
     triangles.emplace_back(sf::Vertex{bottomRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
     triangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
 }
+
+void BatchRenderer::AddRectangleToBatch(const sf::RectangleShape& rectShape, std::vector<sf::Vertex>& rectTriangles) {
+    sf::FloatRect bounds = rectShape.getGlobalBounds();
+    sf::Vector2f topLeft{bounds.position.x,bounds.position.y};
+    sf::Vector2f topRight{bounds.position.x+bounds.size.x, bounds.position.y};
+    sf::Vector2f bottomLeft{bounds.position.x, bounds.position.y+bounds.size.y};
+    sf::Vector2f bottomRight{bounds.position.x+bounds.size.x,bounds.position.y+bounds.size.y};
+    sf::Color colour = rectShape.getFillColor();
+    rectTriangles.push_back(sf::Vertex({topLeft, colour}));
+    rectTriangles.push_back(sf::Vertex({topRight, colour}));
+    rectTriangles.push_back(sf::Vertex({bottomLeft, colour}));
+
+    rectTriangles.push_back(sf::Vertex({bottomLeft, colour}));
+    rectTriangles.push_back(sf::Vertex({bottomRight, colour}));
+    rectTriangles.push_back(sf::Vertex({topRight, colour}));
+}

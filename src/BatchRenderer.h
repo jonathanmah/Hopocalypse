@@ -7,6 +7,7 @@ private:
     sf::RenderWindow& window;
     std::vector<sf::Vertex> triangles;
 
+    void AddRectangleToBatch(const sf::RectangleShape& rectShape, std::vector<sf::Vertex>& rectTriangles);
     void AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::array<sf::Vector2f, 4> cachedPosition, sf::Color colour);
     void AddSpriteToBatch(const sf::Sprite& sprite);
 
@@ -29,7 +30,7 @@ public:
         count ++;
     }
 
-    // pass an object with sprite container member
+    // pass a pointer object with sprite container member
     template <typename T>
     void BatchRenderSprites(std::vector<T>& spriteWrapper){
         // clear previous vertices
@@ -47,4 +48,27 @@ public:
         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
     }
 
+
+
+     // pass an object instance with sprite
+     template <typename T>
+     void BatchRenderCharacters(std::vector<T>& characters){
+         // clear previous vertices
+         triangles.clear();
+         // add each sprites vertices to vertex array
+        
+         std::vector<sf::Vertex> hpBarTriangles;
+         const sf::Texture* texture = nullptr;
+         for (T& obj : characters) {
+             if(texture == nullptr){
+                 texture = &obj.GetSprite().getTexture();
+             }
+             AddSpriteToBatch(obj.GetSprite());
+             AddRectangleToBatch(obj.hud.hpBar, hpBarTriangles);
+         }
+         // batch draw to frame
+         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
+         window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
+     }
+ //16711935
 };

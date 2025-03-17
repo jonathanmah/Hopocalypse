@@ -11,10 +11,10 @@ static const ProjectileData ak47BulletReg = {
 
 static const ProjectileData ak47BulletUpgrade = {
     AnimUtil::ProjectileAnim::redLaser,
-    20.f, // speed
-    60.f, // damage 
+    40.f, // speed
+    250.f, // damage 
     .2f, // bullet scale
-    1, // collateral count
+    4, // collateral count
 };
 
 Ak47::Ak47() : 

@@ -4,6 +4,8 @@
 #include "BatchRenderer.h"
 #include "RenderUtil.h"
 
+
+class GameState;
 class AnimUtil;
 class Footprint;
 class GroundBlood;
@@ -22,10 +24,9 @@ public:
 
     Blood(AnimData animData, sf::Vector2f position);
     virtual void SetRotation(sf::Vector2f incomingProjectilePos);
-    static void Update(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, float deltaTime); // update new prints and footprint transparency
+    static void Update(GameState& state, float deltaTime); // update new prints and footprint transparency
     static AnimData GetNextSprayAnim();
-    static void RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, 
-        std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window); // render footprint vector
+    static void RenderBlood(GameState& state);
     //void Draw(sf::RenderWindow& window);
     void SetPosition(sf::Vector2f position);
     static void CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 

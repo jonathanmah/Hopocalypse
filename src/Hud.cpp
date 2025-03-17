@@ -1,5 +1,5 @@
 #include "Hud.h"
-
+#include "HitboxDebugger.h"
 static constexpr float HP_WIDTH_PIXELS = 60.f;
 static constexpr float HP_HEIGHT_PIXELS = 6.f;
 static constexpr float INTERPOLATION_FACTOR = .1f;
@@ -27,9 +27,11 @@ void Hud::Update(int health, sf::FloatRect globalBounds) {
     //     hpBar.setFillColor(sf::Color::Red);
     // }
     hpBar.setPosition({globalBounds.position.x + globalBounds.size.x/2, globalBounds.position.y - HP_Y_OFFSET});
+    //hpBar.setPosition({globalBounds.position.x, globalBounds.position.y - HP_Y_OFFSET});
 }
 
 // render hp bar
 void Hud::Draw(sf::RenderWindow& window) {
-    window.draw(hpBar);
+   window.draw(hpBar);
+   //HitboxDebugger::DrawGlobalRect(window, hpBar.getGlobalBounds());
 }

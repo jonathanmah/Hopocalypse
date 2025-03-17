@@ -1,6 +1,7 @@
-#include "Projectile.h"
 #include <iostream>
 #include <cmath>
+#include "Projectile.h"
+#include "GameState.h"
 static int projectile_count = 0;
 static constexpr float COLLATERAL_REDUCTION_FACTOR = 0.8f;
 /*
@@ -69,8 +70,8 @@ void Projectile::UpdatePosition(float deltaTime) {
 }
 
 // Update the position of every projectile
-void Projectile::UpdateProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
-    for(std::unique_ptr<Projectile>& projectile: projectiles) {
+void Projectile::UpdateProjectiles(GameState& state, float deltaTime) {
+    for(std::unique_ptr<Projectile>& projectile: state.projectiles) {
         projectile->UpdatePosition(deltaTime);
     }
 }
@@ -93,11 +94,11 @@ void Projectile::Draw(sf::RenderWindow& window) {
 }
 
 // render all projectiles
-void Projectile::RenderProjectiles(std::vector<std::unique_ptr<Projectile>>& projectiles, BatchRenderer& batchRenderer, sf::RenderWindow& window, bool drawHitbox) {    
-    batchRenderer.BatchRenderSprites(projectiles);
+void Projectile::RenderProjectiles(GameState& state, bool drawHitbox) {    
+    state.batchRenderer->BatchRenderSprites(state.projectiles);
     if(drawHitbox) {
-        for(auto& projectile : projectiles) {
-            HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, projectile->sprite);
+        for(auto& projectile : state.projectiles) {
+            HitboxDebugger::DrawSpriteGlobalBoundsHitbox(state.window, projectile->sprite);
         }
     }
 }

@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 project(SFML_Project)
 
 set(CMAKE_CXX_STANDARD 17)
-
+set(CMAKE_BUILD_TYPE Debug)
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 find_package(SFML 3 COMPONENTS REQUIRED Audio Graphics Window Network System)
 
@@ -31,6 +32,7 @@ set(SOURCES
     src/BatchRenderer.cpp
     src/RenderUtil.cpp
     src/AoE.cpp
+    src/GameState.cpp
 )
 add_subdirectory(external/tinyxml2)
 

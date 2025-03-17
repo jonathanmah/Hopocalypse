@@ -1,9 +1,10 @@
 #include "Blood.h"
+#include "GameState.h"
 #include <iostream>
 #include <cmath>
 #include "RandomUtil.h"
-#include "Footprint.h"
-#include "TextureUtil.h"
+// #include "Footprint.h"
+// #include "TextureUtil.h"
 
 
 static int bloodcount = 0;
@@ -45,16 +46,16 @@ Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), col
 
 // For each bloodspray, update frame or delete it if it's finished the sequence
 // For each groundblood, update the ground blood anim 
-void Blood::Update(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, float deltaTime) {
+void Blood::Update(GameState& state, float deltaTime) {
     std::vector<Blood>::iterator it;
-    for(auto it = bloodSpray.begin(); it != bloodSpray.end();){
+    for(auto it = state.bloodSpray.begin(); it != state.bloodSpray.end();){
         if((*it).UpdateBloodSprayAnim(deltaTime)){
-            it = bloodSpray.erase(it);
+            it = state.bloodSpray.erase(it);
         } else {
             ++it;
         }
     }
-    for(GroundBlood& blood : groundBlood) {
+    for(GroundBlood& blood : state.groundBlood) {
        blood.UpdateGroundBloodAnim(deltaTime);
     }
 }
@@ -107,12 +108,12 @@ void Blood::CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatR
 
 sf::RectangleShape createBoundingBox(const std::array<sf::Vector2f,4> vertices);
 // render all bloodspray, groundblood, and footprints in a single draw call
-void Blood::RenderBlood(std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<Footprint>& footprints, BatchRenderer& batchRenderer, sf::RenderWindow& window) {
+void Blood::RenderBlood(GameState& state){
     std::vector<Blood*> combinedBlood;
-    for(Footprint& blood : footprints) combinedBlood.push_back(&blood);
-    for(GroundBlood& blood : groundBlood) combinedBlood.push_back(&blood);
-    for (Blood& blood : bloodSpray) combinedBlood.push_back(&blood);
-    batchRenderer.BatchRenderStaticFrames(combinedBlood);
+    for(Footprint& blood : state.footprints) combinedBlood.push_back(&blood);
+    for(GroundBlood& blood : state.groundBlood) combinedBlood.push_back(&blood);
+    for (Blood& blood : state.bloodSpray) combinedBlood.push_back(&blood);
+    state.batchRenderer->BatchRenderStaticFrames(combinedBlood);
 }
 
 

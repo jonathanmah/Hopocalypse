@@ -1,9 +1,11 @@
+#include <iostream>
 #include "Monster.h"
 #include "Player.h"
-#include "AnimUtil.h"
-#include "Projectile.h"
-#include "Blood.h"
-#include <iostream>
+#include "GameState.h"
+//#include "AnimUtil.h"
+//#include "Projectile.h"
+//#include "Blood.h"
+
 
 static int monster_count = 0;
 static constexpr float DEATH_DT_SUM_PER_FRAME = 0.2f;
@@ -34,13 +36,12 @@ void Monster::HandleDeath(float deltaTime) {
     timeSinceDeath += deltaTime;
 }
 
-bool Monster::Update(float deltaTime, std::vector<Player>& players, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<AoE>>& aoe) {
-    Monster::UpdateCollisions(projectiles, bloodSpray, groundBlood, aoe);
+bool Monster::Update(GameState& state, float deltaTime){
+    Monster::UpdateCollisions(state);
     hud.Update(health, GetGlobalBounds());
     if(isAlive) {
         AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
-        Monster::Move(players);
+        Monster::Move(state.players);
     } else {
         Monster::HandleDeath(deltaTime);
         if(timeSinceDeath > DISAPPEAR_TIME) {

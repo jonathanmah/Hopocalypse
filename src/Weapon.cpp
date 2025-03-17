@@ -161,7 +161,7 @@ void Weapon::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles,
         IncreaseSpread();
         weaponData.timeSinceShot = 0.f;
         SetPositionPostRecoil();
-        AddMuzzleFlashEffect();
+        //AddMuzzleFlashEffect();
 
         //SHELL HANDLING #########################################
         CreateShell();
@@ -180,11 +180,11 @@ void Weapon::SetMuzzlePosition() {
 // ------------------------ UPDATE ENTRY POINT FROM CHARACTER ---------------------------------------------------
 
 void Weapon::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
-    UpdateMuzzleFlashes(deltaTime); // update effects
-    UpdateShells(deltaTime);
+   UpdateMuzzleFlashes(deltaTime); // update effects
+   UpdateShells(deltaTime);
 
-    SetMousePosGlobal(mousePosGlobal);
-    // Update transformations / any other derived overrides
+   SetMousePosGlobal(mousePosGlobal);
+//    Update transformations / any other derived overrides
     UpdateBase(characterPosition, deltaTime);
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         AttemptShoot(projectiles, deltaTime);

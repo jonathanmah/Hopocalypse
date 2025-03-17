@@ -1,11 +1,11 @@
 #pragma once
+#include <SFML/Graphics.hpp>
 #include "AnimUtil.h"
-#include "Projectile.h"
 #include "Blood.h"
 #include "Hud.h"
 #include "Footprint.h"
 #include "AoE.h"
-#include <SFML/Graphics.hpp>
+
 
 class Projectile;
 
@@ -14,7 +14,6 @@ class Character {
 protected:
     sf::Sprite sprite;
     AnimData animData;
-    Hud hud;
     bool createLeftFootNext;
     float footprintDecayTimer;
     float footprintDtSumFrame;
@@ -25,17 +24,19 @@ protected:
 
     Character(AnimData animData, sf::Vector2f position, int health, float movementSpeed = 5.f, float scale = 3.f, int id = -1);
     virtual void DrawHitbox(sf::RenderWindow& window);
-    void UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<AoE>>& aoe);
+    void UpdateCollisions(GameState& state);
     void UpdateHealth(int damage);
 public:
     bool isAlive;
+    Hud hud;
 
     sf::FloatRect GetFootCollider();
     virtual void Draw(sf::RenderWindow& window);
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}
     inline sf::FloatRect GetGlobalBounds() {return sprite.getGlobalBounds();}
+    inline sf::Sprite& GetSprite() { return sprite;}
     inline int GetId() {return id;}
-    void UpdateFootprints(sf::Vector2f nextMoveNormalized, std::vector<Footprint>& footprints, std::vector<GroundBlood>& groundBlood, float deltaTime);
+    void UpdateFootprints(sf::Vector2f nextMoveNormalized, GameState& state, float deltaTime);
 
 
 

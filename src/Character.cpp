@@ -1,5 +1,7 @@
-#include "Character.h"
 #include <iostream>
+#include "Character.h"
+#include "GameState.h"
+
 static constexpr float FOOT_COLLIDER_X_OFFSET = 12.f;
 static int ID_COUNTER = 0;
 
@@ -47,7 +49,6 @@ void Character::DrawHitbox(sf::RenderWindow& window) {
 // Render the character and HP bar
 void Character::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
-    //DrawHitbox(window);
     if(health > 0){
         hud.Draw(window);
     }
@@ -70,22 +71,22 @@ For all projectiles in the game:
         remove projectile from array
 */ 
 // logic for ALL characters
-void Character::UpdateCollisions(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, std::vector<std::unique_ptr<AoE>>& aoe) {
-    for(auto it = projectiles.begin(); it != projectiles.end();){
+void Character::UpdateCollisions(GameState& state){
+    for(auto it = state.projectiles.begin(); it != state.projectiles.end();){
         
         // DETECTS IF HIT HERE GLOBAL BOUNDS OF MONSTER VS GLOBAL BOUNDS OF PROJECTILE, NEED TO UPDATE.
         // maybe run another loop through AOE, and determine what to do to intersections with it
         // elsewhere, just use this as an entry for creating the AOE
         if(this->GetGlobalBounds().findIntersection((*it)->GetGlobalBounds()) && isAlive){
             if(!(*it)->HasHit(id)){
-                Blood::CreateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), bloodSpray, groundBlood);
+                Blood::CreateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), state.bloodSpray, state.groundBlood);
                 
                 // UPDATES DAMAGE ELSWHERE. AFTER EXPLOSION LOOPS. this just for 
                 // projectile making contact.x
                 UpdateHealth((*it)->GetDamage());
             }
             // ADD NEW AOE HERE
-            (*it)->UpdateProjectileStatus(projectiles, it, aoe, id);
+            (*it)->UpdateProjectileStatus(state.projectiles, it, state.aoe, id);
         } else {
             ++it;
         }
@@ -103,8 +104,8 @@ sf::FloatRect Character::GetFootCollider() {
 }
 
 // create a new footprint from a character
-void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, std::vector<Footprint>& footprints, std::vector<GroundBlood>& groundBlood, float deltaTime) {
-    bool groundBloodCollision = GroundBlood::HasGroundBloodCollision(GetFootCollider(),groundBlood);
+void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, GameState& state, float deltaTime) {
+    bool groundBloodCollision = GroundBlood::HasGroundBloodCollision(GetFootCollider(),state.groundBlood);
     if((groundBloodCollision || footprintDecayTimer > 0.01f) && footprintDtSumFrame >= FOOTPRINT_DT_RATE){
         AnimData footprintData;
         if(createLeftFootNext){
@@ -117,7 +118,7 @@ void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, std::vector<Fo
         if (groundBloodCollision){
             footprintDecayTimer =  FOOTPRINT_DECAY_TIME; // refresh footprint timer after stepping in ground blood
         }
-        footprints.push_back(Footprint{footprintData, GetGlobalBounds(), nextMoveNormalized, 
+        state.footprints.push_back(Footprint{footprintData, GetGlobalBounds(), nextMoveNormalized, 
             !createLeftFootNext, footprintDecayTimer});
         
         footprintDtSumFrame = 0.f; // reset time for next frame

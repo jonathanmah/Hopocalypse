@@ -1,27 +1,29 @@
 #include "AoE.h"
+#include "GameState.h"
+
     // FUCK THE BUG WITH SPRITE TEXTURE ORIGINS. USE THE FUCKING SUB RECT 
 AoE::AoE(AnimData animData, sf::Vector2f position) : sprite(*animData.texture), animData(animData) {
     sprite.setPosition(position);
     sprite.setOrigin({static_cast<float>(animData.textureFrame.size.x/2),static_cast<float>(animData.textureFrame.size.y/2)});
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
-    sprite.setScale({3.f,3.f});
+    sprite.setScale({2.2f,2.2f});
 }
 
-void AoE::UpdateAoE(std::vector<std::unique_ptr<AoE>>& aoe, float deltaTime) {
-    for(auto it = aoe.begin(); it != aoe.end();){
+void AoE::UpdateAoE(GameState& state, float deltaTime) {
+    for(auto it = state.aoe.begin(); it != state.aoe.end();){
         if(AnimUtil::UpdateSpriteXYAnim((*it)->GetSprite(), (*it)->animData, deltaTime)){
-            it = aoe.erase(it);
+            it = state.aoe.erase(it);
         } else {
             ++it;
         }
     }
 }
 
-void AoE::RenderAoE(std::vector<std::unique_ptr<AoE>>& aoe, BatchRenderer& batchRenderer, sf::RenderWindow& window, bool drawHitbox) {    
-    batchRenderer.BatchRenderSprites(aoe);
+void AoE::RenderAoE(GameState& state, bool drawHitbox) {    
+    state.batchRenderer->BatchRenderSprites(state.aoe);
     if(drawHitbox) {
-        for(auto& effect : aoe) {
-            HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, effect->sprite);
+        for(auto& effect : state.aoe) {
+            HitboxDebugger::DrawSpriteGlobalBoundsHitbox(state.window, effect->sprite);
         }
     }
 }

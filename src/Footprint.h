@@ -1,10 +1,9 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include "AnimUtil.h"
 #include "Blood.h"
-#include "Character.h"
+#include "AnimUtil.h"
 
-class Player;
+class Blood;
 
 inline constexpr float FOOTPRINT_DECAY_TIME = 2.f;
 inline constexpr float FOOTPRINT_DT_RATE = .1f;

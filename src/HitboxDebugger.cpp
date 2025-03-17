@@ -28,3 +28,17 @@ void HitboxDebugger::DrawSpriteOrigin(sf::RenderWindow& window, const sf::Sprite
     shape.setPosition(sprite.getPosition());
     window.draw(shape);
 }
+
+void HitboxDebugger::DrawGlobalRect(sf::RenderWindow& window, const sf::FloatRect& rect, sf::Color colour, float thickness) {
+    sf::RectangleShape rectShape{{rect.size.x,rect.size.y}};
+    rectShape.setPosition({rect.position.x,rect.position.y});
+    rectShape.setFillColor(sf::Color::Transparent);
+    rectShape.setOutlineColor(colour);
+    rectShape.setOutlineThickness(thickness);
+    window.draw(rectShape);
+    sf::CircleShape shape(5.f);
+    shape.setFillColor(sf::Color::White);
+    shape.setPosition(rectShape.getPosition());
+    window.draw(shape);
+    
+}

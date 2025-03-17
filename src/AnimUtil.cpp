@@ -2,7 +2,6 @@
 #include "AnimUtil.h"
 #include <iostream>
 
-
 static const std::string& player = "../assets/textures/characters/bunny_white_update.png";
 static const std::string& dungeon = "../assets/textures/tilesheet.png";
 static const std::string& projectiles = "../assets/textures/weapons/projectiles_atlas.png";
@@ -214,15 +213,10 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
         // if deltaTime >= animSpeed, ready for next frame
         if(animData.deltaTimeSum >= animData.animSpeed) {
             // update the sub rectangle of the texture to point to the next frame
-
-            std::cout << "Curr frame before increment : " << animData.currFrame << std::endl;
             // frame spacing is inclusive of frame, amount to increment x each frame
             int posX = animData.textureFrame.position.x + (animData.currFrame % animData.rowLength) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
-            std::cout << "Pos X : " << posX << std::endl;
             int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.textureFrame.size.y; // get the Y
-            std::cout << "Pos Y : " << posY << std::endl;
             sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
-            
             animData.currFrame++;
             // if the last frame of a sequence has been rendered, loop back to the first one
             if (animData.currFrame >= animData.totalFrames) {
@@ -230,7 +224,6 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
                 return true; // return true when done
             }
             animData.deltaTimeSum = 0.f;
-            
         }
         animData.deltaTimeSum += deltaTime;
         return false;
@@ -253,4 +246,3 @@ void AnimUtil::UpdateSubRect(SubRectData& subRectData, float deltaTime) {
     }
     subRectData.deltaTimeSum += deltaTime;
 }
-
