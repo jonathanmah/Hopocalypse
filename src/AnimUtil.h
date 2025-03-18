@@ -76,11 +76,15 @@ public:
 
       struct WeaponAnim {
         static const AnimData ak47;
+        static const AnimData ak47Upgraded;
         static const AnimData famas;
         static const AnimData barrett50;
         static const AnimData rpg;
+        static const AnimData rpgUpgraded;
         static const sf::IntRect rpgReloadRect;
         static const sf::IntRect rpgLoadedRect;
+        static const sf::IntRect rpgUpgradedReloadRect;
+        static const sf::IntRect rpgUpgradedLoadedRect;
         static const AnimData fragGrenade;
         static const AnimData stunGrenade;
         static const AnimData smokeGrenade;
@@ -93,6 +97,8 @@ public:
         static const AnimData muzzleFlash4;
         static const AnimData muzzleFlash5;
         static const AnimData explosion;
+        static const AnimData explosionAlt;
+        static const AnimData nuke;
         static const SubRectData rpgBackfire;
         static const SubRectData rpgSmoke;
     

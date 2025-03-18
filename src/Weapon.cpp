@@ -11,7 +11,7 @@ static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -PI/2.f; // -pi/2 pi radians ,
 // muzzle flash or rocket leaving behind
 
 // when constructing a weapon, there should be 2 states, in hands, or floating above box
-Weapon::Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData): sprite(*animData.texture), projectileData(projectileData), weaponData(weaponData), muzzlePosition({0,0}) {
+Weapon::Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData): sprite(*animData.texture), projectileData(projectileData), weaponData(weaponData), muzzlePosition({0,0}), isUpgraded(false) {
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setScale({weaponData.scale, weaponData.scale});
 }

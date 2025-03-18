@@ -8,6 +8,9 @@ static const std::string& projectiles = "../assets/textures/weapons/projectiles_
 static const std::string& weapons = "../assets/textures/weapons/weapons.png";
 static const std::string& blood = "../assets/textures/fx/blood_atlas.png";
 static const std::string& explosionTexture = "../assets/textures/fx/explosion.png";
+static const std::string& explosionAltTexture = "../assets/textures/fx/explosionAlt.png";
+static const std::string& nukeTexture = "../assets/textures/fx/nuke.png";
+
 
 // PLAYER
 const AnimData AnimUtil::PlayerAnim::stand = {TextureUtil::GetTexture(player), sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
@@ -36,21 +39,20 @@ const AnimData AnimUtil::BloodAnim::leftFootprint = {TextureUtil::GetTexture(blo
 const AnimData AnimUtil::BloodAnim::rightFootprint = {TextureUtil::GetTexture(blood), sf::IntRect({35, 0},{35,45}), 0, 0, 1, .05f, 0.f};
 
 
-//         // MUZZLE FLASHES 
-//         // 1  TL 1272, 13 82x52 for 3 no space
-//         // 2 1273,96 83x47  for 3 no space
-//         // 3  1271, 171 85x53 for 3 no space
-//         // 4 1268,247 82x62 for 3 no space
-//         // 5 1273, 326 82x58 for 3 no space
-            // rpg back flash1 8,268 62x56
-            // rpg back flash2 75,269 61x60
-            // rpg back flash3 139,270 59x61
+
 const AnimData AnimUtil::WeaponAnim::ak47 = {TextureUtil::GetTexture(weapons), sf::IntRect({192, 32},{64,28}), 0, 0, 1, .2f, 0.f};
-const AnimData AnimUtil::WeaponAnim::famas = {TextureUtil::GetTexture(weapons), sf::IntRect({128, 224},{64,32}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::ak47Upgraded = {TextureUtil::GetTexture(weapons), sf::IntRect({256, 32},{64,28}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::famas = {TextureUtil::GetTexture(weapons), sf::IntRect({160, 224},{64,32}), 0, 0, 1, .2f, 0.f};
+
 const AnimData AnimUtil::WeaponAnim::barrett50 = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 160},{96,35}), 0, 0, 1, .2f, 0.f};
-const AnimData AnimUtil::WeaponAnim::rpg = {TextureUtil::GetTexture(weapons), sf::IntRect({196, 196},{90,20}), 0, 0, 1, .2f, 0.f};
-const sf::IntRect AnimUtil::WeaponAnim::rpgReloadRect({196, 196},{60,20});
-const sf::IntRect AnimUtil::WeaponAnim::rpgLoadedRect({196, 196},{90,20});
+//RPG
+const AnimData AnimUtil::WeaponAnim::rpg = {TextureUtil::GetTexture(weapons), sf::IntRect({64, 196},{90,20}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::rpgUpgraded = {TextureUtil::GetTexture(weapons), sf::IntRect({160, 196},{100,20}), 0, 0, 1, .2f, 0.f};
+const sf::IntRect AnimUtil::WeaponAnim::rpgReloadRect({64, 196},{60,20});
+const sf::IntRect AnimUtil::WeaponAnim::rpgLoadedRect({64, 196},{90,20});
+const sf::IntRect AnimUtil::WeaponAnim::rpgUpgradedReloadRect({160, 196},{60,20});
+const sf::IntRect AnimUtil::WeaponAnim::rpgUpgradedLoadedRect({160, 196},{100,20});
+
 
 
 const AnimData AnimUtil::WeaponFxAnim::muzzleFlash1 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1272,13},{82,52}), 82, 0, 3, .1f, 0.f};
@@ -58,14 +60,9 @@ const AnimData AnimUtil::WeaponFxAnim::muzzleFlash2 = {TextureUtil::GetTexture(p
 const AnimData AnimUtil::WeaponFxAnim::muzzleFlash3 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1271,171},{85,53}), 85, 0, 3, .1f, 0.f};
 const AnimData AnimUtil::WeaponFxAnim::muzzleFlash4 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1268,247},{82,62}), 82, 0, 3, .1f, 0.f};
 const AnimData AnimUtil::WeaponFxAnim::muzzleFlash5 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1273,326},{82,58}), 82, 0, 3, .1f, 0.f};
-  // rpg back flash1 8,268 62x56
-            // rpg back flash2 75,269 61x60
-            // rpg back flash3 139,270 59x61
+
 const SubRectData AnimUtil::WeaponFxAnim::rpgBackfire =  {
 {
-    // sf::IntRect{{8,268},{62,56}},
-    // sf::IntRect{{70,268},{62,100}},
-    // sf::IntRect{{8,268},{62,80}}
     sf::IntRect{{1270,9},{65,56}},
     sf::IntRect{{1354,9},{63,50}},
     sf::IntRect{{1435,11},{58,53}}
@@ -86,6 +83,8 @@ const SubRectData AnimUtil::WeaponFxAnim::rpgSmoke = {
 };
 
 const AnimData AnimUtil::WeaponFxAnim::explosion = {TextureUtil::GetTexture(explosionTexture), sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5};
+const AnimData AnimUtil::WeaponFxAnim::nuke = {TextureUtil::GetTexture(nukeTexture), sf::IntRect({0,0},{256,128}), 256, 0, 12, .05f, 0.f, 3};
+const AnimData AnimUtil::WeaponFxAnim::explosionAlt = {TextureUtil::GetTexture(explosionAltTexture), sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3};
 //         // SMOKE ANIMATIONS RPG/SNIPER
 //         // 1 50x53 541 632
 //         // 2 50x53 671, 632
@@ -103,6 +102,7 @@ const AnimData AnimUtil::WeaponFxAnim::explosion = {TextureUtil::GetTexture(expl
 
 const AnimData AnimUtil::ProjectileAnim::medBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({109,7},{19,9})};
 const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({4,4},{36,17})};
+const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({41,4},{40,20})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({135,7},{34,10})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({442,540},{158,41})};
 const AnimData AnimUtil::ProjectileAnim:: redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
@@ -217,6 +217,7 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
             int posX = animData.textureFrame.position.x + (animData.currFrame % animData.rowLength) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
             int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.textureFrame.size.y; // get the Y
             sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
+            std::cout << "curr frame : " << animData.currFrame << std::endl;
             animData.currFrame++;
             // if the last frame of a sequence has been rendered, loop back to the first one
             if (animData.currFrame >= animData.totalFrames) {

@@ -18,7 +18,7 @@ static const ProjectileData ak47BulletUpgrade = {
 };
 
 Ak47::Ak47() : 
-Weapon(AnimUtil::WeaponAnim::ak47, 
+Weapon(AnimUtil::WeaponAnim::ak47Upgraded, 
         ak47BulletUpgrade, 
         {
             1.f, //scale 

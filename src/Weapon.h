@@ -70,6 +70,8 @@ protected:
     void DrawShells(sf::RenderWindow& window);
 
 public:
+    bool isUpgraded;
+
     Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData);
     virtual ~Weapon() = default; //DONT REALLY GET WHY NEED THIS IDK YET NEED2LEARN
     void Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);

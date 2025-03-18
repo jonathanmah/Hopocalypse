@@ -5,9 +5,10 @@ static const float SMOKE_OFFSET_SCALAR = 15.f;
 static const float BACKFIRE_OFFSET_SCALAR = 70.f;
 
 Rpg::Rpg() : 
-Weapon(AnimUtil::WeaponAnim::rpg, 
+Weapon(AnimUtil::WeaponAnim::rpgUpgraded, 
         {
-            AnimUtil::ProjectileAnim::rpgRocketReg,
+            // PROJECTILE DEFINED HERE
+            AnimUtil::ProjectileAnim::rpgRocketUpgrade,
             5.f, // speed
             1.f, // damage 
             1.3f, // bullet scale
@@ -41,6 +42,7 @@ Weapon(AnimUtil::WeaponAnim::rpg,
     smoke.setOrigin({0, static_cast<float>(smokeData.frameSequence[0].size.y / 2)}); // dont forget local bounds is for the texture thats binding. not the subrect
     backfire.setOrigin({static_cast<float>(backfireData.frameSequence[0].size.x / 2),static_cast<float>(backfireData.frameSequence[0].size.y / 2)});
     backfire.setScale({-1,1});
+    isUpgraded = true;
 }
 
 void Rpg::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
@@ -56,11 +58,19 @@ void Rpg::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles
 void Rpg::UpdateBase(sf::Vector2f characterPosition, float deltaTime) {
     UpdateBaseTransformations(characterPosition, deltaTime);
     weaponData.timeSinceShot += deltaTime;
-    if(weaponData.timeSinceShot < weaponData.fireRate-0.05) { // weird bug shooting 5 rockets when swap
-        sprite.setTextureRect(AnimUtil::WeaponAnim::rpgReloadRect);
-    } else {
-        sprite.setTextureRect(AnimUtil::WeaponAnim::rpgLoadedRect);
-    }
+        if(weaponData.timeSinceShot < weaponData.fireRate-0.05) { // weird bug shooting 5 rockets when swap
+            if(!isUpgraded) {
+                sprite.setTextureRect(AnimUtil::WeaponAnim::rpgReloadRect);
+            } else {
+                sprite.setTextureRect(AnimUtil::WeaponAnim::rpgUpgradedReloadRect);
+            }
+        } else {
+            if(!isUpgraded) {
+                sprite.setTextureRect(AnimUtil::WeaponAnim::rpgLoadedRect);   
+            } else {
+                sprite.setTextureRect(AnimUtil::WeaponAnim::rpgUpgradedLoadedRect);
+            }
+        }
     UpdateFireEffects(deltaTime);
 }
 
@@ -114,6 +124,6 @@ void RPGrocket::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>&
     // set a detonate flag?? handle explosives somehow?
     //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
     sf::Vector2f pos = (*it)->GetPosition();
-    aoe.emplace_back(std::make_unique<AoE>(AnimUtil::WeaponFxAnim::explosion,pos));
+    aoe.emplace_back(std::make_unique<AoE>(AnimUtil::WeaponFxAnim::explosionAlt,pos));
     it = projectiles.erase(it);
 }

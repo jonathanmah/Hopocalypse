@@ -6,9 +6,12 @@ AoE::AoE(AnimData animData, sf::Vector2f position) : sprite(*animData.texture), 
     sprite.setPosition(position);
     sprite.setOrigin({static_cast<float>(animData.textureFrame.size.x/2),static_cast<float>(animData.textureFrame.size.y/2)});
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
-    sprite.setScale({2.2f,2.2f});
+    sprite.setScale({3.f,3.f});
+    float radians =  RandomUtil::GetRandomFloat(0,6.23f);
+    sf::Angle angle = sf::radians(radians);
+    sprite.setRotation(angle);
 }
-
+//256w x 128h
 void AoE::UpdateAoE(GameState& state, float deltaTime) {
     for(auto it = state.aoe.begin(); it != state.aoe.end();){
         if(AnimUtil::UpdateSpriteXYAnim((*it)->GetSprite(), (*it)->animData, deltaTime)){
