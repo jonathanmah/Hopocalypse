@@ -218,6 +218,6 @@ void Weapon::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
     DrawMuzzleFlashes(window);
     DrawShells(window);
-    HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite);
-    HitboxDebugger::DrawSpriteOrigin(window, sprite, sf::Color::Magenta);
+    //HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite);
+    //HitboxDebugger::DrawSpriteOrigin(window, sprite, sf::Color::Magenta);
 }

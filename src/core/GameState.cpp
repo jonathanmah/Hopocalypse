@@ -52,8 +52,8 @@ void GameState::InitPlayers() {
 }
 
 void GameState::InitMonsters() {
-    //SetRandomMonsterSpawn(300);
-    SetCollateralLineup();
+    SetRandomMonsterSpawn(300);
+    //SetCollateralLineup();
     //SetSingleTest();
 }
 
@@ -99,7 +99,7 @@ void GameState::RenderCharacters() {
 void GameState::Render() {
     window.clear(sf::Color::Black);
     map->Draw(window);
-    Blood::RenderBlood(*this);
+    Blood::RenderBlood(*this, window);
     RenderCharacters();
     Projectile::RenderProjectiles(*this, false);
     AoE::RenderAoE(*this, false); // render foreground aoe and bg separately...

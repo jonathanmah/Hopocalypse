@@ -23,7 +23,7 @@ public:
     virtual void SetRotation(sf::Vector2f incomingProjectilePos);
     static void Update(GameState& state, float deltaTime); // update new prints and footprint transparency
     static AnimData GetNextSprayAnim();
-    static void RenderBlood(GameState& state);
+    static void RenderBlood(GameState& state, sf::RenderWindow& window);
     void SetPosition(sf::Vector2f position);
     static void CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 
         std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood);

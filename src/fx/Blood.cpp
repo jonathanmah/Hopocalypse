@@ -15,15 +15,6 @@ static constexpr float ON_HIT_SPRAY_POSITION_OFFSET = 50.f;
 static constexpr float ON_HIT_GROUND_ROTATION_OFFSET = 0.f;
 static constexpr float ON_HIT_GROUND_POSITION_OFFSET = 10.f;
 
-const AnimData sprayAnimations[6] = {
-    AnimUtil::BloodAnim::spray1, 
-    AnimUtil::BloodAnim::spray2, 
-    AnimUtil::BloodAnim::spray3,
-    AnimUtil::BloodAnim::spray4, 
-    AnimUtil::BloodAnim::spray5, 
-    AnimUtil::BloodAnim::spray6
-};
-
 /*
 Construct a blood
     
@@ -87,6 +78,14 @@ void Blood::SetRotation(sf::Vector2f incomingProjectilePos) {
 
 // use different blood spray animation each time a projectile hits
 AnimData Blood::GetNextSprayAnim() {
+    static const AnimData sprayAnimations[6] = {
+        AnimUtil::BloodAnim::spray1, 
+        AnimUtil::BloodAnim::spray2, 
+        AnimUtil::BloodAnim::spray3,
+        AnimUtil::BloodAnim::spray4, 
+        AnimUtil::BloodAnim::spray5, 
+        AnimUtil::BloodAnim::spray6
+    };
     AnimData animData = sprayAnimations[RandomUtil::GetRandomInt(0,5)];
     return animData;
 }
@@ -106,11 +105,17 @@ void Blood::CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatR
 
 sf::RectangleShape createBoundingBox(const std::array<sf::Vector2f,4> vertices);
 // render all bloodspray, groundblood, and footprints in a single draw call
-void Blood::RenderBlood(GameState& state){
+void Blood::RenderBlood(GameState& state, sf::RenderWindow& window){
     std::vector<Blood*> combinedBlood;
     for(Footprint& blood : state.footprints) combinedBlood.push_back(&blood);
-    for(GroundBlood& blood : state.groundBlood) combinedBlood.push_back(&blood);
-    for (Blood& blood : state.bloodSpray) combinedBlood.push_back(&blood);
+    for(GroundBlood& blood : state.groundBlood) {
+        std::cout << "adding ground blood" << std::endl;
+        combinedBlood.push_back(&blood);
+    }
+    for (Blood& blood : state.bloodSpray){
+        std::cout << "adding bloodspray" << std::endl;
+        combinedBlood.push_back(&blood);
+    }
     state.batchRenderer->BatchRenderStaticFrames(combinedBlood);
 }
 

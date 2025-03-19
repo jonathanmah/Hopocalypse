@@ -8,7 +8,7 @@ static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -PI/2.f; // -pi/2 pi radians ,
 static const ProjectileData uziBulletReg = {
     AnimUtil::ProjectileAnim::medBulletReg,
     20.f, // speed
-    10.f, // damage 
+    15.f, // damage 
     1.f, // bullet scale
     1, // collateral count
 };
@@ -16,7 +16,7 @@ static const ProjectileData uziBulletReg = {
 static const ProjectileData uziBulletUpgrade = {
     AnimUtil::ProjectileAnim::redLaser,
     20.f, // speed
-    15.f, // damage 
+    50.f, // damage 
     .1f, // bullet scale
     1, // collateral count
 };
@@ -207,6 +207,6 @@ void Uzi::Draw(sf::RenderWindow& window) {
     window.draw(sprite);
     DrawMuzzleFlashes(window);
     DrawShells(window);
-    HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite);
-    HitboxDebugger::DrawSpriteOrigin(window, sprite, sf::Color::Magenta);
+    // HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite);
+    // HitboxDebugger::DrawSpriteOrigin(window, sprite, sf::Color::Magenta);
 }
