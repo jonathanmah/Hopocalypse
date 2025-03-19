@@ -37,18 +37,23 @@ Weapon(AnimUtil::WeaponAnim::famas,
             .10f, // total time gun takes to return back
             4.f, // amount of offset, vector created using this scalar opposite point direction
         }
-    ), burstFireCounter(0)
+    ), burstFireCounter(0), attemptShotTimer(0.f)
 {
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3.6f, sprite.getLocalBounds().size.y / 2});
-    //UpgradeWeapon();
+
 }
 void Famas::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles){
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }
 
+
 void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
-    if (weaponData.timeSinceShot > weaponData.fireRate) {
+    if (burstFireCounter==1 && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
+        attemptShotTimer = 3*weaponData.fireRate;
+    }
+    // try to add bullet if time since last shot is less than 3xfirerate?
+    if (weaponData.timeSinceShot > weaponData.fireRate) { // add bullet if time between shots is good
         weaponData.fireRate = 0.10f;
         this->CreateProjectile(projectiles);
         IncreaseSpread();
@@ -61,6 +66,20 @@ void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, 
         }
     }
 }
+
+void Famas::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+    attemptShotTimer = std::max(0.f, attemptShotTimer-deltaTime);
+    UpdateMuzzleFlashes(deltaTime);
+    UpdateShells(deltaTime); 
+    SetMousePosGlobal(mousePosGlobal);
+     UpdateBase(characterPosition, deltaTime);
+     if(attemptShotTimer > 0 || sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+         AttemptShoot(projectiles, deltaTime);
+     } else {
+         DecreaseSpread();
+     }
+     weaponData.timeSinceShot += deltaTime;
+ }
 
 void Famas::UpgradeWeapon() {
     sprite.setTextureRect(AnimUtil::WeaponAnim::famasUpgraded);
