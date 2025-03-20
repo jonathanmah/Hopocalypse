@@ -47,7 +47,7 @@ void Character::DrawHitbox(sf::RenderWindow& window) {
 }
 
 // Render the character and HP bar
-void Character::Draw(sf::RenderWindow& window) {
+void Character::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
     if(health > 0){
         hud.Draw(window);
@@ -55,7 +55,7 @@ void Character::Draw(sf::RenderWindow& window) {
         
 }
 
-void Character::UpdateHealth(int damage) {
+void Character::TakeDamage(int damage) {
     health -= damage;
     if(health <= 0) {
         isAlive = false;
@@ -83,7 +83,7 @@ void Character::UpdateCollisions(GameState& state){
                 
                 // UPDATES DAMAGE ELSWHERE. AFTER EXPLOSION LOOPS. this just for 
                 // projectile making contact.x
-                UpdateHealth((*it)->GetDamage());
+                TakeDamage((*it)->GetDamage());
             }
             // ADD NEW AOE HERE
             (*it)->UpdateProjectileStatus(state.projectiles, it, state.aoe, id);

@@ -34,8 +34,8 @@ sf::Vector2f MonsterFactory::GetRandomPosition(int screenSide){
     return {x,y};
 }
 
-std::vector<Monster> MonsterFactory::GetMonsters(int spawnCount) {
-    std::vector<Monster> monsters;
+std::vector<std::unique_ptr<Monster>> MonsterFactory::GetMonsters(int spawnCount) {
+    std::vector<std::unique_ptr<Monster>> monsters;
 
     for(int i = 0; i < spawnCount; i++) {
         int screenSide = windowSideDist(gen);
@@ -43,12 +43,12 @@ std::vector<Monster> MonsterFactory::GetMonsters(int spawnCount) {
  
         int monsterType = monsterDist(gen);
         if(monsterType == 1) {
-            monsters.push_back(Monster{AnimUtil::BigDemonAnim::walk, position, 100, 1.f});
+            monsters.push_back(std::make_unique<Monster>(AnimUtil::BigDemonAnim::walk, position, 100, 1.f));
         } else if (monsterType == 2) {
-            monsters.push_back(Monster{AnimUtil::SlugAnim::walk, position, 100, .6f});
+            monsters.push_back(std::make_unique<Monster>(AnimUtil::SlugAnim::walk, position, 100, .6f));
         } else if (monsterType == 3) {
-            monsters.push_back(Monster{AnimUtil::SmallDemonAnim::walk, position, 100, 1.5f});
+            monsters.push_back(std::make_unique<Monster>(AnimUtil::SmallDemonAnim::walk, position, 100, 1.5f));
         }
     }
-    return monsters;
+    return std::move(monsters);
 }

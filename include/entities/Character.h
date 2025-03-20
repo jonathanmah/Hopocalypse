@@ -1,9 +1,11 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "util/AnimUtil.h"
+#include "core/BatchRenderer.h"
 #include "Hud.h"
 
 class GameState;
+class BatchRenderer;
 
 class Character {
 
@@ -15,19 +17,19 @@ protected:
     float footprintDtSumFrame;
     float scale;
     float movementSpeed;
-    int health;
-    int id;
 
     Character(AnimData animData, sf::Vector2f position, int health, float movementSpeed = 5.f, float scale = 3.f, int id = -1);
     virtual void DrawHitbox(sf::RenderWindow& window);
     void UpdateCollisions(GameState& state);
-    void UpdateHealth(int damage);
 public:
     bool isAlive;
+    int health;
+    int id;
     Hud hud;
 
+    void TakeDamage(int damage);
     sf::FloatRect GetFootCollider();
-    virtual void Draw(sf::RenderWindow& window);
+    virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}
     inline sf::FloatRect GetGlobalBounds() {return sprite.getGlobalBounds();}
     inline sf::Sprite& GetSprite() { return sprite;}

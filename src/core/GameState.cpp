@@ -35,14 +35,14 @@ void GameState::SetRandomMonsterSpawn(int count){
 void GameState::SetSingleTest(){
     Monster bigDemon{AnimUtil::BigDemonAnim::walk, {400,400}, 100, 3.f};
     bigDemon.disabledMovement = true;
-    monsters.push_back(std::move(bigDemon));
+    monsters.push_back(std::make_unique<Monster>(std::move(bigDemon)));
 }
 
 void GameState::SetCollateralLineup(){
     for(float i = 0; i < 5; i++) {
         Monster bigDemon{AnimUtil::BigDemonAnim::walk, {150+100*i,300}, 100, 1.f};
         bigDemon.disabledMovement = true;
-        monsters.push_back(std::move(bigDemon));
+        monsters.push_back(std::make_unique<Monster>(std::move(bigDemon))); // check later if have to do this way
     }
 }
 
@@ -52,9 +52,9 @@ void GameState::InitPlayers() {
 }
 
 void GameState::InitMonsters() {
-    SetRandomMonsterSpawn(300);
+    //SetRandomMonsterSpawn(5000);
     //SetCollateralLineup();
-    //SetSingleTest();
+    SetSingleTest();
 }
 
 void GameState::Update(float deltaTime) {
@@ -70,7 +70,7 @@ void GameState::Update(float deltaTime) {
         player.Update(*this, deltaTime);
     }
     for(auto it = monsters.begin(); it != monsters.end();){
-        if((*it).Update(*this, deltaTime)){
+        if((**it).Update(*this, deltaTime)){
             it = monsters.erase(it);
         } else {
             ++it;
@@ -79,20 +79,21 @@ void GameState::Update(float deltaTime) {
 }
 
 void GameState::RenderCharacters() {
-    std::vector<Monster> monstersAlive;
-    std::vector<Monster> monstersDead;
-    for (Monster& monster: monsters) {
-        if(monster.isAlive)
-            monstersAlive.push_back(monster);
+    //#TODO will have to figure out a way to keep monsters as pointers while being able to render them in order...
+    std::vector<std::reference_wrapper<Monster>> monstersAlive;
+    std::vector<std::reference_wrapper<Monster>> monstersDead;
+    for (auto& monster: monsters) {
+        if(monster->isAlive)
+            monstersAlive.push_back(*monster);
     }
-    for (Monster& monster: monsters) {
-        if(!monster.isAlive)
-            monstersDead.push_back(monster);
+    for (auto& monster: monsters) {
+        if(!monster->isAlive)
+            monstersDead.push_back(*monster);
     }
     batchRenderer->BatchRenderCharacters(monstersDead); // monsters change and use polymorphism
     batchRenderer->BatchRenderCharacters(monstersAlive); //remove this batch renderer func later when 
     for (Player& player: players) {
-        player.Draw(window);
+        player.Draw(window, *batchRenderer);
     }
 }
 
@@ -102,6 +103,6 @@ void GameState::Render() {
     Blood::RenderBlood(*this, window);
     RenderCharacters();
     Projectile::RenderProjectiles(*this, false);
-    AoE::RenderAoE(*this, false); // render foreground aoe and bg separately...
+    AoE::RenderAoE(*this, true); // render foreground aoe and bg separately...
     window.display();
 }

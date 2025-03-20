@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include "Character.h"
+#include "core/BatchRenderer.h"
 
 class Weapon;
 class Monster;
@@ -28,7 +29,7 @@ private:
     
     void HandleDeath(float deltaTime);
     void Move(PlayerState& playerState, GameState& state, float deltaTime);
-    void CheckDeath(std::vector<Monster>& monster);
+    void CheckDeath(std::vector<std::unique_ptr<Monster>>& monster);
     void DrawHitbox(sf::RenderWindow& window) override;
     void SetMousePositions(sf::RenderWindow& window);
     void SetFacingDirection();
@@ -39,5 +40,5 @@ private:
 public:
     Player(AnimData animData, sf::Vector2f position); 
     void Update(GameState& state, float deltaTime);
-    void Draw(sf::RenderWindow& window) override;
+    void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) override;
 };

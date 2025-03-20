@@ -1,5 +1,6 @@
-#include "weapons/derived/Famas.h"
 #include <iostream>
+#include "weapons/derived/Famas.h"
+#include "core/GameState.h"
 
 static const ProjectileData famasBulletReg = {
     AnimUtil::ProjectileAnim::medBulletReg,
@@ -67,14 +68,14 @@ void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, 
     }
 }
 
-void Famas::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+void Famas::Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
     attemptShotTimer = std::max(0.f, attemptShotTimer-deltaTime);
     UpdateMuzzleFlashes(deltaTime);
     UpdateShells(deltaTime); 
     SetMousePosGlobal(mousePosGlobal);
      UpdateBase(characterPosition, deltaTime);
      if(attemptShotTimer > 0 || sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-         AttemptShoot(projectiles, deltaTime);
+         AttemptShoot(state.projectiles, deltaTime);
      } else {
          DecreaseSpread();
      }

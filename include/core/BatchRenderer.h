@@ -2,6 +2,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+class Flame;
+
 class BatchRenderer {
 private:
     sf::RenderWindow& window;
@@ -52,7 +54,7 @@ public:
 
      // pass an object instance with sprite
      template <typename T>
-     void BatchRenderCharacters(std::vector<T>& characters){
+     void BatchRenderCharacters(std::vector<std::reference_wrapper<T>>& characters){
          // clear previous vertices
          triangles.clear();
          // add each sprites vertices to vertex array
@@ -70,4 +72,8 @@ public:
          window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
          window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
      }
+
+     //template <typename T>
+    void BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames);
 };
+

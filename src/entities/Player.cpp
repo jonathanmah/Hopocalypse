@@ -9,6 +9,7 @@
 #include "weapons/derived/Barrett50.h"
 #include "weapons/derived/Rpg.h"
 #include "weapons/derived/Uzi.h"
+#include "weapons/derived/Flamethrower.h"
 
 /*
     Construct a player
@@ -109,6 +110,9 @@ void Player::CycleWeapons() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::U)) {
         currWeapon = std::make_unique<Uzi>();
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::C)) {
+        currWeapon = std::make_unique<Flamethrower>();
+    }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::V)) {
         currWeapon->UpgradeWeapon();
     }
@@ -162,7 +166,7 @@ void Player::Update(GameState& state, float deltaTime){
     // Handle key presses for movement, update footprints
     Player::Move(playerState, state, deltaTime);
 
-    currWeapon->Update(GetPosition(), mousePosGlobal, state.projectiles, deltaTime);
+    currWeapon->Update(state, GetPosition(), mousePosGlobal, deltaTime);
    
     if (Player::currState != playerState) {
         Player::SetAnimDataByState(playerState);
@@ -178,13 +182,13 @@ void Player::Update(GameState& state, float deltaTime){
 }
 
 // marks a player as Dead
-void Player::CheckDeath(std::vector<Monster>& monsters) {
+void Player::CheckDeath(std::vector<std::unique_ptr<Monster>>& monsters) {
 
     if(!Player::isAlive){
         return;
     }
-    for(Monster& monster : monsters){
-        if(monster.GetGlobalBounds().findIntersection(Player::GetGlobalBounds()) && monster.isAlive){
+    for(auto& monster : monsters){
+        if(monster->GetGlobalBounds().findIntersection(Player::GetGlobalBounds()) && monster->isAlive){
             Player::isAlive = true;
         }
     }
@@ -207,11 +211,11 @@ void Player::DrawHitbox(sf::RenderWindow& window) {
 }
 
 // Render a player, hitbox, and weapon
-void Player::Draw(sf::RenderWindow& window) {
+void Player::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
     //DrawHitbox(window);
     if(Player::isAlive){
-        currWeapon->Draw(window);
+        currWeapon->Draw(window, batchRenderer);
     }
     hud.Draw(window);
 }

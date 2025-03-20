@@ -3,6 +3,7 @@
 #include "util/HitboxDebugger.h"
 #include "weapons/Weapon.h"
 #include "util/RandomUtil.h"
+#include "core/GameState.h"
 
 // to upgrade, call a virtual void func called Upgrade() 
 // that will set a new projectile data and update the subtexture of the weapon
@@ -185,7 +186,7 @@ void Weapon::SetMuzzlePosition() {
 
 // ------------------------ UPDATE ENTRY POINT FROM CHARACTER ---------------------------------------------------
 
-void Weapon::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+void Weapon::Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
    UpdateMuzzleFlashes(deltaTime); // update effects
    UpdateShells(deltaTime);
 
@@ -193,7 +194,7 @@ void Weapon::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal,
 //    Update transformations / any other derived overrides
     UpdateBase(characterPosition, deltaTime);
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        AttemptShoot(projectiles, deltaTime);
+        AttemptShoot(state.projectiles, deltaTime);
     } else {
         DecreaseSpread();
     }
@@ -214,7 +215,7 @@ void Weapon::DrawShells(sf::RenderWindow& window) {
     }
 }
 
-void Weapon::Draw(sf::RenderWindow& window) {
+void Weapon::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
     DrawMuzzleFlashes(window);
     DrawShells(window);

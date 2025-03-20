@@ -109,11 +109,9 @@ void Blood::RenderBlood(GameState& state, sf::RenderWindow& window){
     std::vector<Blood*> combinedBlood;
     for(Footprint& blood : state.footprints) combinedBlood.push_back(&blood);
     for(GroundBlood& blood : state.groundBlood) {
-        std::cout << "adding ground blood" << std::endl;
         combinedBlood.push_back(&blood);
     }
     for (Blood& blood : state.bloodSpray){
-        std::cout << "adding bloodspray" << std::endl;
         combinedBlood.push_back(&blood);
     }
     state.batchRenderer->BatchRenderStaticFrames(combinedBlood);

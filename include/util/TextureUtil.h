@@ -7,3 +7,4 @@ public:
     static sf::Texture* GetTexture(const std::string& key);
     static void SetStaticMemberTextures();
 };
+

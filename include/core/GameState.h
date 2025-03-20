@@ -23,7 +23,7 @@ public:
     std::unique_ptr<BatchRenderer> batchRenderer;
     std::unique_ptr<Map> map;
     std::vector<Player> players;
-    std::vector<Monster> monsters;
+    std::vector<std::unique_ptr<Monster>> monsters;
     std::vector<std::unique_ptr<Projectile>> projectiles;
     std::vector<std::unique_ptr<Weapon>> weapons;
     std::vector<Blood> bloodSpray;

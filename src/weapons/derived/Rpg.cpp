@@ -65,7 +65,6 @@ Weapon(AnimUtil::WeaponAnim::rpg,
     smoke.setOrigin({0, static_cast<float>(smokeData.frameSequence[0].size.y / 2)}); // dont forget local bounds is for the texture thats binding. not the subrect
     backfire.setOrigin({static_cast<float>(backfireData.frameSequence[0].size.x / 2),static_cast<float>(backfireData.frameSequence[0].size.y / 2)});
     backfire.setScale({-1,1});
-    //UpgradeWeapon();
 }
 
 void Rpg::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
@@ -110,7 +109,7 @@ void Rpg::UpdateFireEffects(float deltaTime) {
     RotateEffect();
 }
 
-void Rpg::Draw(sf::RenderWindow& window) {
+void Rpg::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
     if(!smokeData.hide){
         window.draw(smoke);
@@ -118,8 +117,8 @@ void Rpg::Draw(sf::RenderWindow& window) {
     if(!backfireData.hide){
         window.draw(backfire);
     }
-    HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, backfire, sf::Color::Yellow);
-    HitboxDebugger::DrawSpriteOrigin(window, backfire, sf::Color::Cyan);
+    //HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, backfire, sf::Color::Yellow);
+    //HitboxDebugger::DrawSpriteOrigin(window, backfire, sf::Color::Cyan);
 }
 
 void Rpg::UpgradeWeapon() {

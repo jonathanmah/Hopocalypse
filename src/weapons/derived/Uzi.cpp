@@ -1,5 +1,6 @@
-#include "weapons/derived/Uzi.h"
 #include <iostream>
+#include "weapons/derived/Uzi.h"
+#include "core/GameState.h"
 static constexpr float PI = 3.141592;
 static constexpr float MIRROR_NEG_Y_AXIS_BOUND = PI/2.f; // pi/2 radians , greater than half of pi
 static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -PI/2.f; // -pi/2 pi radians , less than -half of pi
@@ -34,7 +35,7 @@ Weapon(AnimUtil::WeaponAnim::uzi,
             0.08f, // fireRate
             .15f, // time since last bullet fired
             0.f, // current accumulated spread offset
-            .2f, // spread offset max
+            .3f, // spread offset max
             .01f, //  spread offset growth
             .015f, // spread offset decay
             .0f, // time left until gun returns back to original position after recoil
@@ -54,6 +55,8 @@ void Uzi::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
     if(isUpgraded) {
+        // TWO THINGS HERE, MUST USE ORIGINAL UZI POSITION FOR CALCULATING NORMAL, OTHERWISE POINTING BUG
+        // ALSO MUST RECALCULATE RANDOMIZED TARGET SPREAD TO AVOID SIDE BY SIDE BULLETS
         sf::Vector2f adjustedNormalSecond = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
         projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePositionSecond, adjustedNormalSecond));
     }
@@ -183,7 +186,7 @@ void Uzi::UpdateBase(sf::Vector2f characterPosition, float deltaTime) {
     UpdateBaseTransformations(characterPosition, deltaTime);
 }
 
-void Uzi::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+void Uzi::Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
     UpdateMuzzleFlashes(deltaTime); // update effects
     UpdateShells(deltaTime);
  
@@ -191,7 +194,7 @@ void Uzi::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, st
  //    Update transformations / any other derived overrides
      UpdateBase(characterPosition, deltaTime);
      if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-         AttemptShoot(projectiles, deltaTime);
+         AttemptShoot(state.projectiles, deltaTime);
      } else {
          DecreaseSpread();
      }
@@ -199,7 +202,7 @@ void Uzi::Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, st
  }
 
 
-void Uzi::Draw(sf::RenderWindow& window) {
+void Uzi::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     if(isUpgraded){
         //spriteSecond.setColor(sf::Color{255,100,100});
         window.draw(spriteSecond);

@@ -7,7 +7,20 @@
 #include "../fx/MuzzleFlash.h"
 #include "../fx/Shell.h"
 
+
+struct Flame {
+    sf::Vector2f position;
+    sf::Vector2f velocity;
+    float lifetime;
+    float size;
+    sf::Color colour;
+};
+
+
+
+class BatchRenderer;
 class Projectile;
+class GameState;
 
 struct ProjectileData {
     AnimData anim;
@@ -74,7 +87,7 @@ public:
     Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData);
     virtual ~Weapon() = default;
     // need to make this virtual for akimbo uzi
-    virtual void Update(sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);
+    virtual void Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime);
     // override to create a different projectile
     virtual void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) = 0;
     // override to handle upgrading
@@ -86,7 +99,7 @@ public:
     // override to add a different type of muzzle effect
     virtual void AddMuzzleFlashEffect();
     // override to draw special effects
-    virtual void Draw(sf::RenderWindow& window);
+    virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);
 
     virtual void UpdateBaseTransformations(sf::Vector2f characterPosition, float deltaTime);
     

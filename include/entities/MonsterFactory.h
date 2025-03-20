@@ -20,5 +20,5 @@ private:
 
 public:
     MonsterFactory();
-    std::vector<Monster> GetMonsters(int spawnCount);
+    std::vector<std::unique_ptr<Monster>> GetMonsters(int spawnCount);
 };

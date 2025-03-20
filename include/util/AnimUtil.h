@@ -35,7 +35,7 @@ public:
     static bool UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime);
 
     // animate a hardcoded sequence of subrects
-    static void UpdateSubRect(SubRectData& subRectData, float deltaTime);
+    static bool UpdateSubRect(SubRectData& subRectData, float deltaTime);
 
     struct PlayerAnim {
         static const AnimData stand;
@@ -146,10 +146,12 @@ public:
         static const AnimData whiteLaser;
         static const AnimData smallRedLaser;
         static const AnimData famasFlameBullet;
+        static const AnimData flamethrowerFlame; // just used for texture pointer...
         
-        static const std::array<sf::IntRect, 6> flamethrowerStart;
-        static const std::array<sf::IntRect, 6> flamethrowerOn;
-        static const std::array<sf::IntRect, 3> flamethrowerEnd;
+        static const SubRectData flamethrowerStart;
+        static const SubRectData flamethrowerOn;
+        static const SubRectData flamethrowerTurnOff;
+
         static const std::array<sf::IntRect, 8> shotgunLightning;
 
     };

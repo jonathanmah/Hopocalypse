@@ -143,7 +143,63 @@ const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {TextureUtil::GetTexture
 const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({41,4},{40,20})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({135,7},{34,10})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({442,540},{158,41})};
-const AnimData AnimUtil::ProjectileAnim:: redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
+const AnimData AnimUtil::ProjectileAnim::redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
+//         // Flamethrower animations
+
+//         // middle loop
+//         // 1 306x138 724,728
+
+//         // start
+//         // 1 same as middle 368 with same y
+//         // 2 
+//         // 3 
+//         // 4
+//         // 5
+//         // 6
+
+//         // end
+//         // 1 296x141 1136,736
+//         // 2 301x129 1106,900
+//         // 3 296x130 1108, 1087
+const AnimData AnimUtil::ProjectileAnim::flamethrowerFlame = {TextureUtil::GetTexture(projectiles), sf::IntRect({368,728},{306,138})};
+
+
+const SubRectData AnimUtil::ProjectileAnim::flamethrowerStart = {
+    {
+    sf::IntRect{{368,728},{306,138}},
+    sf::IntRect{{368,855},{306,138}},
+    sf::IntRect{{368,980},{306,138}},
+    sf::IntRect{{368,1110},{306,138}},
+    sf::IntRect{{368,1238},{306,138}},
+    sf::IntRect{{368,1370},{306,138}},
+    }, .1f 
+};
+
+const SubRectData AnimUtil::ProjectileAnim::flamethrowerOn = {
+    {
+    sf::IntRect{{724,728},{306,138}},
+    sf::IntRect{{724,855},{306,138}},
+    sf::IntRect{{724,980},{306,138}},
+    sf::IntRect{{724,1110},{306,138}},
+    sf::IntRect{{724,1238},{306,138}},
+    sf::IntRect{{724,1370},{306,138}},
+    }, .1f 
+};
+
+     // end
+//         // 1 296x141 1136,736
+//         // 2 301x129 1106,900
+//         // 3 296x130 1108, 1087
+const SubRectData AnimUtil::ProjectileAnim::flamethrowerTurnOff = {
+    {
+    sf::IntRect{{1136,736},{350,141}},
+    sf::IntRect{{1106,900},{350,129}},
+    sf::IntRect{{1108,1087},{350,130}},
+    }, .1f 
+};
+
+
+
 
 //         // get ready for some projectile coordinates :D
 
@@ -263,19 +319,21 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
 }
 
 // update a subrectangle vector, and hide when it's done 
-void AnimUtil::UpdateSubRect(SubRectData& subRectData, float deltaTime) {
-    if(subRectData.hide) return;
+bool AnimUtil::UpdateSubRect(SubRectData& subRectData, float deltaTime) {
+    if(subRectData.hide) return true;
     if(subRectData.deltaTimeSum >= subRectData.animSpeed) {
         subRectData.currFrame++;
         if(subRectData.currFrame >= subRectData.frameSequence.size()){
             subRectData.currFrame = 0;
             if(subRectData.repeat){
-                return;
+                return false;
             } else {
                 subRectData.hide = true;
+                return true;
             }
         }
         subRectData.deltaTimeSum = 0.f;
     }
     subRectData.deltaTimeSum += deltaTime;
+    return false;
 }
