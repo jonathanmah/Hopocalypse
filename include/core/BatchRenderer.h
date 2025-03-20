@@ -73,7 +73,7 @@ public:
          window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
      }
 
-     //template <typename T>
-    void BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames);
+    
+    void BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames, float initialRadius);
 };
 

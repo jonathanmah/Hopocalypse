@@ -52,9 +52,9 @@ void GameState::InitPlayers() {
 }
 
 void GameState::InitMonsters() {
-    //SetRandomMonsterSpawn(5000);
+    SetRandomMonsterSpawn(300);
     //SetCollateralLineup();
-    SetSingleTest();
+    //SetSingleTest();
 }
 
 void GameState::Update(float deltaTime) {

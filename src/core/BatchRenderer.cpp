@@ -56,29 +56,30 @@ void BatchRenderer::AddRectangleToBatch(const sf::RectangleShape& rectShape, std
 }
 
 
-constexpr int CIRCLE_SEGMENTS = 100;  // More segments = smoother circles
+constexpr float CIRCLE_SEGMENTS = 50.f;
 
-void BatchRenderer::BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames) {
+void BatchRenderer::BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames, float initalRadius) {
     sf::VertexArray vertices(sf::PrimitiveType::Triangles);
     std::vector<sf::Vector2f> unitCircle;
     for (int i = 0; i <= CIRCLE_SEGMENTS; ++i) {
-        float angle = (i / static_cast<float>(CIRCLE_SEGMENTS)) * 2 * M_PI;
-        unitCircle.push_back({std::cos(angle), std::sin(angle)});
+        // get radians of circle split evenly
+        float angleInRadians = (i / CIRCLE_SEGMENTS) * 2 * M_PI; //2PI represent whole circle
+        // unit circle so radius(hypotenuse) is 1, cos angle is x coord, sin is y coord
+        unitCircle.push_back({std::cos(angleInRadians), std::sin(angleInRadians)});
     }
     for (const Flame& flame : flames) {
         sf::Vector2f center = flame.position;
         sf::Color colour = flame.colour;
         float radius = 10.f * flame.size;
-        int startIndex = vertices.getVertexCount();
-        vertices.append(sf::Vertex({center, colour}));
-        for (int i = 0; i <= CIRCLE_SEGMENTS; ++i) {
-            sf::Vector2f outerPos = center + unitCircle[i] * radius;
-            vertices.append(sf::Vertex({outerPos, colour}));
-            if (i > 0) {
-                vertices.append(vertices[startIndex]);
-                vertices.append(vertices[startIndex + i]);
-                vertices.append(vertices[startIndex + i + 1]);
-            }
+        // create a circle made up of triangles, all have same center vertex, with the outer verts
+        // made by scaling the unit circle with the given radius
+        for (int i = 0; i < CIRCLE_SEGMENTS; ++i) {
+            sf::Vector2f p1 = center + unitCircle[i] * radius;
+            sf::Vector2f p2 = center + unitCircle[i+1] * radius;
+            
+            vertices.append(sf::Vertex({center, colour}));    
+            vertices.append(sf::Vertex({p1, colour}));
+            vertices.append(sf::Vertex({p2, colour}));
         }
     }
     window.draw(vertices, sf::RenderStates(sf::BlendAdd));

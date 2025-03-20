@@ -43,17 +43,18 @@ Weapon(AnimUtil::WeaponAnim::flamethrower,
 {
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
 }
-// sf::Color randomFlameColor() { // BEST 
-//     int r = 200 + RandomUtil::GetRandomInt(40,55);
-//     int g = 100 + RandomUtil::GetRandomInt(0,155);
-//     int b = 50;  
-//     int a = 15.f;
-//     return sf::Color(r, g, b, a);
-// }
-sf::Color randomFlameColor() {
+
+sf::Color randomFlameColour() {
     int r = 200 + RandomUtil::GetRandomInt(40,55);
     int g = 100 + RandomUtil::GetRandomInt(0,155);
     int b = 50;  
+    int a = 15.f;
+    return sf::Color(r, g, b, a);
+}
+sf::Color randomUpgradedFlameColour() {
+    int r = 50;
+    int g = 100 + RandomUtil::GetRandomInt(0,155);
+    int b = 200 + RandomUtil::GetRandomInt(40,55);  
     int a = 15.f;
     return sf::Color(r, g, b, a);
 }
@@ -74,10 +75,8 @@ void Flamethrower::ShootFlame() {
         sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
         sf::Vector2f velocity = adjustedNormal * RandomUtil::GetRandomFloat(500,800);//RandomUtil::GetRandomFloat(400,700); //500-800 original
         sf::Vector2f newPos = {muzzlePosition.x + RandomUtil::GetRandomInt(-5,5) , muzzlePosition.y + RandomUtil::GetRandomInt(-5,5)};
-        if(sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
-            newPos = muzzlePosition;
-        }
-        Flame flame{newPos, velocity, INIT_FLAME_LIFETIME, 1.0f,randomFlameColor() };
+        sf::Color flameColour = !isUpgraded ? randomFlameColour() : randomUpgradedFlameColour();
+        Flame flame{newPos, velocity, INIT_FLAME_LIFETIME, 1.0f, flameColour};
         flames.push_back(flame);
     }
 }
@@ -94,8 +93,10 @@ void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, 
         if(flame.lifetime > 0.25f*INIT_FLAME_LIFETIME) {
             for (Monster& monster : closeMonsters) {
                 if(monster.flameTimer <= 0.f && monster.GetGlobalBounds().contains(flame.position)){
+                    int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
                     monster.TakeDamage(15);
-                    monster.flameTimer = 0.2f;
+                    float newFlameTimer = !isUpgraded ? 0.2f : 0.1f;
+                    monster.flameTimer = newFlameTimer;
                     if(!monster.burnt && monster.health <= 0.f){
                         auto updateColour = monster.GetSprite().getColor();
                         updateColour.r = updateColour.r * 0.15f;
@@ -134,18 +135,7 @@ void Flamethrower::UpgradeWeapon() {
 
 void Flamethrower::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
-//    batchRenderer.BatchRenderFlames(window, flames);
-    float radius = 10.f;
-    sf::CircleShape circle{radius};
-    circle.setOrigin(circle.getGeometricCenter());
-    sf::RenderStates blendMode;
-    blendMode.blendMode = sf::BlendAdd;
-    for (Flame& flame : flames) {
-        circle.setPosition(flame.position);
-        circle.setFillColor(flame.colour);
-        circle.setScale({flame.size, flame.size});
-        window.draw(circle, blendMode);
-    }
+    batchRenderer.BatchRenderFlames(window, flames, 10.f);
    //HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite, sf::Color::Yellow);
    //HitboxDebugger::DrawSpriteOrigin(window, sprite, sf::Color::Cyan);
 }
