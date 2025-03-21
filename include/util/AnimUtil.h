@@ -126,7 +126,10 @@ public:
         static const AnimData nuke;
         static const SubRectData rpgBackfire;
         static const SubRectData rpgSmoke;
-    
+    };
+
+    struct StatusFxAnim {
+        static const AnimData frozen;
     };
 
     struct ProjectileAnim {
@@ -146,13 +149,8 @@ public:
         static const AnimData whiteLaser;
         static const AnimData smallRedLaser;
         static const AnimData famasFlameBullet;
-        static const AnimData flamethrowerFlame; // just used for texture pointer...
-        
-        static const SubRectData flamethrowerStart;
-        static const SubRectData flamethrowerOn;
-        static const SubRectData flamethrowerTurnOff;
-
-        static const std::array<sf::IntRect, 8> shotgunLightning;
+        static const AnimData lightningBullet;
+        static const AnimData iceBullet;
 
     };
 };

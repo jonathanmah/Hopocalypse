@@ -17,7 +17,7 @@ struct Flame {
 };
 
 
-
+class Player;
 class BatchRenderer;
 class Projectile;
 class GameState;
@@ -29,6 +29,7 @@ struct ProjectileData {
     float scale;
     int collateralCount;
     float acceleration = 1.f;
+    float lifetime = 3.f;
 };
 
 struct WeaponData {
@@ -87,7 +88,7 @@ public:
     Weapon(AnimData animData, ProjectileData projectileData, WeaponData weaponData);
     virtual ~Weapon() = default;
     // need to make this virtual for akimbo uzi
-    virtual void Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime);
+    virtual void Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime);
     // override to create a different projectile
     virtual void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) = 0;
     // override to handle upgrading

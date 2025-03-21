@@ -17,11 +17,8 @@ class Projectile {
 
 protected:
     sf::Sprite sprite;
-    static sf::Texture texture;
-    sf::Vector2f position;
-    sf::Vector2f velocity;
+    AnimData animData;
     float scale;
-    float damage;
     float acceleration;
     int collateralCount;
     std::unordered_set<int> hitCharacters;
@@ -29,6 +26,11 @@ protected:
     
 
 public:
+    sf::Vector2f velocity;
+    sf::Vector2f position;
+    float damage;
+    float lifetime;
+    
     Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized);
 
     bool HasHit(int characterId);
@@ -42,10 +44,11 @@ public:
 
     // THIS UPDATE BELOW IS ON COLLISION
     // creating this to make virtual function that can be overidden by rpg for explosions
-    virtual void UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-        std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId);
+    virtual void UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
+        std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe);
     void Rotate(sf::Vector2f velocity);
     void SetPosition(sf::Vector2f position);
+    void UpdateAnimation(float deltaTime);
 
     inline sf::Sprite& GetSprite() { return sprite;}
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}

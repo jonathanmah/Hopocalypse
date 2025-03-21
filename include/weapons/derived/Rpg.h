@@ -28,6 +28,6 @@ public:
 
     RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized, AnimData explosion);
     void UpdatePosition(float deltaTime) override;
-    void UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-        std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId) override;
+    void UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
+        std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) override;
 };

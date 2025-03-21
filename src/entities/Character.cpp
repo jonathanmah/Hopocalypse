@@ -78,15 +78,16 @@ void Character::UpdateCollisions(GameState& state){
         // maybe run another loop through AOE, and determine what to do to intersections with it
         // elsewhere, just use this as an entry for creating the AOE
         if(this->GetGlobalBounds().findIntersection((*it)->GetGlobalBounds()) && isAlive){
+            
+            // if projectile hasn't went through a monster hitbox yet
             if(!(*it)->HasHit(id)){
                 Blood::CreateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), state.bloodSpray, state.groundBlood);
-                
                 // UPDATES DAMAGE ELSWHERE. AFTER EXPLOSION LOOPS. this just for 
                 // projectile making contact.x
                 TakeDamage((*it)->GetDamage());
             }
             // ADD NEW AOE HERE
-            (*it)->UpdateProjectileStatus(state.projectiles, it, state.aoe, id);
+            (*it)->UpdateProjectileStatus(*this, state.projectiles, it, state.aoe);
         } else {
             ++it;
         }

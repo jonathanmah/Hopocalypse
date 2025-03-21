@@ -11,6 +11,7 @@ static const std::string& blood = "../assets/textures/fx/blood_atlas.png";
 static const std::string& explosionTexture = "../assets/textures/fx/explosion.png";
 static const std::string& explosionAltTexture = "../assets/textures/fx/explosionAlt.png";
 static const std::string& nukeTexture = "../assets/textures/fx/nuke.png";
+static const std::string& statusEffects = "../assets/textures/fx/status_effects.png";
 
 
 // PLAYER
@@ -123,83 +124,37 @@ const SubRectData AnimUtil::WeaponFxAnim::rpgSmoke = {
 const AnimData AnimUtil::WeaponFxAnim::explosion = {TextureUtil::GetTexture(explosionTexture), sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5};
 const AnimData AnimUtil::WeaponFxAnim::nuke = {TextureUtil::GetTexture(nukeTexture), sf::IntRect({0,0},{256,128}), 256, 0, 12, .05f, 0.f, 3};
 const AnimData AnimUtil::WeaponFxAnim::explosionAlt = {TextureUtil::GetTexture(explosionAltTexture), sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3};
-//         // SMOKE ANIMATIONS RPG/SNIPER
-//         // 1 50x53 541 632
-//         // 2 50x53 671, 632
-//         // 3 50x53 798, 632 
-//         // 4 50x62 928, 626
-//         // 5 60x70 1049, 623
-//         // 6 67x73 1174, 617
-//         // 7 67x74 1303, 623
-//         // 8 70x69 1425, 623
 
 
-//static const std::array<sf::IntRect, 3> rpgBackfire;
-  //      static const std::array<sf::IntRect, 8> rpgSmoke;
+const AnimData AnimUtil::StatusFxAnim::frozen = {TextureUtil::GetTexture(explosionAltTexture), sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3};
 
 
 const AnimData AnimUtil::ProjectileAnim::medBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({109,7},{19,9})};
+const AnimData AnimUtil::ProjectileAnim::shotgunPelletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({177,7},{16,10})};
 const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({4,4},{36,17})};
 const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({41,4},{40,20})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({135,7},{34,10})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({442,540},{158,41})};
+    // laser yellow 192,47 124x71 hit 196,72 same
+//         // laser orange 365,45 121x70 hit 374,72 same
+//         // laser purple 553,47, 121x70 hit 558,72 same
+//         // laser white 729, 49, 109x58 hit 732, 72 same
 const AnimData AnimUtil::ProjectileAnim::redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
-//         // Flamethrower animations
+const AnimData AnimUtil::ProjectileAnim::yellowLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({192,47},{124,71})};
+const AnimData AnimUtil::ProjectileAnim::orangeLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({365,45},{121,70})};
+const AnimData AnimUtil::ProjectileAnim::purpleLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({553,47},{121,70})};
+const AnimData AnimUtil::ProjectileAnim::whiteLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({729,49},{109,58})};
 
-//         // middle loop
-//         // 1 306x138 724,728
+const AnimData AnimUtil::ProjectileAnim::lightningBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({89,137},{149,37}), 192, 0, 5, .05f, 0.f};
+// 0,595 , 619 lowest 96-137x =41x 24y +6x offset
+const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 47, 0, 10, .1f, 0.f};
 
-//         // start
-//         // 1 same as middle 368 with same y
-//         // 2 
-//         // 3 
-//         // 4
-//         // 5
-//         // 6
-
-//         // end
-//         // 1 296x141 1136,736
-//         // 2 301x129 1106,900
-//         // 3 296x130 1108, 1087
-const AnimData AnimUtil::ProjectileAnim::flamethrowerFlame = {TextureUtil::GetTexture(projectiles), sf::IntRect({368,728},{306,138})};
-
-
-const SubRectData AnimUtil::ProjectileAnim::flamethrowerStart = {
-    {
-    sf::IntRect{{368,728},{306,138}},
-    sf::IntRect{{368,855},{306,138}},
-    sf::IntRect{{368,980},{306,138}},
-    sf::IntRect{{368,1110},{306,138}},
-    sf::IntRect{{368,1238},{306,138}},
-    sf::IntRect{{368,1370},{306,138}},
-    }, .1f 
-};
-
-const SubRectData AnimUtil::ProjectileAnim::flamethrowerOn = {
-    {
-    sf::IntRect{{724,728},{306,138}},
-    sf::IntRect{{724,855},{306,138}},
-    sf::IntRect{{724,980},{306,138}},
-    sf::IntRect{{724,1110},{306,138}},
-    sf::IntRect{{724,1238},{306,138}},
-    sf::IntRect{{724,1370},{306,138}},
-    }, .1f 
-};
-
-     // end
-//         // 1 296x141 1136,736
-//         // 2 301x129 1106,900
-//         // 3 296x130 1108, 1087
-const SubRectData AnimUtil::ProjectileAnim::flamethrowerTurnOff = {
-    {
-    sf::IntRect{{1136,736},{350,141}},
-    sf::IntRect{{1106,900},{350,129}},
-    sf::IntRect{{1108,1087},{350,130}},
-    }, .1f 
-};
-
-
-
+// lightning bullet
+//89,137  149x37
+//281,137 149x37 192 diff above
+//474,137 149x37 193 diff above
+//664, 137 149x37 190 diff above
+//856,137 149x37 192 diff above
 
 //         // get ready for some projectile coordinates :D
 
@@ -224,26 +179,6 @@ const SubRectData AnimUtil::ProjectileAnim::flamethrowerTurnOff = {
 //         // laser pistol bullet 1070, 69 118x103, hit 1107,102 42x30
 //         // black outline laser 1073,188 119x65, hit 1095,204 83x33 
 //         // flame bullet 1058,312 146x69 hit 1064,333 117x31
-        
-
-//         // MUZZLE FLASHES 
-//         // 1  TL 1272, 13 82x52 for 3 no space
-//         // 2 1273,96 83x47  for 3 no space
-//         // 3  1271, 171 85x53 for 3 no space
-//         // 4 1268,247 82x62 for 3 no space
-//         // 5 1273, 326 82x58 for 3 no space
-            // rpg back flash1 8,268 62x56
-            // rpg back flash2 75,269 61x60
-            // rpg back flash3 139,270 59x61
-//         // SMOKE ANIMATIONS RPG/SNIPER
-//         // 1 50x53 541 632
-//         // 2 50x53 671, 632
-//         // 3 50x53 798, 632 
-//         // 4 50x62 928, 626
-//         // 5 60x70 1049, 623
-//         // 6 67x73 1174, 617
-//         // 7 67x74 1303, 623
-//         // 8 70x69 1425, 623
 
 //         // Lightning Animations
 //         // 237x54 18,790
@@ -254,25 +189,6 @@ const SubRectData AnimUtil::ProjectileAnim::flamethrowerTurnOff = {
 //         // 237x55 20, 1092
 //         // 228x54 22, 1162
 //         // 230x57 22, 1218
-
-//         // Flamethrower animations
-
-//         // middle loop
-//         // 1 306x138 724,728
-
-//         // start
-//         // 1 same as middle 368 with same y
-//         // 2 
-//         // 3 
-//         // 4
-//         // 5
-//         // 6
-
-//         // end
-//         // 1 296x141 1136,736
-//         // 2 301x129 1106,900
-//         // 3 296x130 1108, 1087
-
 
 // // Commonly used function for updating a sprite animation given delta time and animation
 // // returns TRUE if it has reached it's last frame.  This can be used with iterator to remove in place after a

@@ -11,7 +11,7 @@ class Character {
 
 protected:
     sf::Sprite sprite;
-    AnimData animData;
+    
     bool createLeftFootNext;
     float footprintDecayTimer;
     float footprintDtSumFrame;
@@ -26,6 +26,7 @@ public:
     int health;
     int id;
     Hud hud;
+    AnimData animData;
 
     void TakeDamage(int damage);
     sf::FloatRect GetFootCollider();

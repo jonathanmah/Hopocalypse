@@ -11,10 +11,10 @@ static const ProjectileData famasBulletReg = {
 };
 
 static const ProjectileData famasBulletUpgrade = {
-    AnimUtil::ProjectileAnim::redLaser,
-    60.f, // speed
+    AnimUtil::ProjectileAnim::iceBullet,
+    9.f, // speed
     150.f, // damage 
-    1.f, // bullet scale
+    1.3f, // bullet scale
     1, // collateral count
 };
 
@@ -68,12 +68,12 @@ void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, 
     }
 }
 
-void Famas::Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
+void Famas::Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) {
     attemptShotTimer = std::max(0.f, attemptShotTimer-deltaTime);
     UpdateMuzzleFlashes(deltaTime);
     UpdateShells(deltaTime); 
     SetMousePosGlobal(mousePosGlobal);
-     UpdateBase(characterPosition, deltaTime);
+     UpdateBase(player.GetPosition(), deltaTime);
      if(attemptShotTimer > 0 || sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
          AttemptShoot(state.projectiles, deltaTime);
      } else {

@@ -10,6 +10,8 @@
 #include "weapons/derived/Rpg.h"
 #include "weapons/derived/Uzi.h"
 #include "weapons/derived/Flamethrower.h"
+#include "weapons/derived/M1014.h"
+#include "weapons/derived/M240.h"
 
 /*
     Construct a player
@@ -116,6 +118,12 @@ void Player::CycleWeapons() {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::V)) {
         currWeapon->UpgradeWeapon();
     }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::M)) {
+        currWeapon = std::make_unique<M1014>();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
+        currWeapon = std::make_unique<M240>(*this);
+    }
 }
 
 void Player::SetMousePositions(sf::RenderWindow& window) {
@@ -166,7 +174,7 @@ void Player::Update(GameState& state, float deltaTime){
     // Handle key presses for movement, update footprints
     Player::Move(playerState, state, deltaTime);
 
-    currWeapon->Update(state, GetPosition(), mousePosGlobal, deltaTime);
+    currWeapon->Update(state, *this, mousePosGlobal, deltaTime);
    
     if (Player::currState != playerState) {
         Player::SetAnimDataByState(playerState);

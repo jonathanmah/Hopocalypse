@@ -20,7 +20,7 @@ sf::Vector2f muzzleSecondOffset;
     
     void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
-    void Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) override;
+    void Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) override;
     void Draw(sf::RenderWindow& window, BatchRenderer& BatchRenderer) override;
     void UpdateBase(sf::Vector2f characterPosition, float deltaTime) override;
     void UpdateBaseTransformations(sf::Vector2f characterPosition, float deltaTime) override;

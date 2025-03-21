@@ -16,7 +16,7 @@ public:
 
 
     Flamethrower();
-    void Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) override;
+    void Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) override;
     void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
     void UpdateFireEffects(float deltaTime);

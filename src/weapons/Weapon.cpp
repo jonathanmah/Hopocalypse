@@ -186,13 +186,13 @@ void Weapon::SetMuzzlePosition() {
 
 // ------------------------ UPDATE ENTRY POINT FROM CHARACTER ---------------------------------------------------
 
-void Weapon::Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
+void Weapon::Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) {
    UpdateMuzzleFlashes(deltaTime); // update effects
    UpdateShells(deltaTime);
 
    SetMousePosGlobal(mousePosGlobal);
 //    Update transformations / any other derived overrides
-    UpdateBase(characterPosition, deltaTime);
+    UpdateBase(player.GetPosition(), deltaTime);
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         AttemptShoot(state.projectiles, deltaTime);
     } else {

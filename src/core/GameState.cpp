@@ -48,12 +48,12 @@ void GameState::SetCollateralLineup(){
 
 void GameState::InitPlayers() {
     Player bunny(AnimUtil::PlayerAnim::stand, {1200/2,700/2});
-    players.push_back(std::move(bunny)); // #TODO WHY THE FUCK CAN I NOT EMPLACE BACK, b/c static const?
+    players.push_back(std::move(bunny)); // why cant emplace back
 }
 
 void GameState::InitMonsters() {
-    SetRandomMonsterSpawn(300);
-    //SetCollateralLineup();
+    //SetRandomMonsterSpawn(300);
+    SetCollateralLineup();
     //SetSingleTest();
 }
 
@@ -90,7 +90,7 @@ void GameState::RenderCharacters() {
         if(!monster->isAlive)
             monstersDead.push_back(*monster);
     }
-    batchRenderer->BatchRenderCharacters(monstersDead); // monsters change and use polymorphism
+    batchRenderer->BatchRenderCharacters(monstersDead);
     batchRenderer->BatchRenderCharacters(monstersAlive); //remove this batch renderer func later when 
     for (Player& player: players) {
         player.Draw(window, *batchRenderer);

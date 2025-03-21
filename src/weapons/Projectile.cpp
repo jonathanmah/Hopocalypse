@@ -16,8 +16,9 @@ static constexpr float COLLATERAL_REDUCTION_FACTOR = 0.8f;
 */
 
 Projectile::Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
-: sprite(*projectileData.anim.texture), velocity(projectileData.speed*normalized), damage(projectileData.damage), 
-collateralCount(projectileData.collateralCount), scale(projectileData.scale), acceleration(projectileData.acceleration) {
+: sprite(*projectileData.anim.texture), animData(projectileData.anim), velocity(projectileData.speed*normalized), damage(projectileData.damage), 
+collateralCount(projectileData.collateralCount), scale(projectileData.scale), acceleration(projectileData.acceleration),
+lifetime(projectileData.lifetime) {
     sprite.setTextureRect(sf::IntRect(projectileData.anim.textureFrame.position, projectileData.anim.textureFrame.size));
     sprite.setPosition({position.x, position.y});
     sprite.setScale({scale, scale});
@@ -33,16 +34,16 @@ bool Projectile::HasHit(int characterId) {
     return false;
 }
 
-// logic to update when a projectile collides
-void Projectile::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId) {
+// logic to update when a projectile collides, also any extra collision effects can be done here
+void Projectile::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
     if(GetCollateralCount() > 1) {
-        if(HasHit(characterId)){
+        if(HasHit(character.id)){
             ++it;
             return;
         }
         DecrementCollateralCount();
         SetDamage(GetDamage()*COLLATERAL_REDUCTION_FACTOR);
-        hitCharacters.insert(characterId);
+        hitCharacters.insert(character.id);
         ++it;
     } else {
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
@@ -68,26 +69,25 @@ Update the projectile position and rotation based on its velocity
 void Projectile::UpdatePosition(float deltaTime) {
     sprite.setPosition(GetPosition() + velocity);
     Rotate(velocity);
+}
 
+void Projectile::UpdateAnimation(float deltaTime) {
+    AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
 }
 
 // Update the position of every projectile
 void Projectile::UpdateProjectiles(GameState& state, float deltaTime) {
-    for(std::unique_ptr<Projectile>& projectile: state.projectiles) {
-        projectile->UpdatePosition(deltaTime);
+    for (auto it = state.projectiles.begin(); it != state.projectiles.end();) {
+        if ((*it)->lifetime < 0.f) {
+            it = state.projectiles.erase(it);
+        } else {
+            (*it)->UpdatePosition(deltaTime);
+            (*it)->UpdateAnimation(deltaTime);
+            (*it)->lifetime -= deltaTime;
+            ++it;
+        }
     }
 }
-
-// #DEV MODE - render the projectile hitbox
-// void DrawHit(sf::Sprite& sprite, sf::RenderWindow& window) {
-//     sf::FloatRect bounds = sprite.getGlobalBounds();
-//     sf::RectangleShape rect(sf::Vector2f(bounds.size));
-//     rect.setPosition(bounds.position);
-//     rect.setFillColor(sf::Color::Transparent);
-//     rect.setOutlineColor(sf::Color::Red);
-//     rect.setOutlineThickness(2.0f);
-//     window.draw(rect);
-// }
 
 // render a projectile
 void Projectile::Draw(sf::RenderWindow& window) {

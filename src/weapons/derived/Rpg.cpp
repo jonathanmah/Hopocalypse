@@ -140,8 +140,8 @@ void RPGrocket::UpdatePosition(float deltaTime) {
     velocity =  velocity*(1 + acceleration*deltaTime);
 }
 
-void RPGrocket::UpdateProjectileStatus(std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe, int characterId) {
+void RPGrocket::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
+    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
     // set a detonate flag?? handle explosives somehow?
     //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
     sf::Vector2f pos = (*it)->GetPosition();

@@ -116,9 +116,9 @@ void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, 
     }
 }
 
-void Flamethrower::Update(GameState& state, sf::Vector2f characterPosition, sf::Vector2f mousePosGlobal, float deltaTime) {
+void Flamethrower::Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) {
     SetMousePosGlobal(mousePosGlobal);
-    UpdateBase(characterPosition, deltaTime);
+    UpdateBase(player.GetPosition(), deltaTime);
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         ShootFlame();
     } else {
