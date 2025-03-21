@@ -126,19 +126,18 @@ const AnimData AnimUtil::WeaponFxAnim::nuke = {TextureUtil::GetTexture(nukeTextu
 const AnimData AnimUtil::WeaponFxAnim::explosionAlt = {TextureUtil::GetTexture(explosionAltTexture), sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3};
 
 
-const AnimData AnimUtil::StatusFxAnim::frozen = {TextureUtil::GetTexture(explosionAltTexture), sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3};
+const AnimData AnimUtil::StatusFxAnim::frozen = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,0},{100,91}), 100, 0, 10, .3f};
 
 
+
+const AnimData AnimUtil::ProjectileAnim::smallBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({90,8},{9,7})};
 const AnimData AnimUtil::ProjectileAnim::medBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({109,7},{19,9})};
 const AnimData AnimUtil::ProjectileAnim::shotgunPelletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({177,7},{16,10})};
 const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({4,4},{36,17})};
 const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({41,4},{40,20})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({135,7},{34,10})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({442,540},{158,41})};
-    // laser yellow 192,47 124x71 hit 196,72 same
-//         // laser orange 365,45 121x70 hit 374,72 same
-//         // laser purple 553,47, 121x70 hit 558,72 same
-//         // laser white 729, 49, 109x58 hit 732, 72 same
+
 const AnimData AnimUtil::ProjectileAnim::redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
 const AnimData AnimUtil::ProjectileAnim::yellowLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({192,47},{124,71})};
 const AnimData AnimUtil::ProjectileAnim::orangeLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({365,45},{121,70})};
@@ -146,16 +145,9 @@ const AnimData AnimUtil::ProjectileAnim::purpleLaser= {TextureUtil::GetTexture(p
 const AnimData AnimUtil::ProjectileAnim::whiteLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({729,49},{109,58})};
 
 const AnimData AnimUtil::ProjectileAnim::lightningBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({89,137},{149,37}), 192, 0, 5, .05f, 0.f};
-// 0,595 , 619 lowest 96-137x =41x 24y +6x offset
-const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 47, 0, 10, .1f, 0.f};
-
-// lightning bullet
-//89,137  149x37
-//281,137 149x37 192 diff above
-//474,137 149x37 193 diff above
-//664, 137 149x37 190 diff above
-//856,137 149x37 192 diff above
-
+const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 41, 0, 10, .1f, 0.f};
+const AnimData AnimUtil::ProjectileAnim::atomBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({308,803},{62,62}), 102, 0, 12, .05f, 0.f, 3, 102};
+//307x410 288,783 // total 102x each 102.5y  // 370,804 other side // 866 y is bottom
 //         // get ready for some projectile coordinates :D
 
 //         // rpg rocket 4,4  36x17
@@ -220,7 +212,7 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
             // update the sub rectangle of the texture to point to the next frame
             // frame spacing is inclusive of frame, amount to increment x each frame
             int posX = animData.textureFrame.position.x + (animData.currFrame % animData.rowLength) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
-            int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.textureFrame.size.y; // get the Y
+            int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.yFrameSpacing; // get the Y
             sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
             animData.currFrame++;
             // if the last frame of a sequence has been rendered, loop back to the first one

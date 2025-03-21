@@ -102,7 +102,7 @@ void GameState::Render() {
     map->Draw(window);
     Blood::RenderBlood(*this, window);
     RenderCharacters();
-    Projectile::RenderProjectiles(*this, false);
+    Projectile::RenderProjectiles(*this, true);
     AoE::RenderAoE(*this, true); // render foreground aoe and bg separately...
     window.display();
 }

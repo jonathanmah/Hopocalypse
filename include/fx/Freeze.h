@@ -2,9 +2,9 @@
 #include <SFML/Graphics.hpp>
 #include "AoE.h"
 
-class Explosion : public AoE {
+class Freeze : public AoE {
 
 public:
-    Explosion(AnimData animData, sf::Vector2f position);
+    Freeze(AnimData animData, sf::Vector2f position);
     bool Update(float deltaTime) override;
 };

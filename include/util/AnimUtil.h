@@ -13,6 +13,7 @@ struct AnimData {
     float animSpeed = 0.1f;
     float deltaTimeSum = 0.f;
     int rowLength = 100;
+    int yFrameSpacing = 0;
 };
 // 
 
@@ -151,6 +152,7 @@ public:
         static const AnimData famasFlameBullet;
         static const AnimData lightningBullet;
         static const AnimData iceBullet;
+        static const AnimData atomBullet;
 
     };
 };

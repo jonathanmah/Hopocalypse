@@ -56,7 +56,7 @@ void BatchRenderer::AddRectangleToBatch(const sf::RectangleShape& rectShape, std
 }
 
 
-constexpr float CIRCLE_SEGMENTS = 50.f;
+constexpr float CIRCLE_SEGMENTS = 50.f; // 50 orig
 
 void BatchRenderer::BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames, float initalRadius) {
     sf::VertexArray vertices(sf::PrimitiveType::Triangles);

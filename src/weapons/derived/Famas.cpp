@@ -1,6 +1,7 @@
 #include <iostream>
 #include "weapons/derived/Famas.h"
 #include "core/GameState.h"
+#include "fx/Freeze.h"
 
 static const ProjectileData famasBulletReg = {
     AnimUtil::ProjectileAnim::medBulletReg,
@@ -13,7 +14,7 @@ static const ProjectileData famasBulletReg = {
 static const ProjectileData famasBulletUpgrade = {
     AnimUtil::ProjectileAnim::iceBullet,
     9.f, // speed
-    150.f, // damage 
+    0.f, // damage 
     1.3f, // bullet scale
     1, // collateral count
 };
@@ -45,7 +46,11 @@ Weapon(AnimUtil::WeaponAnim::famas,
 }
 void Famas::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles){
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
-    projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
+    if(!isUpgraded){
+        projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
+    } else {
+        projectiles.emplace_back(std::make_unique<FamasIceBullet>(projectileData, muzzlePosition, adjustedNormal));
+    }
 }
 
 
@@ -86,4 +91,23 @@ void Famas::UpgradeWeapon() {
     sprite.setTextureRect(AnimUtil::WeaponAnim::famasUpgraded);
     projectileData = famasBulletUpgrade;
     isUpgraded = true;
+}
+
+
+FamasIceBullet::FamasIceBullet(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
+: Projectile(projectileData, position, normalized) {
+}
+
+void FamasIceBullet::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
+    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
+    
+    // character.activateStatusEffect(Ice)
+    sf::Vector2f pos = character.GetPosition();
+    if(!character.frozen){
+        aoe.emplace_back(std::make_unique<Freeze>(AnimUtil::StatusFxAnim::frozen,pos));
+        character.frozen = true;
+    }
+    // create a status effect class. 
+    it = projectiles.erase(it); 
+
 }

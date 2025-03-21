@@ -63,11 +63,11 @@ void M240::ActivateFiringEffects() {
     } else if(firingStreak >= 2.f && firingStreak < 4.f){ // yellow 
         projectileData.anim = AnimUtil::ProjectileAnim::yellowLaser;
         projectileData.damage += 5;
-        projectileData.scale = .2f;
+        projectileData.scale = .35f;
     } else if (firingStreak >= 4.f && firingStreak < 6.f){ // orange
         projectileData.anim = AnimUtil::ProjectileAnim::orangeLaser;
         projectileData.damage += 5;
-        projectileData.scale = .2f;
+        projectileData.scale = .35f;
     } else if (firingStreak >= 6.f && firingStreak < 8.f){ // red 
         projectileData.anim = AnimUtil::ProjectileAnim::redLaser;
         projectileData.damage += 5;

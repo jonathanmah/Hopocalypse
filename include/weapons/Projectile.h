@@ -48,7 +48,7 @@ public:
         std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe);
     void Rotate(sf::Vector2f velocity);
     void SetPosition(sf::Vector2f position);
-    void UpdateAnimation(float deltaTime);
+    virtual void UpdateAnimation(float deltaTime);
 
     inline sf::Sprite& GetSprite() { return sprite;}
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}

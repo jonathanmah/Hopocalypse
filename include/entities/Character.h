@@ -28,6 +28,8 @@ public:
     Hud hud;
     AnimData animData;
 
+    bool frozen;
+
     void TakeDamage(int damage);
     sf::FloatRect GetFootCollider();
     virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);
