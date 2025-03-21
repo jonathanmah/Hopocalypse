@@ -13,6 +13,7 @@
 #include "weapons/derived/M1014.h"
 #include "weapons/derived/M240.h"
 #include "weapons/derived/M9.h"
+#include "weapons/derived/Magnum.h"
 
 /*
     Construct a player
@@ -127,6 +128,9 @@ void Player::CycleWeapons() {
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::N)) {
         currWeapon = std::make_unique<M9>();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+        currWeapon = std::make_unique<Magnum>();
     }
 
 }

@@ -41,7 +41,13 @@ bool Monster::Update(GameState& state, float deltaTime){
     hud.Update(health, GetGlobalBounds());
     if(isAlive) {
         AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
-        Monster::Move(state.players);
+
+        // check if certain state before moving towards players
+        if(knockbackDebt > 0.f) {
+            Knockback();
+        } else {
+            Monster::Move(state.players);
+        }
     } else {
         Monster::HandleDeath(deltaTime);
         if(timeSinceDeath > DISAPPEAR_TIME) {

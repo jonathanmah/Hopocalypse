@@ -129,4 +129,9 @@ void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, GameState& sta
         footprintDecayTimer -= deltaTime;
     }
 }
+
+void Character::Knockback() {
+    sprite.move(knockbackVector);
+    knockbackDebt = std::max(0.f, knockbackDebt - knockbackVector.length());
+}
         

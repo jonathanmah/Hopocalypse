@@ -3,7 +3,6 @@
 
 static constexpr float PELLET_SPREAD_SCALAR = .015f;
 static constexpr float UPGRADE_SPREAD_SCALAR = .02f;
-static constexpr float KNOCKBACK_SCALAR = 10.f;
 
 static const ProjectileData m1014BulletReg = {
     AnimUtil::ProjectileAnim::shotgunPelletReg,
@@ -87,7 +86,5 @@ M1014ShellUpgraded::M1014ShellUpgraded(ProjectileData projectileData, sf::Vector
 void M1014ShellUpgraded::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
     std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
     
-    sf::Vector2f velocityNormalized = ((*it)->velocity).normalized();
-    character.GetSprite().move(velocityNormalized*KNOCKBACK_SCALAR);
     it = projectiles.erase(it); 
 }

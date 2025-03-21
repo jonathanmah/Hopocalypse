@@ -147,6 +147,12 @@ const AnimData AnimUtil::ProjectileAnim::whiteLaser= {TextureUtil::GetTexture(pr
 const AnimData AnimUtil::ProjectileAnim::lightningBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({89,137},{149,37}), 192, 0, 5, .05f, 0.f};
 const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 41, 0, 10, .1f, 0.f};
 const AnimData AnimUtil::ProjectileAnim::atomBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({308,803},{62,62}), 102, 0, 12, .05f, 0.f, 3, 102};
+const AnimData AnimUtil::ProjectileAnim::waveBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({608,780},{97,153}), 210, 0, 8, .1f, 0.f, 3, 200};
+//614x614 total texture 97x153 608,780 
+// 2nd  97x153,         818x start, 780 again = 210
+//984 top of second row 200 y diff
+
+
 //307x410 288,783 // total 102x each 102.5y  // 370,804 other side // 866 y is bottom
 //         // get ready for some projectile coordinates :D
 

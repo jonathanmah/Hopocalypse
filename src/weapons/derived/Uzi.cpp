@@ -148,10 +148,6 @@ void Uzi::CreateShell() {
 
 void Uzi::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
     if (weaponData.timeSinceShot > weaponData.fireRate) {
-
-        // maybe pass effects as a reference to use the same factory as projectile.
-        // call it derived ProjectileEffectsFactory
-        //projectiles.push_back(ProjectileFactory::CreateProjectile(this, GetPosition(), relative, GetTargetWithSpread(mousePosGlobal)));
         CreateProjectile(projectiles);
         IncreaseSpread();
         weaponData.timeSinceShot = 0.f;

@@ -28,6 +28,8 @@ public:
     Hud hud;
     AnimData animData;
 
+    float knockbackDebt;
+    sf::Vector2f knockbackVector;
     bool frozen;
 
     void TakeDamage(int damage);
@@ -38,7 +40,7 @@ public:
     inline sf::Sprite& GetSprite() { return sprite;}
     inline int GetId() {return id;}
     void UpdateFootprints(sf::Vector2f nextMoveNormalized, GameState& state, float deltaTime);
-
+    void Knockback();
 
 
 

@@ -153,6 +153,7 @@ public:
         static const AnimData lightningBullet;
         static const AnimData iceBullet;
         static const AnimData atomBullet;
+        static const AnimData waveBullet;
 
     };
 };

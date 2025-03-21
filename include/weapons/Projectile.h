@@ -18,7 +18,6 @@ class Projectile {
 protected:
     sf::Sprite sprite;
     AnimData animData;
-    float scale;
     float acceleration;
     int collateralCount;
     std::unordered_set<int> hitCharacters;
@@ -30,6 +29,7 @@ public:
     sf::Vector2f position;
     float damage;
     float lifetime;
+    float scale;
     
     Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized);
 
