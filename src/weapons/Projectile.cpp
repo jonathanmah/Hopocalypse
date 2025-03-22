@@ -35,7 +35,7 @@ bool Projectile::HasHit(int characterId) {
 }
 
 // logic to update when a projectile collides, also any extra collision effects can be done here
-void Projectile::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
+void Projectile::UpdateProjectileStatus(Character& character, GameState& state, std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     if(GetCollateralCount() > 1) {
         if(HasHit(character.id)){
             ++it;
@@ -47,7 +47,7 @@ void Projectile::UpdateProjectileStatus(Character& character, std::vector<std::u
         ++it;
     } else {
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
-        it = projectiles.erase(it);
+        it = state.projectiles.erase(it);
     }
     projectile_count++;
 }

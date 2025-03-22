@@ -20,7 +20,7 @@ Barrett50::Barrett50() :
 Weapon(AnimUtil::WeaponAnim::barrett50, 
     barrett50BulletReg,
         {
-            .95f, //scale 
+            1.1f, //scale 
             0.f, // baseOffsetX
             22.f, // baseOffsetY
             0.f, // x offset from muzzle

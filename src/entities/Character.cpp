@@ -26,7 +26,9 @@ Character::Character(AnimData animData, sf::Vector2f position, int health, float
     createLeftFootNext(true),
     footprintDecayTimer(0.f),
     footprintDtSumFrame(0.f),
-    id(ID_COUNTER++) {
+    id(ID_COUNTER++),
+    slowFactor(1.f),
+    slowedTimer(0.f) {
   
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setPosition(position);
@@ -87,7 +89,7 @@ void Character::UpdateCollisions(GameState& state){
                 TakeDamage((*it)->GetDamage());
             }
             // ADD NEW AOE HERE
-            (*it)->UpdateProjectileStatus(*this, state.projectiles, it, state.aoe);
+            (*it)->UpdateProjectileStatus(*this, state, it);
         } else {
             ++it;
         }

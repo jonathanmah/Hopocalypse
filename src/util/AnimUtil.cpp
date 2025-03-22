@@ -127,7 +127,7 @@ const AnimData AnimUtil::WeaponFxAnim::explosionAlt = {TextureUtil::GetTexture(e
 
 
 const AnimData AnimUtil::StatusFxAnim::frozen = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,0},{100,91}), 100, 0, 10, .3f};
-
+const AnimData AnimUtil::StatusFxAnim::paralyze = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,100},{128,128}), 128, 0, 8, .06f, 0.f};
 
 
 const AnimData AnimUtil::ProjectileAnim::smallBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({90,8},{9,7})};
@@ -145,9 +145,15 @@ const AnimData AnimUtil::ProjectileAnim::purpleLaser= {TextureUtil::GetTexture(p
 const AnimData AnimUtil::ProjectileAnim::whiteLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({729,49},{109,58})};
 
 const AnimData AnimUtil::ProjectileAnim::lightningBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({89,137},{149,37}), 192, 0, 5, .05f, 0.f};
-const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 41, 0, 10, .1f, 0.f};
+const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 49, 0, 10, .1f, 0.f};
 const AnimData AnimUtil::ProjectileAnim::atomBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({308,803},{62,62}), 102, 0, 12, .05f, 0.f, 3, 102};
 const AnimData AnimUtil::ProjectileAnim::waveBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({608,780},{97,153}), 210, 0, 8, .1f, 0.f, 3, 200};
+const AnimData AnimUtil::ProjectileAnim::electricBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,1434},{220,66}), 260, 0, 4, .06f, 0.f};
+
+                                                                                // 0, 1434 y  220 x 66, 260 x gap   
+
+
+// 
 //614x614 total texture 97x153 608,780 
 // 2nd  97x153,         818x start, 780 again = 210
 //984 top of second row 200 y diff

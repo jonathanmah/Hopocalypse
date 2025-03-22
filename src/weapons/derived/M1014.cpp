@@ -1,5 +1,7 @@
-#include "weapons/derived/M1014.h"
 #include <iostream>
+#include "weapons/derived/M1014.h"
+#include "core/GameState.h"
+
 
 static constexpr float PELLET_SPREAD_SCALAR = .015f;
 static constexpr float UPGRADE_SPREAD_SCALAR = .02f;
@@ -83,8 +85,8 @@ M1014ShellUpgraded::M1014ShellUpgraded(ProjectileData projectileData, sf::Vector
 : Projectile(projectileData, position, normalized) {
 }
 
-void M1014ShellUpgraded::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
+void M1014ShellUpgraded::UpdateProjectileStatus(Character& character, GameState& state, 
+    std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     
-    it = projectiles.erase(it); 
+    it = state.projectiles.erase(it); 
 }

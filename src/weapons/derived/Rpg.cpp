@@ -1,6 +1,7 @@
 #include "weapons/derived/Rpg.h"
 #include "util/TextureUtil.h"
 #include "fx/Explosion.h"
+#include "core/GameState.h"
 
 static const sf::Texture* PROJECTILE_TEXTURE = TextureUtil::GetTexture("../assets/textures/weapons/projectiles_atlas.png");
 static const float SMOKE_OFFSET_SCALAR = 15.f;
@@ -141,11 +142,11 @@ void RPGrocket::UpdatePosition(float deltaTime) {
     velocity =  velocity*(1 + acceleration*deltaTime);
 }
 
-void RPGrocket::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
+void RPGrocket::UpdateProjectileStatus(Character& character, GameState& state, 
+    std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     // set a detonate flag?? handle explosives somehow?
     //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
-    sf::Vector2f pos = (*it)->GetPosition();
-    aoe.emplace_back(std::make_unique<Explosion>(explosion,pos));
-    it = projectiles.erase(it); 
+    sf::Vector2f position = (*it)->GetPosition();
+    state.aoe.emplace_back(std::make_unique<Explosion>(explosion,position));
+    it = state.projectiles.erase(it); 
 }

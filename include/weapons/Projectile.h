@@ -44,8 +44,8 @@ public:
 
     // THIS UPDATE BELOW IS ON COLLISION
     // creating this to make virtual function that can be overidden by rpg for explosions
-    virtual void UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-        std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe);
+    virtual void UpdateProjectileStatus(Character& character, GameState& state, // passing state now for aoe, projectiles, status effects
+        std::vector<std::unique_ptr<Projectile>>::iterator& it);
     void Rotate(sf::Vector2f velocity);
     void SetPosition(sf::Vector2f position);
     virtual void UpdateAnimation(float deltaTime);

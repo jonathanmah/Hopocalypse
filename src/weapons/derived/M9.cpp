@@ -1,5 +1,7 @@
-#include "weapons/derived/M9.h"
 #include <iostream>
+#include "weapons/derived/M9.h"
+#include "core/GameState.h"
+
 
 static const ProjectileData m9BulletReg = {
     AnimUtil::ProjectileAnim::smallBulletReg,
@@ -69,12 +71,12 @@ void M9AtomBullet::UpdateAnimation(float deltaTime) {
     AnimUtil::UpdateSpriteXYAnim(sprite, animData, deltaTime);
 }
 
-void M9AtomBullet::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
+void M9AtomBullet::UpdateProjectileStatus(Character& character, GameState& state, 
+    std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     
     auto currScale = character.GetSprite().getScale();
     character.GetSprite().setScale(currScale*0.5f);
         // #TODO ALSO REDUCE DAMAGE OF ENEMIES
-    it = projectiles.erase(it); 
+    it = state.projectiles.erase(it); 
 
 }

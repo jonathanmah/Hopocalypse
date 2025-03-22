@@ -42,6 +42,16 @@ bool Monster::Update(GameState& state, float deltaTime){
     if(isAlive) {
         AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
 
+
+
+        if (slowedTimer > 0.f){
+            slowedTimer = std::max(0.f, slowedTimer-deltaTime);
+            //std::cout << "IN LOOP" << std::endl;
+            if(slowedTimer == 0.f) {
+                slowFactor = 1.f;
+                sprite.setColor(sf::Color(255, 255, 255));
+            }
+        }
         // check if certain state before moving towards players
         if(knockbackDebt > 0.f) {
             Knockback();
@@ -60,7 +70,7 @@ bool Monster::Update(GameState& state, float deltaTime){
 void Monster::Move(std::vector<Player>& players) {
     sf::Vector2f nextMove = players[0].GetPosition() - sprite.getPosition();
     if(nextMove.length() > 1.f){
-        nextMove = nextMove.normalized()*Monster::movementSpeed;
+        nextMove = nextMove.normalized()*(movementSpeed*slowFactor);
         if (nextMove.x < 0) {
             if(!xAxisInverted){
                 sprite.setScale({-scale, scale});

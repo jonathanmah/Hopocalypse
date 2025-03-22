@@ -14,6 +14,8 @@
 #include "weapons/derived/M240.h"
 #include "weapons/derived/M9.h"
 #include "weapons/derived/Magnum.h"
+#include "weapons/derived/ScarH.h"
+#include "weapons/derived/M4a1.h"
 
 /*
     Construct a player
@@ -131,6 +133,12 @@ void Player::CycleWeapons() {
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
         currWeapon = std::make_unique<Magnum>();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
+        currWeapon = std::make_unique<ScarH>();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T)) {
+        currWeapon = std::make_unique<M4a1>();
     }
 
 }

@@ -30,7 +30,8 @@ public:
 
     float knockbackDebt;
     sf::Vector2f knockbackVector;
-    bool frozen;
+    float slowFactor;
+    float slowedTimer;
 
     void TakeDamage(int damage);
     sf::FloatRect GetFootCollider();

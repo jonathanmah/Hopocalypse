@@ -12,6 +12,7 @@
 #include "entities/MonsterFactory.h"
 #include "util/RandomUtil.h"
 #include "core/BatchRenderer.h"
+#include "fx/StatusEffect.h"
 
 GameState::GameState(){
     RandomUtil::Initialize();
@@ -53,8 +54,8 @@ void GameState::InitPlayers() {
 
 void GameState::InitMonsters() {
     //SetRandomMonsterSpawn(300);
-    SetCollateralLineup();
-    //SetSingleTest();
+    //SetCollateralLineup();
+    SetSingleTest();
 }
 
 void GameState::Update(float deltaTime) {
@@ -64,6 +65,7 @@ void GameState::Update(float deltaTime) {
     // // update the blood spray and ground blood animations
     Blood::Update(*this, deltaTime);
     AoE::UpdateAoE(*this, deltaTime);
+    StatusEffect::UpdateStatusEffect(*this,deltaTime);
 
     for (Player& player : players) {
         // update player movement/animations, projectiles shot, create footprints intersecting with ground blood
@@ -102,7 +104,9 @@ void GameState::Render() {
     map->Draw(window);
     Blood::RenderBlood(*this, window);
     RenderCharacters();
+    StatusEffect::RenderStatusEffects(*this, true);
     Projectile::RenderProjectiles(*this, true);
     AoE::RenderAoE(*this, true); // render foreground aoe and bg separately...
+
     window.display();
 }

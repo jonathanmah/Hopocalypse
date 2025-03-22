@@ -1,5 +1,7 @@
-#include "weapons/derived/Magnum.h"
 #include <iostream>
+#include "weapons/derived/Magnum.h"
+#include "core/GameState.h"
+
 
 static constexpr float KNOCKBACK_SCALAR = 100.f;
 
@@ -80,8 +82,8 @@ void MagnumWaveBullet::UpdateAnimation(float deltaTime) {
 
 }
 
-void MagnumWaveBullet::UpdateProjectileStatus(Character& character, std::vector<std::unique_ptr<Projectile>>& projectiles, 
-    std::vector<std::unique_ptr<Projectile>>::iterator& it, std::vector<std::unique_ptr<AoE>>& aoe) {
+void MagnumWaveBullet::UpdateProjectileStatus(Character& character, GameState& state, 
+    std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     
     if(GetCollateralCount() > 1) {
         if(HasHit(character.id)){
@@ -96,6 +98,6 @@ void MagnumWaveBullet::UpdateProjectileStatus(Character& character, std::vector<
         ++it;
     } else {
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
-        it = projectiles.erase(it);
+        it = state.projectiles.erase(it);
     }
 }
