@@ -44,7 +44,7 @@ Weapon(AnimUtil::WeaponAnim::m4a1,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
 }
 
-void M4a1::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void M4a1::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }

@@ -18,14 +18,14 @@ sf::Vector2f muzzleSecondOffset;
 
     Uzi();
     
-    void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
+    void CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
     void Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) override;
     void Draw(sf::RenderWindow& window, BatchRenderer& BatchRenderer) override;
     void UpdateBase(sf::Vector2f characterPosition, float deltaTime) override;
     void UpdateBaseTransformations(sf::Vector2f characterPosition, float deltaTime) override;
     void SetMuzzlePosition() override;
-    void AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) override;
+    void AttemptShoot(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) override;
     void AddMuzzleFlashEffect() override;
     void CreateShell() override;
     void UpdateMuzzleFlashes(float deltaTime) override;

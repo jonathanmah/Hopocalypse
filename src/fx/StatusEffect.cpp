@@ -13,7 +13,6 @@ void StatusEffect::UpdateStatusEffect(GameState& state, float deltaTime) { // ex
         // update StatusEffect to see if it's done or not
         (*it)->Update(deltaTime);
         if((*it)->timeActive <= 0.f){
-            std::cout << "erasing" << std::endl;
             it = state.statusEffects.erase(it);
         } else {
             ++it;

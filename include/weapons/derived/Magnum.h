@@ -6,7 +6,7 @@ class Magnum : public Weapon {
 
 public:
     Magnum();
-    void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
+    void CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
 };
 

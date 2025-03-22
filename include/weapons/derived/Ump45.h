@@ -6,6 +6,6 @@ class Ump45 : public Weapon {
 
 public:
     Ump45();
-    void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
+    void CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
 };

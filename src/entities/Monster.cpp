@@ -11,7 +11,7 @@ static constexpr float DISAPPEAR_TIME = 6.f;
 
 Monster::Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed) 
 : Character(animData, position, health, movementSpeed), deathDtSum(0.f), 
-timeSinceDeath(0.f), xAxisInverted(false), disabledMovement(false), flameTimer(0.f), burnt(false) {
+timeSinceDeath(0.f), xAxisInverted(false), disabledMovement(false) {
     monster_count++;
 }
 

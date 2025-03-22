@@ -53,7 +53,7 @@ Weapon(AnimUtil::WeaponAnim::m1014,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
 }
 
-void M1014::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void M1014::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     // just create a spread of normals and pushback multiple shells? easy enough
     
     // create a steady offset perpendicular up and down from muzzle

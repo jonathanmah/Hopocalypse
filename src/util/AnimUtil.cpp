@@ -12,6 +12,8 @@ static const std::string& explosionTexture = "../assets/textures/fx/explosion.pn
 static const std::string& explosionAltTexture = "../assets/textures/fx/explosionAlt.png";
 static const std::string& nukeTexture = "../assets/textures/fx/nuke.png";
 static const std::string& statusEffects = "../assets/textures/fx/status_effects.png";
+static const std::string& onFireEffect = "../assets/textures/fx/flame_effect_alpha.png";
+static const std::string& onFireEffectUpgraded = "../assets/textures/fx/flame_effect_upgraded.png";
 
 
 // PLAYER
@@ -128,7 +130,8 @@ const AnimData AnimUtil::WeaponFxAnim::explosionAlt = {TextureUtil::GetTexture(e
 
 const AnimData AnimUtil::StatusFxAnim::frozen = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,0},{100,91}), 100, 0, 10, .3f};
 const AnimData AnimUtil::StatusFxAnim::paralyze = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,100},{128,128}), 128, 0, 8, .06f, 0.f};
-
+const AnimData AnimUtil::StatusFxAnim::onFire = {TextureUtil::GetTexture(onFireEffect), sf::IntRect({0,0},{100,100}), 100, 0, 55, .02f, 0.f, 5, 100};
+const AnimData AnimUtil::StatusFxAnim::onFireUpgraded = {TextureUtil::GetTexture(onFireEffectUpgraded), sf::IntRect({0,0},{100,100}), 100, 0, 55, .02f, 0.f, 5, 100};
 
 const AnimData AnimUtil::ProjectileAnim::smallBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({90,8},{9,7})};
 const AnimData AnimUtil::ProjectileAnim::medBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({109,7},{19,9})};

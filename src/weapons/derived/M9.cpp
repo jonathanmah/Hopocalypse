@@ -46,7 +46,7 @@ Weapon(AnimUtil::WeaponAnim::m9,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 5, sprite.getLocalBounds().size.y*0.7f});
 }
 
-void M9::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void M9::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     if(!isUpgraded){
         projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));

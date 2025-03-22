@@ -16,6 +16,8 @@
 #include "weapons/derived/Magnum.h"
 #include "weapons/derived/ScarH.h"
 #include "weapons/derived/M4a1.h"
+#include "weapons/derived/Ump45.h"
+#include "weapons/derived/P90.h"
 
 /*
     Construct a player
@@ -101,46 +103,51 @@ void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) {
 }
 
 void Player::CycleWeapons() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::K)) {
         currWeapon = std::make_unique<Ak47>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F)) {
         currWeapon = std::make_unique<Famas>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::B)) {
         currWeapon = std::make_unique<Barrett50>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::R)) {
         currWeapon = std::make_unique<Rpg>();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::U)) {
         currWeapon = std::make_unique<Uzi>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::C)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) {
         currWeapon = std::make_unique<Flamethrower>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::V)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
         currWeapon->UpgradeWeapon();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::M)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num1)) {
         currWeapon = std::make_unique<M1014>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Z)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num2)) {
         currWeapon = std::make_unique<M240>(*this);
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::N)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num9)) {
         currWeapon = std::make_unique<M9>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G)) {
         currWeapon = std::make_unique<Magnum>();
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::X)) {
         currWeapon = std::make_unique<ScarH>();
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::T)) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::M)) {
         currWeapon = std::make_unique<M4a1>();
     }
-
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num4)) {
+        currWeapon = std::make_unique<Ump45>();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
+        currWeapon = std::make_unique<P90>();
+    }
 }
 
 void Player::SetMousePositions(sf::RenderWindow& window) {

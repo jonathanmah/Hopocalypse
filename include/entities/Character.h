@@ -32,6 +32,10 @@ public:
     sf::Vector2f knockbackVector;
     float slowFactor;
     float slowedTimer;
+    float flameTimer; // for damage  
+    bool isOnFire;
+    bool burnt;
+    
 
     void TakeDamage(int damage);
     sf::FloatRect GetFootCollider();

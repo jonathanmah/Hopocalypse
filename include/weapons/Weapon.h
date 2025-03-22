@@ -90,11 +90,11 @@ public:
     // need to make this virtual for akimbo uzi
     virtual void Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime);
     // override to create a different projectile
-    virtual void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) = 0;
+    virtual void CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) = 0;
     // override to handle upgrading
     virtual void UpgradeWeapon() = 0;
     // override if changing muzzle flash, recoil, spread, firerate
-    virtual void AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);
+    virtual void AttemptShoot(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime);
     // override to modify any transformations done to base of gun,  OR texture updates
     virtual void UpdateBase(sf::Vector2f characterPosition, float deltaTime);
     // override to add a different type of muzzle effect

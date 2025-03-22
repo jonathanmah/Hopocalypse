@@ -132,6 +132,8 @@ public:
     struct StatusFxAnim {
         static const AnimData frozen;
         static const AnimData paralyze;
+        static const AnimData onFire;
+        static const AnimData onFireUpgraded;
     };
 
     struct ProjectileAnim {

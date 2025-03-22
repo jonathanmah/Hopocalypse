@@ -69,7 +69,7 @@ Weapon(AnimUtil::WeaponAnim::rpg,
     backfire.setScale({-1,1});
 }
 
-void Rpg::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void Rpg::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<RPGrocket>(projectileData, muzzlePosition, adjustedNormal, explosion));
     smoke.setTextureRect(smokeData.frameSequence[0]);

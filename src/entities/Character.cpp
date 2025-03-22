@@ -28,7 +28,8 @@ Character::Character(AnimData animData, sf::Vector2f position, int health, float
     footprintDtSumFrame(0.f),
     id(ID_COUNTER++),
     slowFactor(1.f),
-    slowedTimer(0.f) {
+    slowedTimer(0.f),
+    flameTimer(0.f), isOnFire(false),burnt(false) {
   
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setPosition(position);

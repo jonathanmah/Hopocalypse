@@ -53,7 +53,7 @@ Weapon(AnimUtil::WeaponAnim::magnum,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 5, sprite.getLocalBounds().size.y*0.7f});
 }
 
-void Magnum::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void Magnum::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     if(!isUpgraded){
         projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));

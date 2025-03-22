@@ -160,13 +160,10 @@ void Weapon::UpdateShells(float deltaTime) {
 // ------------------------ SHOOTING CORE / PROJECTILE CREATION ---------------------------------------------------
 
 // creates projecitle, update recoil/spread
-void Weapon::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+void Weapon::AttemptShoot(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
     if (weaponData.timeSinceShot > weaponData.fireRate) {
 
-        // maybe pass effects as a reference to use the same factory as projectile.
-        // call it derived ProjectileEffectsFactory
-        //projectiles.push_back(ProjectileFactory::CreateProjectile(this, GetPosition(), relative, GetTargetWithSpread(mousePosGlobal)));
-        CreateProjectile(projectiles);
+        CreateProjectile(player, projectiles);
         IncreaseSpread();
         weaponData.timeSinceShot = 0.f;
         SetPositionPostRecoil();
@@ -194,7 +191,7 @@ void Weapon::Update(GameState& state, Player& player, sf::Vector2f mousePosGloba
 //    Update transformations / any other derived overrides
     UpdateBase(player.GetPosition(), deltaTime);
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-        AttemptShoot(state.projectiles, deltaTime);
+        AttemptShoot(player, state.projectiles, deltaTime);
     } else {
         DecreaseSpread();
     }

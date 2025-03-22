@@ -46,7 +46,7 @@ Weapon(AnimUtil::WeaponAnim::m240,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
 }
 
-void M240::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void M240::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }
@@ -102,7 +102,7 @@ void M240::Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal,
             ActivateFiringEffects();
             firingStreak += deltaTime;
         }
-        AttemptShoot(state.projectiles, deltaTime);
+        AttemptShoot(player, state.projectiles, deltaTime);
      } else {
         DecreaseSpread();
         firingStreak = std::max(0.f, firingStreak - (deltaTime*10));

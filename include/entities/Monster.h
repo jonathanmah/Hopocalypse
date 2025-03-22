@@ -14,9 +14,7 @@ class Monster: public Character {
     
     
 public:
-    bool flameTagged;
-    float flameTimer;
-    bool burnt;
+ 
     bool disabledMovement; // flag for dev
 
     Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed);

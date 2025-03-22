@@ -8,6 +8,7 @@ class BatchRenderer {
 private:
     sf::RenderWindow& window;
     std::vector<sf::Vertex> triangles;
+    sf::VertexArray flameTriangles;
 
     void AddRectangleToBatch(const sf::RectangleShape& rectShape, std::vector<sf::Vertex>& rectTriangles);
     void AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::array<sf::Vector2f, 4> cachedPosition, sf::Color colour);
@@ -74,6 +75,7 @@ public:
      }
 
     
-    void BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames, float initialRadius);
+    void SetFlameTriangles(std::vector<Flame>& flames, float initialRadius);
+    void RenderFlameTriangles();
 };
 

@@ -4,6 +4,7 @@
 #include "util/RandomUtil.h"
 #include "core/GameState.h"
 #include "entities/Monster.h"
+#include "fx/OnFire.h"
 
 static const sf::Texture* PROJECTILE_TEXTURE = TextureUtil::GetTexture("../assets/textures/weapons/projectiles_atlas.png");
 static const float FLAME_OFFSET_SCALAR = 10.f;
@@ -81,7 +82,7 @@ void Flamethrower::ShootFlame() {
     }
 }
 
-void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, float deltaTime) {
+void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, std::vector<std::unique_ptr<StatusEffect>>& statusEffects, float deltaTime) {
     std::vector<std::reference_wrapper<Monster>> closeMonsters = GetNeighbourMonsters(monsters);
 
     for (int i = 0; i < flames.size(); ) {
@@ -92,20 +93,31 @@ void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, 
         flame.colour.a = static_cast<u_int8_t>(RandomUtil::GetRandomInt(25,40) * (flame.lifetime)); // 15-25 is good
         if(flame.lifetime > 0.25f*INIT_FLAME_LIFETIME) {
             for (Monster& monster : closeMonsters) {
-                if(monster.flameTimer <= 0.f && monster.GetGlobalBounds().contains(flame.position)){
-                    int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
-                    monster.TakeDamage(15);
-                    float newFlameTimer = !isUpgraded ? 0.2f : 0.1f;
-                    monster.flameTimer = newFlameTimer;
-                    if(!monster.burnt && monster.health <= 0.f){
-                        auto updateColour = monster.GetSprite().getColor();
-                        updateColour.r = updateColour.r * 0.15f;
-                        updateColour.g = updateColour.g * 0.15f;
-                        updateColour.b = updateColour.b * 0.15f;
-                        monster.GetSprite().setColor(updateColour);
-                        monster.burnt = true;
+                if(monster.GetGlobalBounds().contains(flame.position)){
+                    if(monster.flameTimer <= 0.f){
+                        //int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
+                        int damage = !isUpgraded ? 1 : 1; // UPDATE DAMAGE HERE
+                        //monster.TakeDamage(15);
+                        float newFlameTimer = !isUpgraded ? 0.2f : 0.1f;
+                        monster.flameTimer = newFlameTimer;
+    
+                        if(!monster.burnt && monster.health <= 0.f){
+                            // change status effect colour to be more grey!!!! #TODO
+                            auto updateColour = monster.GetSprite().getColor();
+                            updateColour.r = updateColour.r * 0.15f;
+                            updateColour.g = updateColour.g * 0.15f;
+                            updateColour.b = updateColour.b * 0.15f;
+                            monster.GetSprite().setColor(updateColour);
+                            monster.burnt = true;
+                        }
+                    }
+                    if(!monster.isOnFire) {
+                        auto flameAnimData = !isUpgraded ? AnimUtil::StatusFxAnim::onFire : AnimUtil::StatusFxAnim::onFire;//AnimUtil::StatusFxAnim::onFireUpgraded;                        
+                        statusEffects.emplace_back(std::make_unique<OnFire>(flameAnimData, monster.GetPosition(), monster));
+                        monster.isOnFire = true;
                     }
                 }
+                
             }
         }
         if (flame.lifetime <= 0) {
@@ -124,7 +136,7 @@ void Flamethrower::Update(GameState& state, Player& player, sf::Vector2f mousePo
     } else {
         DecreaseSpread();
     }
-    FlameUpdate(state.monsters, deltaTime);
+    FlameUpdate(state.monsters, state.statusEffects, deltaTime);
     weaponData.timeSinceShot += deltaTime;
  }
 
@@ -135,8 +147,8 @@ void Flamethrower::UpgradeWeapon() {
 
 void Flamethrower::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
-    batchRenderer.BatchRenderFlames(window, flames, 10.f);
+    batchRenderer.SetFlameTriangles(flames, 10.f);
    //HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite, sf::Color::Yellow);
    //HitboxDebugger::DrawSpriteOrigin(window, sprite, sf::Color::Cyan);
 }
-void Flamethrower::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {return;}
+void Flamethrower::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {return;}

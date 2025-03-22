@@ -5,6 +5,6 @@ class Barrett50 : public Weapon {
 
 public:
     Barrett50();
-    void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
+    void CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
 };

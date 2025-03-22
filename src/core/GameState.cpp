@@ -54,8 +54,8 @@ void GameState::InitPlayers() {
 
 void GameState::InitMonsters() {
     //SetRandomMonsterSpawn(300);
-    //SetCollateralLineup();
-    SetSingleTest();
+    SetCollateralLineup();
+    //SetSingleTest();
 }
 
 void GameState::Update(float deltaTime) {
@@ -107,6 +107,7 @@ void GameState::Render() {
     StatusEffect::RenderStatusEffects(*this, true);
     Projectile::RenderProjectiles(*this, true);
     AoE::RenderAoE(*this, true); // render foreground aoe and bg separately...
+    batchRenderer->RenderFlameTriangles();
 
     window.display();
 }

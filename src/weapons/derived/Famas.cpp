@@ -44,7 +44,7 @@ Weapon(AnimUtil::WeaponAnim::famas,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3.6f, sprite.getLocalBounds().size.y / 2});
 
 }
-void Famas::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles){
+void Famas::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     if(!isUpgraded){
         projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
@@ -54,14 +54,14 @@ void Famas::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectil
 }
 
 
-void Famas::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+void Famas::AttemptShoot(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
     if (burstFireCounter==1 && sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)){
         attemptShotTimer = 3*weaponData.fireRate;
     }
     // try to add bullet if time since last shot is less than 3xfirerate?
     if (weaponData.timeSinceShot > weaponData.fireRate) { // add bullet if time between shots is good
         weaponData.fireRate = 0.10f;
-        this->CreateProjectile(projectiles);
+        this->CreateProjectile(player, projectiles);
         IncreaseSpread();
         weaponData.timeSinceShot = 0.f;
         SetPositionPostRecoil();
@@ -80,7 +80,7 @@ void Famas::Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal
     SetMousePosGlobal(mousePosGlobal);
      UpdateBase(player.GetPosition(), deltaTime);
      if(attemptShotTimer > 0 || sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-         AttemptShoot(state.projectiles, deltaTime);
+         AttemptShoot(player, state.projectiles, deltaTime);
      } else {
          DecreaseSpread();
      }

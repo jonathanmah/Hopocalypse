@@ -51,7 +51,7 @@ Weapon(AnimUtil::WeaponAnim::uzi,
     spriteSecond.setOrigin({sprite.getLocalBounds().size.x/2, sprite.getLocalBounds().size.y / 2});
 }
 
-void Uzi::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void Uzi::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
     if(isUpgraded) {
@@ -146,9 +146,9 @@ void Uzi::CreateShell() {
 }
 
 
-void Uzi::AttemptShoot(std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
+void Uzi::AttemptShoot(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles, float deltaTime) {
     if (weaponData.timeSinceShot > weaponData.fireRate) {
-        CreateProjectile(projectiles);
+        CreateProjectile(player, projectiles);
         IncreaseSpread();
         weaponData.timeSinceShot = 0.f;
         SetPositionPostRecoil();
@@ -190,7 +190,7 @@ void Uzi::Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, 
  //    Update transformations / any other derived overrides
      UpdateBase(player.GetPosition(), deltaTime);
      if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
-         AttemptShoot(state.projectiles, deltaTime);
+         AttemptShoot(player, state.projectiles, deltaTime);
      } else {
          DecreaseSpread();
      }

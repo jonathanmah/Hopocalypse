@@ -2,13 +2,14 @@
 #include "weapons/Weapon.h"
 
 class Monster;
+class StatusEffect;
 class BatchRenderer;
 
 class Flamethrower : public Weapon {
 
 private:
     void ShootFlame();
-    void FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, float deltaTime);
+    void FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, std::vector<std::unique_ptr<StatusEffect>>& statusEffects, float deltaTime);
     std::vector<std::reference_wrapper<Monster>> GetNeighbourMonsters(std::vector<std::unique_ptr<Monster>>& monsters);
 
 public:
@@ -17,7 +18,7 @@ public:
 
     Flamethrower();
     void Update(GameState& state, Player& player, sf::Vector2f mousePosGlobal, float deltaTime) override;
-    void CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) override;
+    void CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) override;
     void UpgradeWeapon() override;
     void UpdateFireEffects(float deltaTime);
     void Draw(sf::RenderWindow& window, BatchRenderer& BatchRenderer) override;

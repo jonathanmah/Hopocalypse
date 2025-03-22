@@ -44,7 +44,7 @@ Weapon(AnimUtil::WeaponAnim::ak47,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3, sprite.getLocalBounds().size.y / 2});
 }
 
-void Ak47::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void Ak47::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }

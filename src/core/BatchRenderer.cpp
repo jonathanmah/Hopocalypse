@@ -2,7 +2,7 @@
 #include <iostream>
 #include "weapons/Weapon.h"
 
-BatchRenderer::BatchRenderer(sf::RenderWindow& window) : window(window){
+BatchRenderer::BatchRenderer(sf::RenderWindow& window) : window(window), flameTriangles(sf::PrimitiveType::Triangles){
     triangles.reserve(200); // allocate for 200 sprites 
 }
 
@@ -58,8 +58,8 @@ void BatchRenderer::AddRectangleToBatch(const sf::RectangleShape& rectShape, std
 
 constexpr float CIRCLE_SEGMENTS = 50.f; // 50 orig
 
-void BatchRenderer::BatchRenderFlames(sf::RenderWindow& window, std::vector<Flame>& flames, float initalRadius) {
-    sf::VertexArray vertices(sf::PrimitiveType::Triangles);
+void BatchRenderer::SetFlameTriangles(std::vector<Flame>& flames, float initalRadius) {
+    flameTriangles.clear();
     std::vector<sf::Vector2f> unitCircle;
     for (int i = 0; i <= CIRCLE_SEGMENTS; ++i) {
         // get radians of circle split evenly
@@ -77,10 +77,17 @@ void BatchRenderer::BatchRenderFlames(sf::RenderWindow& window, std::vector<Flam
             sf::Vector2f p1 = center + unitCircle[i] * radius;
             sf::Vector2f p2 = center + unitCircle[i+1] * radius;
             
-            vertices.append(sf::Vertex({center, colour}));    
-            vertices.append(sf::Vertex({p1, colour}));
-            vertices.append(sf::Vertex({p2, colour}));
+            flameTriangles.append(sf::Vertex({center, colour}));    
+            flameTriangles.append(sf::Vertex({p1, colour}));
+            flameTriangles.append(sf::Vertex({p2, colour}));
         }
     }
-    window.draw(vertices, sf::RenderStates(sf::BlendAdd));
+    //window.draw(flameTriangles, sf::RenderStates(sf::BlendAdd));
+}
+
+void BatchRenderer::RenderFlameTriangles(){
+    if(flameTriangles.getVertexCount() > 0){
+        window.draw(flameTriangles, sf::RenderStates(sf::BlendAdd));
+        flameTriangles.clear();
+    }
 }

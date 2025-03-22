@@ -42,7 +42,7 @@ Weapon(AnimUtil::WeaponAnim::barrett50,
     sprite.setOrigin({sprite.getLocalBounds().size.x / 3.2f, sprite.getLocalBounds().size.y / 2});
 }
 
-void Barrett50::CreateProjectile(std::vector<std::unique_ptr<Projectile>>& projectiles) {
+void Barrett50::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
     projectiles.emplace_back(std::make_unique<Projectile>(projectileData, muzzlePosition, adjustedNormal));
 }
