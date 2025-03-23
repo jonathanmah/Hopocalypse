@@ -8,3 +8,4 @@ std::array<sf::Vector2f, 4> RenderUtil::CalculatePositionVertices(const sf::IntR
         transform.transformPoint({static_cast<float>(textureFrame.size.x), static_cast<float>(textureFrame.size.y)}) //bottom right
     };
 }
+

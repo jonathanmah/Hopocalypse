@@ -4,8 +4,11 @@
 #include "core/BatchRenderer.h"
 #include "Hud.h"
 
+
 class GameState;
 class BatchRenderer;
+class PassiveEffect;
+class ActiveEffect;
 
 class Character {
 
@@ -27,16 +30,19 @@ public:
     int id;
     Hud hud;
     AnimData animData;
+    //float flameTimer; // for flame thrower, actually need this lol not a status
 
+    
+    // i dont like this
     float knockbackDebt;
     sf::Vector2f knockbackVector;
     float slowFactor;
     float slowedTimer;
-    float flameTimer; // for damage  
-    bool isOnFire;
-    bool burnt;
-    
+    // also paralyzed timer
+    // also shrunk timer,
+    // also just put this at monsters... 
 
+    void CheckDeath();
     void TakeDamage(int damage);
     sf::FloatRect GetFootCollider();
     virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);
@@ -47,12 +53,6 @@ public:
     void UpdateFootprints(sf::Vector2f nextMoveNormalized, GameState& state, float deltaTime);
     void Knockback();
 
-
-
-    inline float GetFootprintDecayTimer() const {return footprintDecayTimer;}
-    inline void SetFootprintDecayTimer(float updatedDecayTimer) {footprintDecayTimer = updatedDecayTimer;}
-    inline float GetFootprintDtSumFrame() const {return footprintDtSumFrame;}
-    inline void SetFootprintDtSumFrame(float updatedDtSumFrame) {footprintDtSumFrame = updatedDtSumFrame;}
-    inline bool GetCreateLeftFootNext() const {return createLeftFootNext;}
-    inline void SetCreateLeftFootNext(bool createLeftNext) {createLeftFootNext = createLeftNext;};
+    void ApplyPassiveEffect(PassiveEffect effect);
+    void ApplyActiveEffect(ActiveEffect effect);
 };

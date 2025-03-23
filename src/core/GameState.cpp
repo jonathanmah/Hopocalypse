@@ -12,7 +12,7 @@
 #include "entities/MonsterFactory.h"
 #include "util/RandomUtil.h"
 #include "core/BatchRenderer.h"
-#include "fx/StatusEffect.h"
+//#include "fx/StatusEffect.h"
 
 GameState::GameState(){
     RandomUtil::Initialize();
@@ -34,8 +34,8 @@ void GameState::SetRandomMonsterSpawn(int count){
 }
 
 void GameState::SetSingleTest(){
-    Monster bigDemon{AnimUtil::BigDemonAnim::walk, {400,400}, 100, 3.f};
-    bigDemon.disabledMovement = true;
+    Monster bigDemon{AnimUtil::BigDemonAnim::walk, {400,400}, 100, 1.f};
+    bigDemon.disabledMovement = false;
     monsters.push_back(std::make_unique<Monster>(std::move(bigDemon)));
 }
 
@@ -53,9 +53,13 @@ void GameState::InitPlayers() {
 }
 
 void GameState::InitMonsters() {
-    //SetRandomMonsterSpawn(300);
-    SetCollateralLineup();
+    SetRandomMonsterSpawn(300);
+    //SetCollateralLineup();
     //SetSingleTest();
+    for(auto& monster : monsters){
+        monster->InitPostFinalAddress(); // init objs with raw pointers after final memory address moves
+        // issue with constructor init for statuses
+    }
 }
 
 void GameState::Update(float deltaTime) {
@@ -65,7 +69,7 @@ void GameState::Update(float deltaTime) {
     // // update the blood spray and ground blood animations
     Blood::Update(*this, deltaTime);
     AoE::UpdateAoE(*this, deltaTime);
-    StatusEffect::UpdateStatusEffect(*this,deltaTime);
+    //StatusEffect::UpdateStatusEffect(*this,deltaTime);
 
     for (Player& player : players) {
         // update player movement/animations, projectiles shot, create footprints intersecting with ground blood
@@ -104,10 +108,11 @@ void GameState::Render() {
     map->Draw(window);
     Blood::RenderBlood(*this, window);
     RenderCharacters();
-    StatusEffect::RenderStatusEffects(*this, true);
+    
     Projectile::RenderProjectiles(*this, true);
     AoE::RenderAoE(*this, true); // render foreground aoe and bg separately...
-    batchRenderer->RenderFlameTriangles();
-
+    StatusEffect::RenderStatusEffects(monsters, window, *batchRenderer);
+    batchRenderer->RenderFlameTriangles(); // render flamethrower particles
+    
     window.display();
 }

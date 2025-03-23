@@ -2,7 +2,8 @@
 #include "entities/Monster.h"
 #include "entities/Player.h"
 #include "core/GameState.h"
-
+#include "entities/effects/StatusEffect.h"
+#include "entities/effects/OnFire.h"
 
 static int monster_count = 0;
 static constexpr float DEATH_DT_SUM_PER_FRAME = 0.2f;
@@ -10,10 +11,33 @@ static constexpr int DEATH_ROTATE_PER_FRAME_DEG = 10;
 static constexpr float DISAPPEAR_TIME = 6.f;
 
 Monster::Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed) 
-: Character(animData, position, health, movementSpeed), deathDtSum(0.f), 
-timeSinceDeath(0.f), xAxisInverted(false), disabledMovement(false) {
+: Character(animData, position, health, movementSpeed), 
+    deathDtSum(0.f), 
+    timeSinceDeath(0.f),
+    xAxisInverted(false),
+    disabledMovement(false),
+    onFire(this), // set to original address and then init after final version copied. and used
+    paralyzed(this)
+{
     monster_count++;
 }
+
+void Monster::InitPostFinalAddress() {
+    onFire = OnFire{this};
+    paralyzed = Paralyzed{this};
+}
+
+void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
+    if(onFire.IsActive()){ // if it still has time left
+        onFire.UpdateStatusEffect(deltaTime);
+    }
+    if(paralyzed.IsActive()){
+        paralyzed.UpdateStatusEffect(deltaTime);
+    } else {
+        paralyzed.UpdateDisabledCd(deltaTime);
+    }
+}
+
 
 void Monster::HandleDeath(float deltaTime) {
     
@@ -33,20 +57,21 @@ void Monster::HandleDeath(float deltaTime) {
     timeSinceDeath += deltaTime;
 }
 
+
+
 bool Monster::Update(GameState& state, float deltaTime){
-    if (flameTimer > 0.f) {
-        flameTimer -= deltaTime;
-    }
+    UpdateStatusEffects(deltaTime, state.window);
+
+
     Monster::UpdateCollisions(state);
     hud.Update(health, GetGlobalBounds());
     if(isAlive) {
-        AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
-
-
+        if(!paralyzed.IsActive()){
+            AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
+        }
 
         if (slowedTimer > 0.f){
             slowedTimer = std::max(0.f, slowedTimer-deltaTime);
-            //std::cout << "IN LOOP" << std::endl;
             if(slowedTimer == 0.f) {
                 slowFactor = 1.f;
                 sprite.setColor(sf::Color(255, 255, 255));
@@ -56,7 +81,10 @@ bool Monster::Update(GameState& state, float deltaTime){
         if(knockbackDebt > 0.f) {
             Knockback();
         } else {
-            Monster::Move(state.players);
+            // HANDLE MOVEMENT, FROZEN, KNOCKBACK, DISTRACTED, PARLYZED
+            if(!paralyzed.IsActive()){
+                Monster::Move(state.players);
+            }
         }
     } else {
         Monster::HandleDeath(deltaTime);
@@ -64,6 +92,7 @@ bool Monster::Update(GameState& state, float deltaTime){
             return true;
         }
     }
+    CheckDeath();
     return false;
 }
 
@@ -88,3 +117,4 @@ void Monster::Move(std::vector<Player>& players) {
     }
     
 }
+

@@ -3,57 +3,55 @@
 #include "util/AnimUtil.h"
 #include "util/TextureUtil.h"
 
-static const std::string& player = "../assets/textures/characters/bunny_white_update.png";
-static const std::string& dungeon = "../assets/textures/tilesheet.png";
-static const std::string& projectiles = "../assets/textures/weapons/projectiles_atlas.png";
-static const std::string& weapons = "../assets/textures/weapons/weapons.png";
-static const std::string& blood = "../assets/textures/fx/blood_atlas.png";
-static const std::string& explosionTexture = "../assets/textures/fx/explosion.png";
-static const std::string& explosionAltTexture = "../assets/textures/fx/explosionAlt.png";
-static const std::string& nukeTexture = "../assets/textures/fx/nuke.png";
-static const std::string& statusEffects = "../assets/textures/fx/status_effects.png";
-static const std::string& onFireEffect = "../assets/textures/fx/flame_effect_alpha.png";
-static const std::string& onFireEffectUpgraded = "../assets/textures/fx/flame_effect_upgraded.png";
+sf::Texture* AnimUtil::playerTexture = TextureUtil::GetTexture("../assets/textures/characters/bunny_white_update.png");
+sf::Texture* AnimUtil::dungeonTexture = TextureUtil::GetTexture("../assets/textures/tilesheet.png");
+sf::Texture* AnimUtil::bloodTexture = TextureUtil::GetTexture("../assets/textures/fx/blood_atlas.png");
+sf::Texture* AnimUtil::weaponsTexture = TextureUtil::GetTexture("../assets/textures/weapons/weapons.png");
+sf::Texture* AnimUtil::projectilesTexture = TextureUtil::GetTexture("../assets/textures/weapons/projectiles_atlas.png");
+sf::Texture* AnimUtil::explosionTexture = TextureUtil::GetTexture("../assets/textures/fx/explosion.png");
+sf::Texture* AnimUtil::explosionUpgradedTexture = TextureUtil::GetTexture("../assets/textures/fx/explosionAlt.png");
+sf::Texture* AnimUtil::nukeTexture = TextureUtil::GetTexture("../assets/textures/fx/nuke.png");
+sf::Texture* AnimUtil::statusEffectsTexture = TextureUtil::GetTexture("../assets/textures/fx/status_effects.png");
+sf::Texture* AnimUtil::onFireTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_alpha.png");
+sf::Texture* AnimUtil::onFireUpgradedTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_upgraded.png");
 
 
 // PLAYER
-const AnimData AnimUtil::PlayerAnim::stand = {TextureUtil::GetTexture(player), sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
-const AnimData AnimUtil::PlayerAnim::walk = {TextureUtil::GetTexture(player), sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
-const AnimData AnimUtil::PlayerAnim::shootStand = {TextureUtil::GetTexture(player), sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
-const AnimData AnimUtil::PlayerAnim::shootWalk = {TextureUtil::GetTexture(player), sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::stand = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::walk = {playerTexture, sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::shootStand = {playerTexture, sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::shootWalk = {playerTexture, sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
 
 // MONSTERS
 
-const AnimData AnimUtil::BigDemonAnim::walk = { TextureUtil::GetTexture(dungeon), sf::IntRect({148,432},{24,32}), 32, 0, 4, .1f, 0.f};
-const AnimData AnimUtil::SmallDemonAnim::walk = { TextureUtil::GetTexture(dungeon), sf::IntRect({432,272},{16,24}), 16, 0, 4, .05f, 0.f};
-const AnimData AnimUtil::SlugAnim::walk = { TextureUtil::GetTexture(dungeon), sf::IntRect({368,374},{16,18}), 16, 0, 4, .1f, 0.f};
-
-
+const AnimData AnimUtil::BigDemonAnim::walk = {dungeonTexture, sf::IntRect({148,432},{24,32}), 32, 0, 4, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::walk = {dungeonTexture, sf::IntRect({432,272},{16,24}), 16, 0, 4, .05f, 0.f};
+const AnimData AnimUtil::SlugAnim::walk = {dungeonTexture, sf::IntRect({368,374},{16,18}), 16, 0, 4, .1f, 0.f};
 
 
 // BLOOD
-const AnimData AnimUtil::BloodAnim::spray1 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 108},{96,112}), 112, 0, 9, .05f, 0.f};
-const AnimData AnimUtil::BloodAnim::spray2 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 300},{96,96}), 112, 0, 10, .05f, 0.f};
-const AnimData AnimUtil::BloodAnim::spray3 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 396},{96,96}), 112, 0, 8, .05f, 0.f};
-const AnimData AnimUtil::BloodAnim::spray4 = {TextureUtil::GetTexture(blood), sf::IntRect({32, 500},{96,75}), 112, 0, 8, .05f, 0.f};
-const AnimData AnimUtil::BloodAnim::spray5 = {TextureUtil::GetTexture(blood), sf::IntRect({0, 570},{112,96}), 109, 0, 14, .02f, 0.f};
-const AnimData AnimUtil::BloodAnim::spray6 = {TextureUtil::GetTexture(blood), sf::IntRect({0, 760},{112,96}), 109, 0, 10, .05f, 0.f};
-const AnimData AnimUtil::BloodAnim::ground = {TextureUtil::GetTexture(blood), sf::IntRect({0, 850},{210,250}), 0, 0, 9, .01f, 0.f};
-const AnimData AnimUtil::BloodAnim::leftFootprint = {TextureUtil::GetTexture(blood), sf::IntRect({0, 0},{35,45}), 0, 0, 1, .05f, 0.f};
-const AnimData AnimUtil::BloodAnim::rightFootprint = {TextureUtil::GetTexture(blood), sf::IntRect({35, 0},{35,45}), 0, 0, 1, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray1 = {bloodTexture, sf::IntRect({32, 108},{96,112}), 112, 0, 9, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray2 = {bloodTexture, sf::IntRect({32, 300},{96,96}), 112, 0, 10, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray3 = {bloodTexture, sf::IntRect({32, 396},{96,96}), 112, 0, 8, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray5 = {bloodTexture, sf::IntRect({0, 570},{112,96}), 109, 0, 14, .02f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray4 = {bloodTexture, sf::IntRect({32, 500},{96,75}), 112, 0, 8, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::spray6 = {bloodTexture, sf::IntRect({0, 760},{112,96}), 109, 0, 10, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::ground = {bloodTexture, sf::IntRect({0, 850},{210,250}), 0, 0, 9, .01f, 0.f};
+const AnimData AnimUtil::BloodAnim::leftFootprint = {bloodTexture, sf::IntRect({0, 0},{35,45}), 0, 0, 1, .05f, 0.f};
+const AnimData AnimUtil::BloodAnim::rightFootprint = {bloodTexture, sf::IntRect({35, 0},{35,45}), 0, 0, 1, .05f, 0.f};
 
 
 
-const AnimData AnimUtil::WeaponAnim::ak47 = {TextureUtil::GetTexture(weapons), sf::IntRect({192, 32},{64,28}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::ak47 = {weaponsTexture, sf::IntRect({192, 32},{64,28}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::ak47Upgraded = {{256, 32},{64,28}};
 
-const AnimData AnimUtil::WeaponAnim::famas = {TextureUtil::GetTexture(weapons), sf::IntRect({160, 224},{64,32}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::famas = {weaponsTexture, sf::IntRect({160, 224},{64,32}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::famasUpgraded = {{224, 224},{64,32}};
 
-const AnimData AnimUtil::WeaponAnim::barrett50 = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 160},{96,35}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::barrett50 = {weaponsTexture, sf::IntRect({0, 160},{96,35}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::barrett50Upgraded = {{96,160},{96,35}};
 //RPG
-const AnimData AnimUtil::WeaponAnim::rpg = {TextureUtil::GetTexture(weapons), sf::IntRect({64, 196},{90,20}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::rpg = {weaponsTexture, sf::IntRect({64, 196},{90,20}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::rpgReloadRect({64, 196},{60,20});
 const sf::IntRect AnimUtil::WeaponAnim::rpgLoadedRect({64, 196},{90,20});
 const sf::IntRect AnimUtil::WeaponAnim::rpgUpgradedReloadRect({160, 196},{60,20});
@@ -61,46 +59,46 @@ const sf::IntRect AnimUtil::WeaponAnim::rpgUpgradedLoadedRect({160, 196},{100,20
 
 
 //p90 6,37 TL 51x21,  70 x, same y etc.
-const AnimData AnimUtil::WeaponAnim::p90 = {TextureUtil::GetTexture(weapons), sf::IntRect({6, 37},{51,21}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::p90 = {weaponsTexture, sf::IntRect({6, 37},{51,21}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::p90Upgraded = {{70, 37},{51,21}};
 //ScarH 0, 67 y 64x25 64x same
-const AnimData AnimUtil::WeaponAnim::scarH = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 67},{64,25}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::scarH = {weaponsTexture, sf::IntRect({0, 67},{64,25}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::scarHUpgraded = {{64, 67},{64,25}};
 //m4a1 130,67y 59x25 194xsame
-const AnimData AnimUtil::WeaponAnim::m4a1 = {TextureUtil::GetTexture(weapons), sf::IntRect({130, 67},{59,25}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::m4a1 = {weaponsTexture, sf::IntRect({130, 67},{59,25}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::m4a1Upgraded = {{194, 67},{59,25}};
 //m1014 0,103y 63x17 65x same
-const AnimData AnimUtil::WeaponAnim::m1014 = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 103},{63,17}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::m1014 = {weaponsTexture, sf::IntRect({0, 103},{63,17}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::m1014Upgraded = {{65, 103},{63,17}};
 //ump45 132,99y 55x26 196x same
-const AnimData AnimUtil::WeaponAnim::ump45 = {TextureUtil::GetTexture(weapons), sf::IntRect({132, 99},{55,26}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::ump45 = {weaponsTexture, sf::IntRect({132, 99},{55,26}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::ump45Upgraded = {{196, 99},{55,26}};
 //uzi 160, 134 32x20 192 same
-const AnimData AnimUtil::WeaponAnim::uzi = {TextureUtil::GetTexture(weapons), sf::IntRect({160, 134},{32,20}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::uzi = {weaponsTexture, sf::IntRect({160, 134},{32,20}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::uziUpgraded = {{192, 134},{32,20}};
 //flamethrower 0,121y  75x40 80x same
-const AnimData AnimUtil::WeaponAnim::flamethrower = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 121},{75,40}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::flamethrower = {weaponsTexture, sf::IntRect({0, 121},{75,40}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::flamethrowerUpgraded = {{80, 121},{75,40}};
 // m32 grenade launcher 196,166y 54x20 260 same
-const AnimData AnimUtil::WeaponAnim::m32 = {TextureUtil::GetTexture(weapons), sf::IntRect({196, 166},{54,20}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::m32 = {weaponsTexture, sf::IntRect({196, 166},{54,20}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::m32Upgraded = {{260, 166},{54,20}};
 // m240 lmg 0,224 80x32 80 same
-const AnimData AnimUtil::WeaponAnim::m240 = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 224},{80,32}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::m240 = {weaponsTexture, sf::IntRect({0, 224},{80,32}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::m240Upgraded = {{80, 224},{80,32}};
 // m9 288,229y 32x22 321 same
-const AnimData AnimUtil::WeaponAnim::m9 = {TextureUtil::GetTexture(weapons), sf::IntRect({288, 229},{32,22}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::m9 = {weaponsTexture, sf::IntRect({288, 229},{32,22}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::m9Upgraded = {{321, 229},{32,22}};
 // magnum 0,198y 32x22 32 same
-const AnimData AnimUtil::WeaponAnim::magnum = {TextureUtil::GetTexture(weapons), sf::IntRect({0, 198},{32,22}), 0, 0, 1, .2f, 0.f};
+const AnimData AnimUtil::WeaponAnim::magnum = {weaponsTexture, sf::IntRect({0, 198},{32,22}), 0, 0, 1, .2f, 0.f};
 const sf::IntRect AnimUtil::WeaponAnim::magnumUpgraded = {{32, 198},{32,22}};
 
 
 
-const AnimData AnimUtil::WeaponFxAnim::muzzleFlash1 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1272,13},{82,52}), 82, 0, 3, .1f, 0.f};
-const AnimData AnimUtil::WeaponFxAnim::muzzleFlash2 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1273,96},{83,47}), 83, 0, 3, .1f, 0.f};
-const AnimData AnimUtil::WeaponFxAnim::muzzleFlash3 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1271,171},{85,53}), 85, 0, 3, .1f, 0.f};
-const AnimData AnimUtil::WeaponFxAnim::muzzleFlash4 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1268,247},{82,62}), 82, 0, 3, .1f, 0.f};
-const AnimData AnimUtil::WeaponFxAnim::muzzleFlash5 = {TextureUtil::GetTexture(projectiles), sf::IntRect({1273,326},{82,58}), 82, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash1 = {projectilesTexture, sf::IntRect({1272,13},{82,52}), 82, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash2 = {projectilesTexture, sf::IntRect({1273,96},{83,47}), 83, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash3 = {projectilesTexture, sf::IntRect({1271,171},{85,53}), 85, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash4 = {projectilesTexture, sf::IntRect({1268,247},{82,62}), 82, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::WeaponFxAnim::muzzleFlash5 = {projectilesTexture, sf::IntRect({1273,326},{82,58}), 82, 0, 3, .1f, 0.f};
 
 const SubRectData AnimUtil::WeaponFxAnim::rpgBackfire =  {
 {
@@ -123,35 +121,35 @@ const SubRectData AnimUtil::WeaponFxAnim::rpgSmoke = {
     }, .05f 
 };
 
-const AnimData AnimUtil::WeaponFxAnim::explosion = {TextureUtil::GetTexture(explosionTexture), sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5};
-const AnimData AnimUtil::WeaponFxAnim::nuke = {TextureUtil::GetTexture(nukeTexture), sf::IntRect({0,0},{256,128}), 256, 0, 12, .05f, 0.f, 3};
-const AnimData AnimUtil::WeaponFxAnim::explosionAlt = {TextureUtil::GetTexture(explosionAltTexture), sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3};
+const AnimData AnimUtil::WeaponFxAnim::explosion = {explosionTexture, sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5, 192};
+const AnimData AnimUtil::WeaponFxAnim::nuke = {nukeTexture, sf::IntRect({0,0},{256,128}), 256, 0, 12, .05f, 0.f, 3};
+const AnimData AnimUtil::WeaponFxAnim::explosionUpgraded = {explosionUpgradedTexture, sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3, 256};
 
 
-const AnimData AnimUtil::StatusFxAnim::frozen = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,0},{100,91}), 100, 0, 10, .3f};
-const AnimData AnimUtil::StatusFxAnim::paralyze = {TextureUtil::GetTexture(statusEffects), sf::IntRect({0,100},{128,128}), 128, 0, 8, .06f, 0.f};
-const AnimData AnimUtil::StatusFxAnim::onFire = {TextureUtil::GetTexture(onFireEffect), sf::IntRect({0,0},{100,100}), 100, 0, 55, .02f, 0.f, 5, 100};
-const AnimData AnimUtil::StatusFxAnim::onFireUpgraded = {TextureUtil::GetTexture(onFireEffectUpgraded), sf::IntRect({0,0},{100,100}), 100, 0, 55, .02f, 0.f, 5, 100};
+const AnimData AnimUtil::StatusFxAnim::frozen = {statusEffectsTexture, sf::IntRect({0,0},{100,91}), 100, 0, 10, .3f};
+const AnimData AnimUtil::StatusFxAnim::paralyze = {statusEffectsTexture, sf::IntRect({0,100},{128,128}), 128, 0, 8, .06f, 0.f};
+const AnimData AnimUtil::StatusFxAnim::onFire = {onFireTexture, sf::IntRect({0,0},{100,100}), 100, 0, 55, .02f, 0.f, 5, 100};
+const AnimData AnimUtil::StatusFxAnim::onFireUpgraded = {onFireUpgradedTexture, sf::IntRect({0,0},{100,100}), 100, 0, 55, .02f, 0.f, 5, 100};
 
-const AnimData AnimUtil::ProjectileAnim::smallBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({90,8},{9,7})};
-const AnimData AnimUtil::ProjectileAnim::medBulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({109,7},{19,9})};
-const AnimData AnimUtil::ProjectileAnim::shotgunPelletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({177,7},{16,10})};
-const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({4,4},{36,17})};
-const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({41,4},{40,20})};
-const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {TextureUtil::GetTexture(projectiles), sf::IntRect({135,7},{34,10})};
-const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {TextureUtil::GetTexture(projectiles), sf::IntRect({442,540},{158,41})};
+const AnimData AnimUtil::ProjectileAnim::smallBulletReg = {projectilesTexture, sf::IntRect({90,8},{9,7})};
+const AnimData AnimUtil::ProjectileAnim::medBulletReg = {projectilesTexture, sf::IntRect({109,7},{19,9})};
+const AnimData AnimUtil::ProjectileAnim::shotgunPelletReg = {projectilesTexture, sf::IntRect({177,7},{16,10})};
+const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {projectilesTexture, sf::IntRect({4,4},{36,17})};
+const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {projectilesTexture, sf::IntRect({41,4},{40,20})};
+const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {projectilesTexture, sf::IntRect({135,7},{34,10})};
+const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {projectilesTexture, sf::IntRect({442,540},{158,41})};
 
-const AnimData AnimUtil::ProjectileAnim::redLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({12,46},{126,71})};
-const AnimData AnimUtil::ProjectileAnim::yellowLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({192,47},{124,71})};
-const AnimData AnimUtil::ProjectileAnim::orangeLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({365,45},{121,70})};
-const AnimData AnimUtil::ProjectileAnim::purpleLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({553,47},{121,70})};
-const AnimData AnimUtil::ProjectileAnim::whiteLaser= {TextureUtil::GetTexture(projectiles), sf::IntRect({729,49},{109,58})};
+const AnimData AnimUtil::ProjectileAnim::redLaser= {projectilesTexture, sf::IntRect({12,46},{126,71})};
+const AnimData AnimUtil::ProjectileAnim::yellowLaser= {projectilesTexture, sf::IntRect({192,47},{124,71})};
+const AnimData AnimUtil::ProjectileAnim::orangeLaser= {projectilesTexture, sf::IntRect({365,45},{121,70})};
+const AnimData AnimUtil::ProjectileAnim::purpleLaser= {projectilesTexture, sf::IntRect({553,47},{121,70})};
+const AnimData AnimUtil::ProjectileAnim::whiteLaser= {projectilesTexture, sf::IntRect({729,49},{109,58})};
 
-const AnimData AnimUtil::ProjectileAnim::lightningBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({89,137},{149,37}), 192, 0, 5, .05f, 0.f};
-const AnimData AnimUtil::ProjectileAnim::iceBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,595},{41,24}), 49, 0, 10, .1f, 0.f};
-const AnimData AnimUtil::ProjectileAnim::atomBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({308,803},{62,62}), 102, 0, 12, .05f, 0.f, 3, 102};
-const AnimData AnimUtil::ProjectileAnim::waveBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({608,780},{97,153}), 210, 0, 8, .1f, 0.f, 3, 200};
-const AnimData AnimUtil::ProjectileAnim::electricBullet = {TextureUtil::GetTexture(projectiles), sf::IntRect({0,1434},{220,66}), 260, 0, 4, .06f, 0.f};
+const AnimData AnimUtil::ProjectileAnim::lightningBullet = {projectilesTexture, sf::IntRect({89,137},{149,37}), 192, 0, 5, .05f, 0.f};
+const AnimData AnimUtil::ProjectileAnim::iceBullet = {projectilesTexture, sf::IntRect({0,595},{41,24}), 49, 0, 10, .1f, 0.f};
+const AnimData AnimUtil::ProjectileAnim::atomBullet = {projectilesTexture, sf::IntRect({308,803},{62,62}), 102, 0, 12, .05f, 0.f, 3, 102};
+const AnimData AnimUtil::ProjectileAnim::waveBullet = {projectilesTexture, sf::IntRect({608,780},{97,153}), 210, 0, 8, .1f, 0.f, 3, 200};
+const AnimData AnimUtil::ProjectileAnim::electricBullet = {projectilesTexture, sf::IntRect({0,1434},{220,66}), 260, 0, 4, .06f, 0.f};
 
                                                                                 // 0, 1434 y  220 x 66, 260 x gap   
 

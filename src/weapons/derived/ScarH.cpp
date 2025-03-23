@@ -1,6 +1,5 @@
 #include <iostream>
 #include "weapons/derived/ScarH.h"
-#include "fx/Paralysis.h"
 #include "core/GameState.h"
 
 static const ProjectileData scarHBulletReg = {
@@ -14,7 +13,7 @@ static const ProjectileData scarHBulletReg = {
 static const ProjectileData scarHBulletUpgrade = {
     AnimUtil::ProjectileAnim::electricBullet,
     20.f, // speed
-    0.f, // damage 
+    50.f, // damage 
     .3f, // bullet scale
     4, // collateral count
 };
@@ -73,10 +72,10 @@ void ScarElectricBullet::UpdateProjectileStatus(Character& character, GameState&
     std::vector<std::unique_ptr<Projectile>>::iterator& it){
     
     sf::Vector2f position = character.GetPosition();
-    //if(!character.frozen){
-    state.statusEffects.emplace_back(std::make_unique<Paralysis>(AnimUtil::StatusFxAnim::paralyze, position, character));
-      //  character.frozen = true;
-    //}
+    Monster* monster = dynamic_cast<Monster*>(&character);
+    monster->paralyzed.AttemptApplyEffect(4.f);
+    
+
     it = state.projectiles.erase(it);
 
 }

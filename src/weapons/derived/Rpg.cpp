@@ -3,7 +3,6 @@
 #include "fx/Explosion.h"
 #include "core/GameState.h"
 
-static const sf::Texture* PROJECTILE_TEXTURE = TextureUtil::GetTexture("../assets/textures/weapons/projectiles_atlas.png");
 static const float SMOKE_OFFSET_SCALAR = 15.f;
 static const float BACKFIRE_OFFSET_SCALAR = 70.f;
 
@@ -55,8 +54,8 @@ Weapon(AnimUtil::WeaponAnim::rpg,
             15.f, // amount of offset, vector created using this scalar opposite point direction
 
         }
-    ), smoke(*PROJECTILE_TEXTURE),
-    backfire(*PROJECTILE_TEXTURE),
+    ), smoke(*AnimUtil::projectilesTexture),
+    backfire(*AnimUtil::projectilesTexture),
     smokeData(AnimUtil::WeaponFxAnim::rpgSmoke),
     backfireData(AnimUtil::WeaponFxAnim::rpgBackfire),
     loadedRect(AnimUtil::WeaponAnim::rpgLoadedRect),
@@ -127,7 +126,7 @@ void Rpg::UpgradeWeapon() {
     loadedRect = AnimUtil::WeaponAnim::rpgUpgradedLoadedRect;
     reloadRect = AnimUtil::WeaponAnim::rpgUpgradedReloadRect;
     projectileData = rpgRocketUpgrade;
-    explosion = AnimUtil::WeaponFxAnim::explosionAlt;
+    explosion = AnimUtil::WeaponFxAnim::explosionUpgraded;
     isUpgraded = true;
 }
 

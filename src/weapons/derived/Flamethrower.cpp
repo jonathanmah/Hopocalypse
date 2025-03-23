@@ -4,7 +4,7 @@
 #include "util/RandomUtil.h"
 #include "core/GameState.h"
 #include "entities/Monster.h"
-#include "fx/OnFire.h"
+#include "entities/effects/OnFire.h"
 
 static const sf::Texture* PROJECTILE_TEXTURE = TextureUtil::GetTexture("../assets/textures/weapons/projectiles_atlas.png");
 static const float FLAME_OFFSET_SCALAR = 10.f;
@@ -82,8 +82,10 @@ void Flamethrower::ShootFlame() {
     }
 }
 
-void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, std::vector<std::unique_ptr<StatusEffect>>& statusEffects, float deltaTime) {
+void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, float deltaTime) {
     std::vector<std::reference_wrapper<Monster>> closeMonsters = GetNeighbourMonsters(monsters);
+
+    int num = 0;
 
     for (int i = 0; i < flames.size(); ) {
         Flame& flame = flames[i];
@@ -94,30 +96,16 @@ void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, 
         if(flame.lifetime > 0.25f*INIT_FLAME_LIFETIME) {
             for (Monster& monster : closeMonsters) {
                 if(monster.GetGlobalBounds().contains(flame.position)){
-                    if(monster.flameTimer <= 0.f){
-                        //int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
-                        int damage = !isUpgraded ? 1 : 1; // UPDATE DAMAGE HERE
-                        //monster.TakeDamage(15);
-                        float newFlameTimer = !isUpgraded ? 0.2f : 0.1f;
-                        monster.flameTimer = newFlameTimer;
-    
-                        if(!monster.burnt && monster.health <= 0.f){
-                            // change status effect colour to be more grey!!!! #TODO
-                            auto updateColour = monster.GetSprite().getColor();
-                            updateColour.r = updateColour.r * 0.15f;
-                            updateColour.g = updateColour.g * 0.15f;
-                            updateColour.b = updateColour.b * 0.15f;
-                            monster.GetSprite().setColor(updateColour);
-                            monster.burnt = true;
-                        }
+                    if(!monster.onFire.FlamethrowerDamageOnCooldown()){
+                        int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
+                        monster.TakeDamage(damage);
+                        monster.onFire.SetFlameThrowerDamageCooldown(0.2f);
                     }
-                    if(!monster.isOnFire) {
-                        auto flameAnimData = !isUpgraded ? AnimUtil::StatusFxAnim::onFire : AnimUtil::StatusFxAnim::onFire;//AnimUtil::StatusFxAnim::onFireUpgraded;                        
-                        statusEffects.emplace_back(std::make_unique<OnFire>(flameAnimData, monster.GetPosition(), monster));
-                        monster.isOnFire = true;
+                    if(monster.isAlive){
+                        monster.onFire.ApplyEffect(5.f);
                     }
+                        
                 }
-                
             }
         }
         if (flame.lifetime <= 0) {
@@ -136,7 +124,7 @@ void Flamethrower::Update(GameState& state, Player& player, sf::Vector2f mousePo
     } else {
         DecreaseSpread();
     }
-    FlameUpdate(state.monsters, state.statusEffects, deltaTime);
+    FlameUpdate(state.monsters, deltaTime);
     weaponData.timeSinceShot += deltaTime;
  }
 

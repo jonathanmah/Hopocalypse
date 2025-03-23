@@ -7,6 +7,7 @@ int main() {
     // clock for tracking elapsed time, begins with default constructor
     sf::Clock clock;
 
+    float time = 0.f;
     // Enter Game loop (capped at 60fps, windows.display() holds execution)
     while (game.window.isOpen()) {
 
@@ -14,6 +15,8 @@ int main() {
         sf::Time delta = clock.restart();
         float deltaTime = delta.asSeconds();
 
+        time += deltaTime;
+        //std::cout << time << std::endl;
         // this is for polling events like key presses and pushes onto a queue
         // it processes one event at a time and is slow for holding keys, just using for reading window close for now
         while (const std::optional event = game.window.pollEvent())

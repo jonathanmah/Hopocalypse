@@ -9,6 +9,9 @@ private:
     sf::RenderWindow& window;
     std::vector<sf::Vertex> triangles;
     sf::VertexArray flameTriangles;
+    std::vector<sf::Vertex> hpBarTriangles;
+    std::vector<sf::Vertex> onFireTriangles;
+    std::vector<sf::Vertex> effectTriangles;
 
     void AddRectangleToBatch(const sf::RectangleShape& rectShape, std::vector<sf::Vertex>& rectTriangles);
     void AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::array<sf::Vector2f, 4> cachedPosition, sf::Color colour);
@@ -52,15 +55,27 @@ public:
     }
 
 
+    // template <typename T>
+    // static void AddSpritesFromContainerToTriangles(std::vector<T>& containerObj, std::vector<sf::Vertex>* trianglesPtr){
+    //     for (T& obj : containerObj) {
+    //         if(texture == nullptr){
+    //             texture = &obj->GetSprite().getTexture();
+    //         }
+    //         (obj->GetSprite());
+    //     }
+
+    // }
 
      // pass an object instance with sprite
      template <typename T>
      void BatchRenderCharacters(std::vector<std::reference_wrapper<T>>& characters){
          // clear previous vertices
-         triangles.clear();
+        triangles.clear();
          // add each sprites vertices to vertex array
-        
-         std::vector<sf::Vertex> hpBarTriangles;
+        hpBarTriangles.clear();
+        //effectsTriangles.clear();
+         
+         
          const sf::Texture* texture = nullptr;
          for (T& obj : characters) {
              if(texture == nullptr){
@@ -77,5 +92,8 @@ public:
     
     void SetFlameTriangles(std::vector<Flame>& flames, float initialRadius);
     void RenderFlameTriangles();
+    void AppendOnFireTriangles(sf::Sprite* sprite);
+    void AppendPassiveEffectTriangles();
+
 };
 

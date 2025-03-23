@@ -82,7 +82,6 @@ void BatchRenderer::SetFlameTriangles(std::vector<Flame>& flames, float initalRa
             flameTriangles.append(sf::Vertex({p2, colour}));
         }
     }
-    //window.draw(flameTriangles, sf::RenderStates(sf::BlendAdd));
 }
 
 void BatchRenderer::RenderFlameTriangles(){
@@ -90,4 +89,25 @@ void BatchRenderer::RenderFlameTriangles(){
         window.draw(flameTriangles, sf::RenderStates(sf::BlendAdd));
         flameTriangles.clear();
     }
+}
+
+void BatchRenderer::AppendOnFireTriangles(sf::Sprite* sprite) {
+    sf::FloatRect bounds = sprite->getLocalBounds();
+    sf::Transform transform = sprite->getTransform();
+    sf::IntRect textureFrame{sprite->getTextureRect()};
+
+    // get the four corners of sprite and transform them
+    sf::Vector2f topLeft = transform.transformPoint({bounds.position.x, bounds.position.y});
+    sf::Vector2f bottomLeft = transform.transformPoint({bounds.position.x, bounds.position.y+bounds.size.y});
+    sf::Vector2f topRight = transform.transformPoint({bounds.position.x+bounds.size.x, bounds.position.y});
+    sf::Vector2f bottomRight = transform.transformPoint({bounds.position.x+bounds.size.x, bounds.position.y+bounds.size.y});
+    // add verts to the vertex array
+    sf::Color colour = sprite->getColor();
+    onFireTriangles.emplace_back(sf::Vertex{topLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y)}});
+    onFireTriangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
+    onFireTriangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+    
+    onFireTriangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+    onFireTriangles.emplace_back(sf::Vertex{bottomRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+    onFireTriangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
 }

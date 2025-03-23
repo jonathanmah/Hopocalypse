@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 
+
 class Blood;
 
 struct AnimData {
@@ -29,6 +30,18 @@ struct SubRectData {
 class AnimUtil {
 
 public:
+    static sf::Texture* playerTexture;
+    static sf::Texture* dungeonTexture;
+    static sf::Texture* bloodTexture;
+    static sf::Texture* weaponsTexture;
+    static sf::Texture* projectilesTexture;
+    static sf::Texture* explosionTexture;
+    static sf::Texture* explosionUpgradedTexture;
+    static sf::Texture* nukeTexture;
+    static sf::Texture* statusEffectsTexture;
+    static sf::Texture* onFireTexture;
+    static sf::Texture* onFireUpgradedTexture;
+
     static void LoadTextures();
     // update a sequence horizontal
     static bool UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime);
@@ -123,7 +136,7 @@ public:
         static const AnimData muzzleFlash5;
 
         static const AnimData explosion;
-        static const AnimData explosionAlt;
+        static const AnimData explosionUpgraded;
         static const AnimData nuke;
         static const SubRectData rpgBackfire;
         static const SubRectData rpgSmoke;

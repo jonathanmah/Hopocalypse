@@ -1,7 +1,6 @@
 #include <iostream>
 #include "weapons/derived/Famas.h"
 #include "core/GameState.h"
-#include "fx/Freeze.h"
 
 static const ProjectileData famasBulletReg = {
     AnimUtil::ProjectileAnim::medBulletReg,

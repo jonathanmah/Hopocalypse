@@ -8,7 +8,7 @@
 #include "environment/Map.h"
 #include "core/BatchRenderer.h"
 #include "weapons/Projectile.h"
-#include "fx/StatusEffect.h"
+
 
 class GameState {
 private:
@@ -31,7 +31,7 @@ public:
     std::vector<GroundBlood> groundBlood;
     std::vector<Footprint> footprints;
     std::vector<std::unique_ptr<AoE>> aoe;
-    std::vector<std::unique_ptr<StatusEffect>> statusEffects;
+    //std::vector<std::unique_ptr<StatusEffect>> statusEffects;
 
     GameState();
 

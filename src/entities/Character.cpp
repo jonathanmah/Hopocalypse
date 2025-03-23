@@ -28,8 +28,8 @@ Character::Character(AnimData animData, sf::Vector2f position, int health, float
     footprintDtSumFrame(0.f),
     id(ID_COUNTER++),
     slowFactor(1.f),
-    slowedTimer(0.f),
-    flameTimer(0.f), isOnFire(false),burnt(false) {
+    slowedTimer(0.f)
+{
   
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setPosition(position);
@@ -58,12 +58,15 @@ void Character::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
         
 }
 
-void Character::TakeDamage(int damage) {
-    health -= damage;
+void Character::CheckDeath() {
     if(health <= 0) {
         isAlive = false;
         health = 0;
     }
+}
+
+void Character::TakeDamage(int damage) {
+    health = std::max(0,health-damage);
 }
 /*
 For all projectiles in the game:

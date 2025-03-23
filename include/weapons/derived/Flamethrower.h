@@ -9,7 +9,7 @@ class Flamethrower : public Weapon {
 
 private:
     void ShootFlame();
-    void FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, std::vector<std::unique_ptr<StatusEffect>>& statusEffects, float deltaTime);
+    void FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, float deltaTime);
     std::vector<std::reference_wrapper<Monster>> GetNeighbourMonsters(std::vector<std::unique_ptr<Monster>>& monsters);
 
 public:

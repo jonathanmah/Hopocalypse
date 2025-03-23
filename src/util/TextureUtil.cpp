@@ -8,7 +8,6 @@ sf::Texture* TextureUtil::GetTexture(const std::string& texturePath) {
     if (textures.find(texturePath) != textures.end()) {
         return &textures[texturePath];
     }
-    std::cout <<"failed to find  " << texturePath << std::endl;
     sf::Texture texture;
     if(!texture.loadFromFile(texturePath))
         throw std::runtime_error("Failed to load texture : " + texturePath);
