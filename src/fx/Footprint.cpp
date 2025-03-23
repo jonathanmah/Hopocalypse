@@ -4,8 +4,6 @@
 #include "fx/Footprint.h"
 
 static constexpr float FOOTPRINT_OFFSET_PIXELS = 8.f;
-static constexpr float PI = 3.141592;
-
 
 /*
 Construct a footprint
@@ -24,7 +22,7 @@ Footprint::Footprint(AnimData animData, const sf::FloatRect& globalBounds, sf::V
     setScale({0.45f, 0.45f});
     move({globalBounds.size.x/2, globalBounds.size.y});
     setRotation(direction.angle());
-    sf::Angle angle(sf::radians(PI/2));
+    sf::Angle angle(sf::radians(M_PI/2));
     rotate(angle);
     // adjust the footprints apart with a perpendicular vector for direction and offset for magnitude
     if(createLeftFoot){

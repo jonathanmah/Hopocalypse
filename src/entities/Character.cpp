@@ -23,30 +23,13 @@ Character::Character(AnimData animData, sf::Vector2f position, int health, float
     movementSpeed(movementSpeed), 
     scale(scale), 
     isAlive(true), 
-    createLeftFootNext(true),
-    footprintDecayTimer(0.f),
-    footprintDtSumFrame(0.f),
-    id(ID_COUNTER++),
-    slowFactor(1.f),
-    slowedTimer(0.f)
+    id(ID_COUNTER++)
 {
   
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setPosition(position);
     sprite.setScale({scale, scale});
     sprite.setOrigin({sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2});
-}
-
-// Render hitbox of a character
-// #TODO this is reptitive, should have a hitbox utility function for all things that wanna load a sprite
-void Character::DrawHitbox(sf::RenderWindow& window) {
-    sf::FloatRect bounds = sprite.getGlobalBounds();
-    sf::RectangleShape rect(sf::Vector2f(bounds.size));
-    rect.setPosition(bounds.position);
-    rect.setFillColor(sf::Color::Transparent);
-    rect.setOutlineColor(sf::Color::Red);
-    rect.setOutlineThickness(2.0f);
-    window.draw(rect);
 }
 
 // Render the character and HP bar
@@ -99,45 +82,3 @@ void Character::UpdateCollisions(GameState& state){
         }
     }
 }
-
-// get the current hitbox for the characters foot
-sf::FloatRect Character::GetFootCollider() {
-    sf::FloatRect origBounds = GetGlobalBounds();
-    float posX = origBounds.position.x + FOOT_COLLIDER_X_OFFSET;
-    float posY = origBounds.position.y + origBounds.size.y*0.8f;
-    float width = origBounds.size.x - (FOOT_COLLIDER_X_OFFSET*2);
-    float height = origBounds.size.y*0.2f;
-    return sf::FloatRect{{posX, posY}, {width, height}};
-}
-
-// create a new footprint from a character
-void Character::UpdateFootprints(sf::Vector2f nextMoveNormalized, GameState& state, float deltaTime) {
-    bool groundBloodCollision = GroundBlood::HasGroundBloodCollision(GetFootCollider(),state.groundBlood);
-    if((groundBloodCollision || footprintDecayTimer > 0.01f) && footprintDtSumFrame >= FOOTPRINT_DT_RATE){
-        AnimData footprintData;
-        if(createLeftFootNext){
-            footprintData = AnimUtil::BloodAnim::leftFootprint;
-            createLeftFootNext = false;
-        } else {
-            footprintData = AnimUtil::BloodAnim::rightFootprint;
-            createLeftFootNext = true;
-        }
-        if (groundBloodCollision){
-            footprintDecayTimer =  FOOTPRINT_DECAY_TIME; // refresh footprint timer after stepping in ground blood
-        }
-        state.footprints.push_back(Footprint{footprintData, GetGlobalBounds(), nextMoveNormalized, 
-            !createLeftFootNext, footprintDecayTimer});
-        
-        footprintDtSumFrame = 0.f; // reset time for next frame
-    }
-    footprintDtSumFrame += deltaTime;
-    if(footprintDecayTimer > 0){
-        footprintDecayTimer -= deltaTime;
-    }
-}
-
-void Character::Knockback() {
-    sprite.move(knockbackVector);
-    knockbackDebt = std::max(0.f, knockbackDebt - knockbackVector.length());
-}
-        

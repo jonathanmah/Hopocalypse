@@ -91,10 +91,11 @@ void MagnumWaveBullet::UpdateProjectileStatus(Character& character, GameState& s
             return;
         }
         hitCharacters.insert(character.id);
-        character.knockbackDebt = 400.f;
-        character.knockbackVector = (*it)->velocity;
-        //#TODO THIS WILL ASSIGN A KNOCK BACK STATE.  SO THAT THE MONSTER MUST MOVE A DISTANCE OF
-        // THE INCOMING PROJECTILE FOR THE NEXT FEW MOVES
+
+        //character.knockbackDebt = 400.f;
+        //character.knockbackVector = (*it)->velocity;
+        Monster* monster = dynamic_cast<Monster*>(&character);
+        monster->knockback.SetKnockback(400.f, (*it)->velocity);
         ++it;
     } else {
         //#TODO need to somehow tell rocket animation to explode when this happens here for RPG

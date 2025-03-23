@@ -1,6 +1,6 @@
 #include "entities/effects/OnFire.h"
 #include "util/AnimUtil.h"
-#include "core/GameState.h"
+#include "entities/Character.h"
 #include <cmath>
 
 OnFire::OnFire(Character* character)

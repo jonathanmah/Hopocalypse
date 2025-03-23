@@ -1,6 +1,7 @@
 #include <iostream>
 #include "entities/Player.h"
 #include "entities/Monster.h"
+#include "util/HitboxDebugger.h"
 #include "core/GameState.h"
 #include "weapons/Projectile.h"
 #include "weapons/Weapon.h"
@@ -29,9 +30,11 @@
     float timeSinceLastShot : time since last projectile fired, used with a weapons cooldown 
 */
 // default curr weapon to pistol later
-Player::Player(AnimData animData, sf::Vector2f position) : Character(animData,position,100,5.f,1.f), deathTimer(0.f), currWeapon(std::make_unique<Ak47>()) {
-
-}
+Player::Player(AnimData animData, sf::Vector2f position) : 
+    Character(animData,position,100,5.f,1.f), 
+    deathTimer(0.f), 
+    currWeapon(std::make_unique<Ak47>()) 
+    {}
 
 void Player::HandleDeath(float deltaTime) {
     if(Player::currState != PlayerState::DEATH){
@@ -95,7 +98,7 @@ void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) {
     }
     if(nextMove.length() > 0){
         sf::Vector2f nextMoveNormalized = nextMove.normalized();
-        Character::UpdateFootprints(nextMoveNormalized, state, deltaTime);
+        footprintManager.UpdateFootprints(this, nextMoveNormalized, state, deltaTime);
         sprite.move(nextMoveNormalized * Player::movementSpeed);
     }
     CycleWeapons();
@@ -225,21 +228,10 @@ void Player::CheckDeath(std::vector<std::unique_ptr<Monster>>& monsters) {
         }
     }
 }
-
-//#TODO refactor this into common utility func. draw bounds of a sprite
-void DrawBounds(sf::RenderWindow& window, sf::FloatRect bounds, sf::Color colour, float thickness=2.0f) {
-    sf::RectangleShape rect(sf::Vector2f(bounds.size));
-    rect.setPosition(bounds.position);
-    rect.setFillColor(sf::Color::Transparent);
-    rect.setOutlineColor(colour);
-    rect.setOutlineThickness(thickness);
-    window.draw(rect);
-}
-
 // draw hit box of a players global bounds and feet.  should be in character class for when monsters get footprints
 void Player::DrawHitbox(sf::RenderWindow& window) {
-    DrawBounds(window, GetGlobalBounds(), sf::Color::Red);
-    DrawBounds(window, GetFootCollider(), sf::Color::Magenta, 3.0f);
+    HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite, sf::Color::Red);
+    HitboxDebugger::DrawGlobalRect(window, footprintManager.GetFootCollider(this), sf::Color::Magenta, 3.0f);
 }
 
 // Render a player, hitbox, and weapon

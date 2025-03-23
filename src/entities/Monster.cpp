@@ -4,6 +4,7 @@
 #include "core/GameState.h"
 #include "entities/effects/StatusEffect.h"
 #include "entities/effects/OnFire.h"
+#include "entities/effects/Knockback.h"
 
 static int monster_count = 0;
 static constexpr float DEATH_DT_SUM_PER_FRAME = 0.2f;
@@ -17,7 +18,10 @@ Monster::Monster(AnimData animData, sf::Vector2f position, int health, float mov
     xAxisInverted(false),
     disabledMovement(false),
     onFire(this), // set to original address and then init after final version copied. and used
-    paralyzed(this)
+    paralyzed(this),
+    slowed(this),
+    knockback(this),
+    shrink(this)
 {
     monster_count++;
 }
@@ -25,6 +29,9 @@ Monster::Monster(AnimData animData, sf::Vector2f position, int health, float mov
 void Monster::InitPostFinalAddress() {
     onFire = OnFire{this};
     paralyzed = Paralyzed{this};
+    slowed = Slowed{this};
+    knockback = Knockback{this};
+    shrink = Shrink{this};
 }
 
 void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
@@ -36,6 +43,13 @@ void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
     } else {
         paralyzed.UpdateDisabledCd(deltaTime);
     }
+    if(slowed.IsActive()) {
+        slowed.UpdateStatusEffect(deltaTime);
+    }
+    if(shrink.IsActive()) {
+        shrink.UpdateStatusEffect(deltaTime);
+    }
+
 }
 
 
@@ -57,8 +71,6 @@ void Monster::HandleDeath(float deltaTime) {
     timeSinceDeath += deltaTime;
 }
 
-
-
 bool Monster::Update(GameState& state, float deltaTime){
     UpdateStatusEffects(deltaTime, state.window);
 
@@ -70,16 +82,9 @@ bool Monster::Update(GameState& state, float deltaTime){
             AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
         }
 
-        if (slowedTimer > 0.f){
-            slowedTimer = std::max(0.f, slowedTimer-deltaTime);
-            if(slowedTimer == 0.f) {
-                slowFactor = 1.f;
-                sprite.setColor(sf::Color(255, 255, 255));
-            }
-        }
         // check if certain state before moving towards players
-        if(knockbackDebt > 0.f) {
-            Knockback();
+        if(knockback.IsActive()){
+            knockback.ApplyKnockback();
         } else {
             // HANDLE MOVEMENT, FROZEN, KNOCKBACK, DISTRACTED, PARLYZED
             if(!paralyzed.IsActive()){
@@ -99,15 +104,15 @@ bool Monster::Update(GameState& state, float deltaTime){
 void Monster::Move(std::vector<Player>& players) {
     sf::Vector2f nextMove = players[0].GetPosition() - sprite.getPosition();
     if(nextMove.length() > 1.f){
-        nextMove = nextMove.normalized()*(movementSpeed*slowFactor);
+        nextMove = nextMove.normalized()*(movementSpeed*slowed.slowFactor);
         if (nextMove.x < 0) {
             if(!xAxisInverted){
-                sprite.setScale({-scale, scale});
+                sprite.setScale({-sprite.getScale().x, sprite.getScale().y});
                 xAxisInverted = true;
             }
         }
         else if (xAxisInverted){
-            sprite.setScale({scale, scale});
+            sprite.setScale({-sprite.getScale().x, sprite.getScale().y});
             xAxisInverted = false;
         }
         if(players[0].isAlive){

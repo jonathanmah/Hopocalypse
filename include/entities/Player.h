@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Character.h"
 #include "core/BatchRenderer.h"
+#include "fx/FootprintManager.h"
 
 class Weapon;
 class Monster;
@@ -30,7 +31,7 @@ private:
     void HandleDeath(float deltaTime);
     void Move(PlayerState& playerState, GameState& state, float deltaTime);
     void CheckDeath(std::vector<std::unique_ptr<Monster>>& monster);
-    void DrawHitbox(sf::RenderWindow& window) override;
+    void DrawHitbox(sf::RenderWindow& window);
     void SetMousePositions(sf::RenderWindow& window);
     void SetFacingDirection();
     void SetAnimDataByState(PlayerState newState);
@@ -38,6 +39,8 @@ private:
     
 
 public:
+    FootprintManager footprintManager;
+
     Player(AnimData animData, sf::Vector2f position); 
     void Update(GameState& state, float deltaTime);
     void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) override;

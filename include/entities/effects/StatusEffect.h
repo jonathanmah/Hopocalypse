@@ -11,6 +11,7 @@ class BatchRenderer;
 // like a parameter update, damage taken over time, make slower, but still trying to run and not completely still
 // with a different animation. // with slow, could update animation to look slower. 
 
+
 class StatusEffect {
     // shrink, burning, slowed
 

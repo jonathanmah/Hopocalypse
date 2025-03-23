@@ -53,9 +53,9 @@ void GameState::InitPlayers() {
 }
 
 void GameState::InitMonsters() {
-    SetRandomMonsterSpawn(300);
+    //SetRandomMonsterSpawn(300);
     //SetCollateralLineup();
-    //SetSingleTest();
+    SetSingleTest();
     for(auto& monster : monsters){
         monster->InitPostFinalAddress(); // init objs with raw pointers after final memory address moves
         // issue with constructor init for statuses

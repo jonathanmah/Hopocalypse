@@ -1,6 +1,7 @@
 #include <iostream>
 #include "weapons/derived/Famas.h"
 #include "core/GameState.h"
+#include "entities/effects/Slowed.h"
 
 static const ProjectileData famasBulletReg = {
     AnimUtil::ProjectileAnim::medBulletReg,
@@ -100,16 +101,8 @@ FamasIceBullet::FamasIceBullet(ProjectileData projectileData, sf::Vector2f posit
 void FamasIceBullet::UpdateProjectileStatus(Character& character, GameState& state, 
     std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     
-    character.slowFactor = 0.3f;
-    character.slowedTimer = 2.f;
-    character.GetSprite().setColor(sf::Color(60, 220, 255));
-    // character.activateStatusEffect(Ice)
-    //sf::Vector2f pos = character.GetPosition();
-    // if(!character.frozen){
-    //     aoe.emplace_back(std::make_unique<Freeze>(AnimUtil::StatusFxAnim::frozen,pos));
-    //     character.frozen = true;
-    // }
-    // create a status effect class. 
+    Monster* monster = dynamic_cast<Monster*>(&character);
+    monster->slowed.ApplySlow(3.f, .3f);
     it = state.projectiles.erase(it); 
 
 }

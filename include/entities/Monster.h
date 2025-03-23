@@ -4,6 +4,9 @@
 #include "entities/effects/StatusEffect.h"
 #include "entities/effects/OnFire.h"
 #include "entities/effects/Paralyzed.h"
+#include "entities/effects/Slowed.h"
+#include "entities/effects/Knockback.h"
+#include "entities/effects/Shrink.h"
 
 class Player;
 
@@ -12,7 +15,7 @@ class Monster: public Character {
 private:
     float timeSinceDeath;
     float deathDtSum;
-    bool xAxisInverted;
+    
     void HandleDeath(float deltaTime);
     
     
@@ -21,12 +24,11 @@ public:
     // STATUS EFFECTS
     OnFire onFire;
     Paralyzed paralyzed;
-    
-    // paralyze
-    // knockback
-    // shrink
+    Slowed slowed;
+    Knockback knockback;
+    Shrink shrink;
 
-
+    bool xAxisInverted;
     bool disabledMovement; // flag for dev
 
     Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed);

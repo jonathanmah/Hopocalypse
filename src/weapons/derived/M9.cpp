@@ -74,8 +74,8 @@ void M9AtomBullet::UpdateAnimation(float deltaTime) {
 void M9AtomBullet::UpdateProjectileStatus(Character& character, GameState& state, 
     std::vector<std::unique_ptr<Projectile>>::iterator& it) {
     
-    auto currScale = character.GetSprite().getScale();
-    character.GetSprite().setScale(currScale*0.5f);
+    Monster* monster = dynamic_cast<Monster*>(&character);
+    monster->shrink.ApplyShrink(5.f, 0.5f);
         // #TODO ALSO REDUCE DAMAGE OF ENEMIES
     it = state.projectiles.erase(it); 
 

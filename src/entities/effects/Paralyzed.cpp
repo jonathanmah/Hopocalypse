@@ -1,6 +1,6 @@
 #include "entities/effects/Paralyzed.h"
 #include "util/AnimUtil.h"
-#include "core/GameState.h"
+#include "entities/Character.h"
 #include <cmath>
 
 Paralyzed::Paralyzed(Character* character)
@@ -17,7 +17,6 @@ Paralyzed::Paralyzed(Character* character)
     sprite.setRotation(angle);
 }
 
-
 bool Paralyzed::UpdateStatusEffect(float deltaTime) {
     sprite.setPosition(character->GetPosition());
     
@@ -29,6 +28,7 @@ bool Paralyzed::UpdateStatusEffect(float deltaTime) {
     AnimUtil::UpdateSpriteXYAnim(sprite, animData, deltaTime);
     return false;
 }
+
 void Paralyzed::AttemptApplyEffect(float duration) {
     if(!IsActive() && !OnCooldown()) {
         ApplyEffect(duration);
@@ -36,8 +36,8 @@ void Paralyzed::AttemptApplyEffect(float duration) {
 }
 
 void Paralyzed::UpdateDisabledCd(float deltaTime) {
-    if(OnCooldown()){
-        std::cout << "ON COOLDOWN : " << disabledCd << std::endl;
-    }
+    // if(OnCooldown()){
+    //     std::cout << "ON COOLDOWN : " << disabledCd << std::endl;
+    // }
     disabledCd = std::max(0.f, disabledCd-deltaTime);
 }
