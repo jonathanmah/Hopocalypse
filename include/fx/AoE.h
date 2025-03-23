@@ -16,8 +16,8 @@ public:
     AoE(AnimData animData, sf::Vector2f position);
     virtual ~AoE() = default;
     static void UpdateAoE(GameState& state, float deltaTime);
-    
-    virtual bool Update(float deltaTime) = 0; // returns true when effect is over
+    virtual void DrawHitbox(sf::RenderWindow& window) = 0;
+    virtual bool Update(GameState& state, float deltaTime) = 0; // returns true when effect is over
 
     static void RenderAoE(GameState& state, bool drawHitbox = false);
     inline sf::Sprite& GetSprite() { return sprite;}

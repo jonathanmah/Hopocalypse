@@ -15,6 +15,7 @@ static const ProjectileData rpgRocketReg = {
     1.8f, // acceleration
 };
 
+
 static const ProjectileData rpgRocketUpgrade = {
     AnimUtil::ProjectileAnim::rpgRocketUpgrade,
     20.f, // speed
@@ -22,6 +23,18 @@ static const ProjectileData rpgRocketUpgrade = {
     1.3f, // bullet scale
     1, // collateral count
     1.8f, // acceleration
+};
+
+static const ExplosionData rpgRegExplosion = {
+    100, // damage
+    150.f, // radius
+    .1f // delay
+};
+
+static const ExplosionData rpgUpgradedExplosion = {
+    200,
+    350.f,
+    .2f
 };
 
 
@@ -59,8 +72,7 @@ Weapon(AnimUtil::WeaponAnim::rpg,
     smokeData(AnimUtil::WeaponFxAnim::rpgSmoke),
     backfireData(AnimUtil::WeaponFxAnim::rpgBackfire),
     loadedRect(AnimUtil::WeaponAnim::rpgLoadedRect),
-    reloadRect(AnimUtil::WeaponAnim::rpgReloadRect),
-    explosion(AnimUtil::WeaponFxAnim::explosion)
+    reloadRect(AnimUtil::WeaponAnim::rpgReloadRect)
 {
     sprite.setOrigin({sprite.getLocalBounds().size.x / 2.4f, sprite.getLocalBounds().size.y / 2});
     smoke.setOrigin({0, static_cast<float>(smokeData.frameSequence[0].size.y / 2)}); // dont forget local bounds is for the texture thats binding. not the subrect
@@ -70,7 +82,12 @@ Weapon(AnimUtil::WeaponAnim::rpg,
 
 void Rpg::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectile>>& projectiles) {
     sf::Vector2f adjustedNormal = (GetTargetWithSpread(mousePosGlobal) - GetPosition()).normalized();
-    projectiles.emplace_back(std::make_unique<RPGrocket>(projectileData, muzzlePosition, adjustedNormal, explosion));
+    if(!isUpgraded){
+        projectiles.emplace_back(std::make_unique<RPGrocket>(projectileData, muzzlePosition, adjustedNormal, AnimUtil::WeaponFxAnim::explosion, rpgRegExplosion));
+    } else {
+        projectiles.emplace_back(std::make_unique<RPGrocket>(projectileData, muzzlePosition, adjustedNormal, AnimUtil::WeaponFxAnim::explosionUpgraded, rpgUpgradedExplosion));
+    }
+        
     smoke.setTextureRect(smokeData.frameSequence[0]);
     smokeData.hide = false;
     backfire.setTextureRect(backfireData.frameSequence[0]);
@@ -126,13 +143,12 @@ void Rpg::UpgradeWeapon() {
     loadedRect = AnimUtil::WeaponAnim::rpgUpgradedLoadedRect;
     reloadRect = AnimUtil::WeaponAnim::rpgUpgradedReloadRect;
     projectileData = rpgRocketUpgrade;
-    explosion = AnimUtil::WeaponFxAnim::explosionUpgraded;
     isUpgraded = true;
 }
 
 
-RPGrocket::RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized, AnimData explosion)
-: Projectile(projectileData, position, normalized), explosion(explosion) {
+RPGrocket::RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized, AnimData explosionAnimData, ExplosionData explosionData)
+: Projectile(projectileData, position, normalized), explosionAnimData(explosionAnimData), explosionData(explosionData) {
 }
 
 void RPGrocket::UpdatePosition(float deltaTime) {
@@ -146,6 +162,6 @@ void RPGrocket::UpdateProjectileStatus(Character& character, GameState& state,
     // set a detonate flag?? handle explosives somehow?
     //#TODO need to somehow tell rocket animation to explode when this happens here for RPG
     sf::Vector2f position = (*it)->GetPosition();
-    state.aoe.emplace_back(std::make_unique<Explosion>(explosion,position));
+    state.aoe.emplace_back(std::make_unique<Explosion>(explosionAnimData,position, explosionData));
     it = state.projectiles.erase(it); 
 }

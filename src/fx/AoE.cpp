@@ -10,7 +10,7 @@ AoE::AoE(AnimData animData, sf::Vector2f position) : sprite(*animData.texture), 
 void AoE::UpdateAoE(GameState& state, float deltaTime) { // explosion
     for(auto it = state.aoe.begin(); it != state.aoe.end();){
         // update aoe to see if it's done or not
-        if((*it)->Update(deltaTime)){
+        if((*it)->Update(state, deltaTime)){
             it = state.aoe.erase(it);
         } else {
             ++it;
@@ -19,10 +19,11 @@ void AoE::UpdateAoE(GameState& state, float deltaTime) { // explosion
 }
 
 void AoE::RenderAoE(GameState& state, bool drawHitbox) {    // shared 
-    state.batchRenderer->BatchRenderSprites(state.aoe);
+    state.batchRenderer->BatchRenderSprites(state.aoe); // cannot batch render aoe unless it's from same texture...
     if(drawHitbox) {
         for(auto& effect : state.aoe) {
             HitboxDebugger::DrawSpriteGlobalBoundsHitbox(state.window, effect->sprite);
+            effect->DrawHitbox(state.window);
         }
     }
 }

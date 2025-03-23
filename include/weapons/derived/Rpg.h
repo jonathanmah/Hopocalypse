@@ -1,5 +1,6 @@
 #pragma once
 #include "weapons/Weapon.h"
+#include "fx/Explosion.h"
 
 class Rpg : public Weapon {
 
@@ -10,7 +11,6 @@ private:
     SubRectData backfireData;
     sf::IntRect loadedRect;
     sf::IntRect reloadRect;
-    AnimData explosion;
 
 public:
     Rpg();
@@ -24,9 +24,10 @@ public:
 
 class RPGrocket : public Projectile {
 public:
-    AnimData explosion;
+    AnimData explosionAnimData;
+    ExplosionData explosionData;
 
-    RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized, AnimData explosion);
+    RPGrocket(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized, AnimData explosion, ExplosionData explosionData);
     void UpdatePosition(float deltaTime) override;
     void UpdateProjectileStatus(Character& character, GameState& state, 
         std::vector<std::unique_ptr<Projectile>>::iterator& it) override;

@@ -53,9 +53,9 @@ void GameState::InitPlayers() {
 }
 
 void GameState::InitMonsters() {
-    //SetRandomMonsterSpawn(300);
+    SetRandomMonsterSpawn(300);
     //SetCollateralLineup();
-    SetSingleTest();
+    //SetSingleTest();
     for(auto& monster : monsters){
         monster->InitPostFinalAddress(); // init objs with raw pointers after final memory address moves
         // issue with constructor init for statuses
@@ -109,8 +109,8 @@ void GameState::Render() {
     Blood::RenderBlood(*this, window);
     RenderCharacters();
     
-    Projectile::RenderProjectiles(*this, true);
-    AoE::RenderAoE(*this, true); // render foreground aoe and bg separately...
+    Projectile::RenderProjectiles(*this, false);
+    AoE::RenderAoE(*this, false); // render foreground aoe and bg separately...
     StatusEffect::RenderStatusEffects(monsters, window, *batchRenderer);
     batchRenderer->RenderFlameTriangles(); // render flamethrower particles
     
