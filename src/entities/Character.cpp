@@ -2,8 +2,14 @@
 #include "entities/Character.h"
 #include "core/GameState.h"
 
-static constexpr float FOOT_COLLIDER_X_OFFSET = 12.f;
 static int ID_COUNTER = 0;
+
+// all monsters have atleast
+// IDLE
+// WALK
+//ATTACK 
+//DEATH
+
 
 /*
 #TODO make health a default parameter of =100 in header but overwrite it to spawn tanks
@@ -21,7 +27,7 @@ Character::Character(AnimData animData, sf::Vector2f position, int health, float
     sprite(*animData.texture),
     health(100), 
     movementSpeed(movementSpeed), 
-    scale(scale), 
+    scale(scale),
     isAlive(true), 
     id(ID_COUNTER++)
 {

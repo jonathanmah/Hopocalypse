@@ -3,7 +3,7 @@
 #include "util/AnimUtil.h"
 #include "util/TextureUtil.h"
 
-sf::Texture* AnimUtil::playerTexture = TextureUtil::GetTexture("../assets/textures/characters/bunny_white_update.png");
+sf::Texture* AnimUtil::playerTexture = TextureUtil::GetTexture("../assets/textures/characters/players/bunny_white_update.png");
 sf::Texture* AnimUtil::dungeonTexture = TextureUtil::GetTexture("../assets/textures/tilesheet.png");
 sf::Texture* AnimUtil::bloodTexture = TextureUtil::GetTexture("../assets/textures/fx/blood_atlas.png");
 sf::Texture* AnimUtil::weaponsTexture = TextureUtil::GetTexture("../assets/textures/weapons/weapons.png");
@@ -15,6 +15,7 @@ sf::Texture* AnimUtil::statusEffectsTexture = TextureUtil::GetTexture("../assets
 sf::Texture* AnimUtil::onFireTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_alpha.png");
 sf::Texture* AnimUtil::onFireUpgradedTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_upgraded.png");
 sf::Texture* AnimUtil::energyExplosionTexture = TextureUtil::GetTexture("../assets/textures/fx/energybomb_impact.png");
+sf::Texture* AnimUtil::zombieTexture = TextureUtil::GetTexture("../assets/textures/characters/monsters/zombie.png");
 
 // PLAYER
 const AnimData AnimUtil::PlayerAnim::stand = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
@@ -28,6 +29,30 @@ const AnimData AnimUtil::BigDemonAnim::walk = {dungeonTexture, sf::IntRect({148,
 const AnimData AnimUtil::SmallDemonAnim::walk = {dungeonTexture, sf::IntRect({432,272},{16,24}), 16, 0, 4, .05f, 0.f};
 const AnimData AnimUtil::SlugAnim::walk = {dungeonTexture, sf::IntRect({368,374},{16,18}), 16, 0, 4, .1f, 0.f};
 
+
+const AnimData AnimUtil::ZombieAnim::walk = {dungeonTexture, sf::IntRect({0,128},{128,128}), 32, 0, 10, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::idle = {dungeonTexture, sf::IntRect({1152,0},{128,128}), 32, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::attack = {dungeonTexture, sf::IntRect({0,0},{128,128}), 32, 0, 4, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::death = {dungeonTexture, sf::IntRect({512,0},{128,128}), 32, 0, 5, .1f, 0.f};
+
+
+// ZOMBIE
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // BLOOD
 const AnimData AnimUtil::BloodAnim::spray1 = {bloodTexture, sf::IntRect({32, 108},{96,112}), 112, 0, 9, .05f, 0.f};

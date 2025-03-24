@@ -10,6 +10,15 @@
 
 class Player;
 
+enum class MonsterState {
+    WALK,
+    RUN,
+    ATTACK1,
+    ATTACK2,
+    IDLE,
+    DEATH,
+};
+
 class Monster: public Character {
 
 private:
@@ -31,8 +40,11 @@ public:
     bool xAxisInverted;
     bool disabledMovement; // flag for dev
 
+    std::unordered_map<MonsterState, AnimData> animMap;
+
     Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed);
     void UpdateStatusEffects(float deltaTime, sf::RenderWindow& window);
+    virtual void InitAnimMap() {return;};
     bool Update(GameState& state, float deltaTime);
     void Move(std::vector<Player>& players);
     void InitPostFinalAddress();

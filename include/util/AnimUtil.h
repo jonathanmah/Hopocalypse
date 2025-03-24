@@ -42,6 +42,14 @@ public:
     static sf::Texture* onFireTexture;
     static sf::Texture* onFireUpgradedTexture;
     static sf::Texture* energyExplosionTexture;
+    static sf::Texture* zombieTexture;
+    static sf::Texture* wolfTexture;
+    static sf::Texture* smallDemonTexture;
+    static sf::Texture* bigDemonTexture;
+    static sf::Texture* scytheDemonTexture;
+    static sf::Texture* mageDemonTexture;
+    static sf::Texture* spiderDemonTexture;
+    static sf::Texture* bossDemonTexture;
 
     static void LoadTextures();
     // update a sequence horizontal
@@ -72,6 +80,34 @@ public:
     struct SlugAnim {
         static const AnimData walk;
     };
+
+    struct ZombieAnim {
+        static const AnimData walk;
+        static const AnimData idle;
+        static const AnimData attack;
+        static const AnimData death;
+    };
+    struct WolfAnim {
+        static const AnimData walk;
+        static const AnimData idle;
+        static const AnimData attack;
+        static const AnimData death;
+    };
+    // struct SmallDemonAnim {
+    //     static const AnimData walk;
+    //     static const AnimData idle;
+    //     static const AnimData attack;
+    //     static const AnimData death;
+    // };
+    // struct BigDemon2Anim {
+    //     static const AnimData walk;
+    //     static const AnimData idle;
+    //     static const AnimData attack;
+    //     static const AnimData death;
+    // };
+
+
+
 
 
     struct BloodAnim {

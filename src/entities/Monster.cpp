@@ -73,8 +73,6 @@ void Monster::HandleDeath(float deltaTime) {
 
 bool Monster::Update(GameState& state, float deltaTime){
     UpdateStatusEffects(deltaTime, state.window);
-
-
     Monster::UpdateCollisions(state);
     hud.Update(health, GetGlobalBounds());
     if(isAlive) {
