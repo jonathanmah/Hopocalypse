@@ -12,7 +12,6 @@
 #include "entities/MonsterFactory.h"
 #include "util/RandomUtil.h"
 #include "core/BatchRenderer.h"
-//#include "fx/StatusEffect.h"
 
 GameState::GameState(){
     RandomUtil::Initialize();
@@ -35,7 +34,7 @@ void GameState::SetRandomMonsterSpawn(int count){
 
 void GameState::SetSingleTest(){
     Monster bigDemon{AnimUtil::BigDemonAnim::walk, {400,400}, 100, 1.f};
-    bigDemon.disabledMovement = false;
+    bigDemon.disabledMovement = true;
     monsters.push_back(std::make_unique<Monster>(std::move(bigDemon)));
 }
 

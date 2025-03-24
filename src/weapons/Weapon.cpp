@@ -12,9 +12,8 @@
 // so for anim util, all we need is the subrect for weapon base,
 // projectile takes anim data tho so keep that the same for projectiles
 
-static constexpr float PI = 3.141592;
-static constexpr float MIRROR_NEG_Y_AXIS_BOUND = PI/2.f; // pi/2 radians , greater than half of pi
-static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -PI/2.f; // -pi/2 pi radians , less than -half of pi
+static constexpr float MIRROR_NEG_Y_AXIS_BOUND = M_PI_2; // pi/2 radians , greater than half of pi
+static constexpr float MIRROR_POS_Y_AXIS_BOUND =  -M_PI_2; // -pi/2 pi radians , less than -half of pi
 // each weapon has, may have,  hardcoded pos offset, origin, damage, bullet speed, fireRate. bullet anim.
 // y axis offset for bullet leaving muzzle, AND x offset too forgot that,
 // muzzle flash or rocket leaving behind
@@ -156,7 +155,6 @@ void Weapon::UpdateShells(float deltaTime) {
 
 
 // ------------------------- WEAPON EFFECTS ^ ------------------------- WEAPON EFFECTS ^ -------------------------
-
 // ------------------------ SHOOTING CORE / PROJECTILE CREATION ---------------------------------------------------
 
 // creates projecitle, update recoil/spread

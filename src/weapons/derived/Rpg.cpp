@@ -9,7 +9,7 @@ static const float BACKFIRE_OFFSET_SCALAR = 70.f;
 static const ProjectileData rpgRocketReg = {
     AnimUtil::ProjectileAnim::rpgRocketReg,
     5.f, // speed
-    1.f, // damage 
+    0.f, // damage 
     1.3f, // bullet scale
     1, // collateral count
     1.8f, // acceleration
@@ -19,7 +19,7 @@ static const ProjectileData rpgRocketReg = {
 static const ProjectileData rpgRocketUpgrade = {
     AnimUtil::ProjectileAnim::rpgRocketUpgrade,
     20.f, // speed
-    1.f, // damage 
+    0.f, // damage 
     1.3f, // bullet scale
     1, // collateral count
     1.8f, // acceleration
@@ -28,13 +28,17 @@ static const ProjectileData rpgRocketUpgrade = {
 static const ExplosionData rpgRegExplosion = {
     100, // damage
     150.f, // radius
-    .1f // delay
+    .1f, // delay
+    3.f // scale
 };
 
 static const ExplosionData rpgUpgradedExplosion = {
     200,
     350.f,
-    .2f
+    .2f,
+    3.f, // scale
+    false,
+    true
 };
 
 

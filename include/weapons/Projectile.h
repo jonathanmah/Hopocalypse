@@ -1,12 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <unordered_set>
-#include "../util/AnimUtil.h"
-#include "../entities/Character.h"
+#include "util/AnimUtil.h"
+#include "entities/Character.h"
 #include "weapons/Weapon.h"
-#include "../core/BatchRenderer.h"
-#include "../util/HitboxDebugger.h"
-#include "../fx/AoE.h"
+#include "core/BatchRenderer.h"
+#include "util/HitboxDebugger.h"
+#include "fx/AoE.h"
+#include "fx/Explosion.h"
 
 class GameState;
 //class Character;
@@ -30,6 +31,8 @@ public:
     float damage;
     float lifetime;
     float scale;
+
+    bool createsBlood;
     
     Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized);
 
@@ -49,6 +52,9 @@ public:
     void Rotate(sf::Vector2f velocity);
     void SetPosition(sf::Vector2f position);
     virtual void UpdateAnimation(float deltaTime);
+    
+    virtual bool ReachedDest(){return false;} // REACH TARGET DEST
+    virtual void ActivatePostTargetReached(GameState& state, std::vector<std::unique_ptr<Projectile>>::iterator& it) {return;}
 
     inline sf::Sprite& GetSprite() { return sprite;}
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}

@@ -72,6 +72,7 @@ void Magnum::UpgradeWeapon() {
 //307x410 288,783 // total 102x each 102.5y
 MagnumWaveBullet::MagnumWaveBullet(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
 : Projectile(projectileData, position, normalized) {
+    createsBlood = false;
 }
 
 void MagnumWaveBullet::UpdateAnimation(float deltaTime) {

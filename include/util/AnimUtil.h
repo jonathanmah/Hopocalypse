@@ -41,6 +41,7 @@ public:
     static sf::Texture* statusEffectsTexture;
     static sf::Texture* onFireTexture;
     static sf::Texture* onFireUpgradedTexture;
+    static sf::Texture* energyExplosionTexture;
 
     static void LoadTextures();
     // update a sequence horizontal
@@ -137,6 +138,7 @@ public:
 
         static const AnimData explosion;
         static const AnimData explosionUpgraded;
+        static const AnimData energyExplosion;
         static const AnimData nuke;
         static const SubRectData rpgBackfire;
         static const SubRectData rpgSmoke;
@@ -157,8 +159,8 @@ public:
         static const AnimData shotgunPelletReg;
         static const AnimData rpgRocketReg;
         static const AnimData rpgRocketUpgrade;
-        static const AnimData grenadeLauncherRoundReg;
-        static const AnimData grenadeLauncherRoundUpgrade;
+        static const AnimData m32GrenadeReg;
+        static const AnimData m32GrenadeUpgrade;
         static const AnimData redLaser;
         static const AnimData yellowLaser;
         static const AnimData orangeLaser;

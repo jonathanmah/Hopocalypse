@@ -19,6 +19,7 @@
 #include "weapons/derived/M4a1.h"
 #include "weapons/derived/Ump45.h"
 #include "weapons/derived/P90.h"
+#include "weapons/derived/M32.h"
 
 /*
     Construct a player
@@ -150,6 +151,9 @@ void Player::CycleWeapons() {
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::P)) {
         currWeapon = std::make_unique<P90>();
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Num3)) {
+        currWeapon = std::make_unique<M32>();
     }
 }
 

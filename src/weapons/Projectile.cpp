@@ -18,7 +18,7 @@ static constexpr float COLLATERAL_REDUCTION_FACTOR = 0.8f;
 Projectile::Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
 : sprite(*projectileData.anim.texture), animData(projectileData.anim), velocity(projectileData.speed*normalized), damage(projectileData.damage), 
 collateralCount(projectileData.collateralCount), scale(projectileData.scale), acceleration(projectileData.acceleration),
-lifetime(projectileData.lifetime) {
+lifetime(projectileData.lifetime), createsBlood(true){
     sprite.setTextureRect(sf::IntRect(projectileData.anim.textureFrame.position, projectileData.anim.textureFrame.size));
     sprite.setPosition({position.x, position.y});
     sprite.setScale({scale, scale});
@@ -84,7 +84,13 @@ void Projectile::UpdateProjectiles(GameState& state, float deltaTime) {
             (*it)->UpdatePosition(deltaTime);
             (*it)->UpdateAnimation(deltaTime);
             (*it)->lifetime -= deltaTime;
-            ++it;
+            if((*it)->ReachedDest()){
+                (*it)->ActivatePostTargetReached(state, it);
+                    
+            } else{
+                ++it;
+            }
+            
         }
     }
 }

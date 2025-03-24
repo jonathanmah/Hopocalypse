@@ -14,7 +14,7 @@ sf::Texture* AnimUtil::nukeTexture = TextureUtil::GetTexture("../assets/textures
 sf::Texture* AnimUtil::statusEffectsTexture = TextureUtil::GetTexture("../assets/textures/fx/status_effects.png");
 sf::Texture* AnimUtil::onFireTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_alpha.png");
 sf::Texture* AnimUtil::onFireUpgradedTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_upgraded.png");
-
+sf::Texture* AnimUtil::energyExplosionTexture = TextureUtil::GetTexture("../assets/textures/fx/energybomb_impact.png");
 
 // PLAYER
 const AnimData AnimUtil::PlayerAnim::stand = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
@@ -124,6 +124,7 @@ const SubRectData AnimUtil::WeaponFxAnim::rpgSmoke = {
 const AnimData AnimUtil::WeaponFxAnim::explosion = {explosionTexture, sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5, 192};
 const AnimData AnimUtil::WeaponFxAnim::nuke = {nukeTexture, sf::IntRect({0,0},{256,128}), 256, 0, 12, .05f, 0.f, 3};
 const AnimData AnimUtil::WeaponFxAnim::explosionUpgraded = {explosionUpgradedTexture, sf::IntRect({0,0},{256,256}), 256, 0, 30, .05f, 0.f, 3, 256};
+const AnimData AnimUtil::WeaponFxAnim::energyExplosion = {energyExplosionTexture, sf::IntRect({0,0},{192,192}), 192, 0, 15, .05f, 0.f, 5, 192};
 
 
 const AnimData AnimUtil::StatusFxAnim::frozen = {statusEffectsTexture, sf::IntRect({0,0},{100,91}), 100, 0, 10, .3f};
@@ -138,6 +139,10 @@ const AnimData AnimUtil::ProjectileAnim::rpgRocketReg = {projectilesTexture, sf:
 const AnimData AnimUtil::ProjectileAnim::rpgRocketUpgrade = {projectilesTexture, sf::IntRect({41,4},{40,20})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletReg = {projectilesTexture, sf::IntRect({135,7},{34,10})};
 const AnimData AnimUtil::ProjectileAnim::barrett50BulletUpgrade = {projectilesTexture, sf::IntRect({442,540},{158,41})};
+const AnimData AnimUtil::ProjectileAnim::m32GrenadeReg = {projectilesTexture, sf::IntRect({0,23},{18,12})};
+const AnimData AnimUtil::ProjectileAnim::m32GrenadeUpgrade = {projectilesTexture, sf::IntRect({29,24},{17,10})};
+//         // grenade launcher ammo, 0,23 18x12
+//         // grenade launcher upgraded ammo, 29,24 , 17x10
 
 const AnimData AnimUtil::ProjectileAnim::redLaser= {projectilesTexture, sf::IntRect({12,46},{126,71})};
 const AnimData AnimUtil::ProjectileAnim::yellowLaser= {projectilesTexture, sf::IntRect({192,47},{124,71})};

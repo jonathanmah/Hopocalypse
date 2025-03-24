@@ -8,6 +8,9 @@ struct ExplosionData {
     int damage;
     float radius;
     float delay;
+    float scale;
+    bool setParalyze = false;
+    bool setFire = false;
 };
 
 class Explosion : public AoE {

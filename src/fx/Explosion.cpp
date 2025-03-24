@@ -3,7 +3,7 @@
 
 Explosion::Explosion(AnimData animData, sf::Vector2f position, ExplosionData explosionData) :
     AoE(animData, position), explosionData(explosionData) {
-        sprite.setScale({3.f,3.f});
+        sprite.setScale({explosionData.scale,explosionData.scale});
         float radians =  RandomUtil::GetRandomFloat(0,6.23f);
         sf::Angle angle = sf::radians(radians);
         sprite.setRotation(angle);
@@ -13,6 +13,11 @@ void Explosion::DamageNeighbours(GameState& state) {
     for(auto& monster : state.monsters) {
         if((monster->GetPosition()-sprite.getPosition()).length() < explosionData.radius){
             monster->TakeDamage(explosionData.damage);
+            if(explosionData.setParalyze) {
+                monster->paralyzed.AttemptApplyEffect(4.f);
+            } else if (explosionData.setFire) {
+                monster->onFire.ApplyEffect(5.f);
+            }
         }
     }
     isActive = false;
