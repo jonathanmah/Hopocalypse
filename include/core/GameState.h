@@ -11,14 +11,13 @@
 
 
 class GameState {
-private:
-    void SetRandomMonsterSpawn(int count);
-    void SetSingleTest();
-    void SetCollateralLineup();
-
-    void RenderCharacters();
 
 public:
+    int MONSTER_HITBOX = 0;
+    int PLAYER_HITBOX = 0;
+    int WEAPON_HITBOX = 0;
+    int PROJECTILE_HITBOX = 0;
+    int AOE_HITBOX = 0;
 
     sf::RenderWindow window;
     std::unique_ptr<BatchRenderer> batchRenderer;
@@ -31,9 +30,16 @@ public:
     std::vector<GroundBlood> groundBlood;
     std::vector<Footprint> footprints;
     std::vector<std::unique_ptr<AoE>> aoe;
-    //std::vector<std::unique_ptr<StatusEffect>> statusEffects;
+
+    // write a shader to blend in status effects with monster textures...
+
 
     GameState();
+
+    void SetRandomMonsterSpawn(int count);
+    void SetSingleTest();
+    void SetCollateralLineup();
+    void RenderCharacters();
 
     // initialize window settings, map, other settings
 

@@ -12,8 +12,16 @@
 #include "entities/MonsterFactory.h"
 #include "util/RandomUtil.h"
 #include "core/BatchRenderer.h"
+#include "entities/monsters/Zombie.h"
+#include "entities/monsters/BigDemon.h"
+#include "entities/monsters/SmallDemon.h"
 
 GameState::GameState(){
+    MONSTER_HITBOX = 0;
+    PLAYER_HITBOX = 0;
+    PROJECTILE_HITBOX = 0;
+    AOE_HITBOX = 0;
+
     RandomUtil::Initialize();
     TextureUtil::SetStaticMemberTextures();
     sf::ContextSettings settings;
@@ -33,32 +41,45 @@ void GameState::SetRandomMonsterSpawn(int count){
 }
 
 void GameState::SetSingleTest(){
-    Monster bigDemon{AnimUtil::BigDemonAnim::walk, {400,400}, 100, 1.f};
-    bigDemon.disabledMovement = true;
-    monsters.push_back(std::make_unique<Monster>(std::move(bigDemon)));
+    // BigDemon bigDemon{{100.f,100.f}};
+    // SmallDemon smallDemon{{200.f,600.f}};
+    std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{100.f,400.f});
+    zombie->disabledMovement = true;
+    std::unique_ptr<Monster> smallDemon = std::make_unique<SmallDemon>(sf::Vector2f{400.f,400.f});
+    smallDemon->disabledMovement = true;
+    std::unique_ptr<Monster> bigDemon = std::make_unique<BigDemon>(sf::Vector2f{700.f,400.f});
+    bigDemon->disabledMovement = true;
+    std::unique_ptr<Monster> bigDemon2 = std::make_unique<BigDemon>(sf::Vector2f{700.f,430.f});
+    bigDemon2->disabledMovement = true;
+    std::unique_ptr<Monster> bigDemon3 = std::make_unique<BigDemon>(sf::Vector2f{700.f,460.f});
+    bigDemon3->disabledMovement = true;
+    std::unique_ptr<Monster> bigDemon4 = std::make_unique<BigDemon>(sf::Vector2f{700.f,490.f});
+    bigDemon4->disabledMovement = true;
+    monsters.push_back(std::move(zombie));
+    monsters.push_back(std::move(smallDemon));
+    monsters.push_back(std::move(bigDemon));
+    monsters.push_back(std::move(bigDemon2));
+    monsters.push_back(std::move(bigDemon3));
+    monsters.push_back(std::move(bigDemon4));
 }
 
 void GameState::SetCollateralLineup(){
     for(float i = 0; i < 5; i++) {
-        Monster bigDemon{AnimUtil::BigDemonAnim::walk, {150+100*i,300}, 100, 1.f};
-        bigDemon.disabledMovement = true;
-        monsters.push_back(std::make_unique<Monster>(std::move(bigDemon))); // check later if have to do this way
+        Zombie zombie{{400.f,400.f}};
+        zombie.disabledMovement = true;
+        monsters.push_back(std::make_unique<Zombie>(std::move(zombie))); // check later if have to do this way
     }
 }
 
 void GameState::InitPlayers() {
-    Player bunny(AnimUtil::PlayerAnim::stand, {1200/2,700/2});
+    Player bunny({1200/2,700/2}, AnimUtil::PlayerAnim::stand);
     players.push_back(std::move(bunny)); // why cant emplace back
 }
 
 void GameState::InitMonsters() {
-    SetRandomMonsterSpawn(300);
+    //SetRandomMonsterSpawn(300);
     //SetCollateralLineup();
-    //SetSingleTest();
-    for(auto& monster : monsters){
-        monster->InitPostFinalAddress(); // init objs with raw pointers after final memory address moves
-        // issue with constructor init for statuses
-    }
+    SetSingleTest();
 }
 
 void GameState::Update(float deltaTime) {
@@ -85,21 +106,14 @@ void GameState::Update(float deltaTime) {
 
 void GameState::RenderCharacters() {
     //#TODO will have to figure out a way to keep monsters as pointers while being able to render them in order...
-    std::vector<std::reference_wrapper<Monster>> monstersAlive;
-    std::vector<std::reference_wrapper<Monster>> monstersDead;
+    std::vector<std::reference_wrapper<Character>> drawCharacters;
     for (auto& monster: monsters) {
-        if(monster->isAlive)
-            monstersAlive.push_back(*monster);
+        drawCharacters.push_back(*monster);
     }
-    for (auto& monster: monsters) {
-        if(!monster->isAlive)
-            monstersDead.push_back(*monster);
+    for (auto& player: players) {
+        drawCharacters.push_back(player);
     }
-    batchRenderer->BatchRenderCharacters(monstersDead);
-    batchRenderer->BatchRenderCharacters(monstersAlive); //remove this batch renderer func later when 
-    for (Player& player: players) {
-        player.Draw(window, *batchRenderer);
-    }
+    batchRenderer->BatchRenderCharacters(drawCharacters);
 }
 
 void GameState::Render() {
@@ -113,5 +127,11 @@ void GameState::Render() {
     StatusEffect::RenderStatusEffects(monsters, window, *batchRenderer);
     batchRenderer->RenderFlameTriangles(); // render flamethrower particles
     
+
+    if(MONSTER_HITBOX==1){
+        for(auto& monster : monsters){
+            monster->DebugHitbox(*this);
+        }
+    }
     window.display();
 }

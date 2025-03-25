@@ -9,23 +9,22 @@ class GameState;
 class BatchRenderer;
 
 class Character {
-
-protected:
+    
+public:
+    Hud hud;
+    AnimData animData;
     sf::Sprite sprite;
+    bool isAlive;
+    int health;
+    int id = -1;
     float scale;
     float movementSpeed;
 
-    Character(AnimData animData, sf::Vector2f position, int health, float movementSpeed = 5.f, float scale = 3.f, int id = -1);
-    void UpdateCollisions(GameState& state);
-public:
-    bool isAlive;
-    int health;
-    int id;
-    Hud hud;
-    AnimData animData;
-
+    Character(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale);
+    virtual void UpdateCollisions(GameState& state) {return;}
     void CheckDeath();
     void TakeDamage(int damage);
+    float GetYOrdering();
     virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);
     inline sf::Vector2f GetPosition() {return sprite.getPosition();}
     inline sf::FloatRect GetGlobalBounds() {return sprite.getGlobalBounds();}

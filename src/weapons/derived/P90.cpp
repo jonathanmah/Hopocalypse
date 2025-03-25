@@ -59,8 +59,6 @@ void P90::CreateProjectile(Player& player, std::vector<std::unique_ptr<Projectil
 void P90::UpgradeWeapon() {
     sprite.setTextureRect(AnimUtil::WeaponAnim::p90Upgraded);
     projectileData = p90BulletUpgrade;
-    std::cout << "UPGRADED P90" << std::endl;
-    //weaponData.spreadDeviationMax = 0.f;
     isUpgraded = true;
 }
 
@@ -70,7 +68,6 @@ P90HealBullet::P90HealBullet(ProjectileData projectileData, sf::Vector2f positio
 
 void P90HealBullet::UpdateProjectileStatus(Character& character, GameState& state,
     std::vector<std::unique_ptr<Projectile>>::iterator& it) {
-        std::cout << "HEAL BULLET CONTACT" << std::endl;
         source.health+=1;
         it = state.projectiles.erase(it); 
     }

@@ -14,7 +14,7 @@ public:
     float flamethrowerDmgCd;
     bool updatedColour;
 
-    OnFire(Character* character);
+    OnFire(Character& character);
     bool UpdateStatusEffect(float deltaTime) override;
     void UpdateColour();
     inline bool FlamethrowerDamageOnCooldown() {return flamethrowerDmgCd > 0.f;}

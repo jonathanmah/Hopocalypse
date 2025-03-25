@@ -1,11 +1,20 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <iostream>
+#include <typeindex>
+#include <typeinfo>
+#include <map>
 
+enum class MonsterE{
+    LOW
+};
+
+class Character;
+class Monster;
 class Flame;
 
 class BatchRenderer {
-private:
+public:
     sf::RenderWindow& window;
     std::vector<sf::Vertex> triangles;
     sf::VertexArray flameTriangles;
@@ -13,13 +22,16 @@ private:
     std::vector<sf::Vertex> onFireTriangles;
     std::vector<sf::Vertex> effectTriangles;
 
+    std::map<MonsterE, std::vector<sf::Vertex>> monsterTriangles{
+        {MonsterE::LOW, std::vector<sf::Vertex>{}},
+    };
+
+    BatchRenderer(sf::RenderWindow& window);
+
     void AddRectangleToBatch(const sf::RectangleShape& rectShape, std::vector<sf::Vertex>& rectTriangles);
     void AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::array<sf::Vector2f, 4> cachedPosition, sf::Color colour);
-    void AddSpriteToBatch(const sf::Sprite& sprite);
+    void AddSpriteToBatch(const sf::Sprite& sprite, std::vector<sf::Vertex>& vertices);
 
-
-public:
-    BatchRenderer(sf::RenderWindow& window);
 
     template <typename T>
     void BatchRenderStaticFrames(std::vector<T>& frameWrapper){
@@ -48,52 +60,18 @@ public:
             if(texture == nullptr){
                 texture = &obj->GetSprite().getTexture();
             }
-            AddSpriteToBatch(obj->GetSprite());
+            AddSpriteToBatch(obj->GetSprite(), triangles);
         }
         // batch draw to frame
         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
     }
 
-
-    // template <typename T>
-    // static void AddSpritesFromContainerToTriangles(std::vector<T>& containerObj, std::vector<sf::Vertex>* trianglesPtr){
-    //     for (T& obj : containerObj) {
-    //         if(texture == nullptr){
-    //             texture = &obj->GetSprite().getTexture();
-    //         }
-    //         (obj->GetSprite());
-    //     }
-
-    // }
-
-     // pass an object instance with sprite
-     template <typename T>
-     void BatchRenderCharacters(std::vector<std::reference_wrapper<T>>& characters){
-         // clear previous vertices
-        triangles.clear();
-         // add each sprites vertices to vertex array
-        hpBarTriangles.clear();
-        //effectsTriangles.clear();
-         
-         
-         const sf::Texture* texture = nullptr;
-         for (T& obj : characters) {
-             if(texture == nullptr){
-                 texture = &obj.GetSprite().getTexture();
-             }
-             AddSpriteToBatch(obj.GetSprite());
-             AddRectangleToBatch(obj.hud.hpBar, hpBarTriangles);
-         }
-         // batch draw to frame
-         window.draw(triangles.data(), triangles.size(), sf::PrimitiveType::Triangles, texture);
-         window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
-     }
+    void ClearMonsterTriangles();
+    void BatchRenderCharacters(std::vector<std::reference_wrapper<Character>>& characters);
 
     
     void SetFlameTriangles(std::vector<Flame>& flames, float initialRadius);
     void RenderFlameTriangles();
     void AppendOnFireTriangles(sf::Sprite* sprite);
-    void AppendPassiveEffectTriangles();
-
 };
 

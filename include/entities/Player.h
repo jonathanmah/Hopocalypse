@@ -18,15 +18,18 @@ enum class PlayerState {
 
 class Player: public Character{
 
-private:
-    PlayerState currState;
-    std::unique_ptr<Weapon> currWeapon;
-    float deathTimer;
+public:
+    PlayerState currState; // current State for animations
+    std::unique_ptr<Weapon> currWeapon; // current weapon
+    float deathTimer; // 
     float triggerHappy;
-    // relative to the character
-    sf::Vector2f mousePosRelative;
-    // global space
+    
+    sf::Vector2f mousePosRelative; // relative to the character
     sf::Vector2f mousePosGlobal;
+    FootprintManager footprintManager;
+    bool yOrderFirst;
+
+    Player(sf::Vector2f position, AnimData animData); 
     
     void HandleDeath(float deltaTime);
     void Move(PlayerState& playerState, GameState& state, float deltaTime);
@@ -38,10 +41,6 @@ private:
     void CycleWeapons();
     
 
-public:
-    FootprintManager footprintManager;
-
-    Player(AnimData animData, sf::Vector2f position); 
     void Update(GameState& state, float deltaTime);
     void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) override;
 };

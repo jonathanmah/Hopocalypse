@@ -2,7 +2,7 @@
 #include "entities/effects/StatusEffect.h"
 #include "entities/effects/OnFire.h"
 
-StatusEffect::StatusEffect(Character* character) : character(character), timeLeft(0){
+StatusEffect::StatusEffect(Character& character) : character(character), timeLeft(0){
 }
 
 bool StatusEffect::UpdateTimeLeft(float deltaTime) {

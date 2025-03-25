@@ -41,14 +41,14 @@ std::vector<std::unique_ptr<Monster>> MonsterFactory::GetMonsters(int spawnCount
         int screenSide = windowSideDist(gen);
         sf::Vector2f position = GetRandomPosition(screenSide);
  
-        int monsterType = monsterDist(gen);
-        if(monsterType == 1) {
-            monsters.push_back(std::make_unique<Monster>(AnimUtil::BigDemonAnim::walk, position, 100, 1.f));
-        } else if (monsterType == 2) {
-            monsters.push_back(std::make_unique<Monster>(AnimUtil::SlugAnim::walk, position, 100, .6f));
-        } else if (monsterType == 3) {
-            monsters.push_back(std::make_unique<Monster>(AnimUtil::SmallDemonAnim::walk, position, 100, 1.5f));
-        }
+        // int monsterType = monsterDist(gen);
+        // if(monsterType == 1) {
+        //     monsters.push_back(std::make_unique<Monster>(AnimUtil::BigDemonAnim::walk, position, 100, 1.f));
+        // } else if (monsterType == 2) {
+        //     monsters.push_back(std::make_unique<Monster>(AnimUtil::SlugAnim::walk, position, 100, .6f));
+        // } else if (monsterType == 3) {
+        //     monsters.push_back(std::make_unique<Monster>(AnimUtil::SmallDemonAnim::walk, position, 100, 1.5f));
+        // }
     }
     return std::move(monsters);
 }

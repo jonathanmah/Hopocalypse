@@ -1,6 +1,12 @@
-#include "core/BatchRenderer.h"
 #include <iostream>
+#include "core/BatchRenderer.h"
 #include "weapons/Weapon.h"
+#include "util/AnimUtil.h"
+#include "entities/monsters/Zombie.h"
+#include "entities/monsters/SmallDemon.h"
+#include "entities/monsters/BigDemon.h"
+#include "entities/Player.h"
+#include "entities/Character.h"
 
 BatchRenderer::BatchRenderer(sf::RenderWindow& window) : window(window), flameTriangles(sf::PrimitiveType::Triangles){
     triangles.reserve(200); // allocate for 200 sprites 
@@ -18,7 +24,7 @@ void BatchRenderer::AddStaticFrameToBatch(const sf::IntRect& textureFrame, std::
     triangles.emplace_back(sf::Vertex{cachedPosition[1], colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}}); // top right
 }
 
-void BatchRenderer::AddSpriteToBatch(const sf::Sprite& sprite) {
+void BatchRenderer::AddSpriteToBatch(const sf::Sprite& sprite, std::vector<sf::Vertex>& vertices) {
     sf::FloatRect bounds = sprite.getLocalBounds();
     sf::Transform transform = sprite.getTransform();
     sf::IntRect textureFrame{sprite.getTextureRect()};
@@ -30,13 +36,13 @@ void BatchRenderer::AddSpriteToBatch(const sf::Sprite& sprite) {
     sf::Vector2f bottomRight = transform.transformPoint({bounds.position.x+bounds.size.x, bounds.position.y+bounds.size.y});
     // add verts to the vertex array
     sf::Color colour = sprite.getColor();
-    triangles.emplace_back(sf::Vertex{topLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y)}});
-    triangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
-    triangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+    vertices.emplace_back(sf::Vertex{topLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y)}});
+    vertices.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
+    vertices.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
     
-    triangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    triangles.emplace_back(sf::Vertex{bottomRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    triangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
+    vertices.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+    vertices.emplace_back(sf::Vertex{bottomRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+    vertices.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
 }
 
 void BatchRenderer::AddRectangleToBatch(const sf::RectangleShape& rectShape, std::vector<sf::Vertex>& rectTriangles) {
@@ -57,7 +63,6 @@ void BatchRenderer::AddRectangleToBatch(const sf::RectangleShape& rectShape, std
 
 
 constexpr float CIRCLE_SEGMENTS = 50.f; // 50 orig
-
 void BatchRenderer::SetFlameTriangles(std::vector<Flame>& flames, float initalRadius) {
     flameTriangles.clear();
     std::vector<sf::Vector2f> unitCircle;
@@ -91,23 +96,54 @@ void BatchRenderer::RenderFlameTriangles(){
     }
 }
 
-void BatchRenderer::AppendOnFireTriangles(sf::Sprite* sprite) {
-    sf::FloatRect bounds = sprite->getLocalBounds();
-    sf::Transform transform = sprite->getTransform();
-    sf::IntRect textureFrame{sprite->getTextureRect()};
+void BatchRenderer::ClearMonsterTriangles(){
+    for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
+        it->second.clear();
+    }
+}
 
-    // get the four corners of sprite and transform them
-    sf::Vector2f topLeft = transform.transformPoint({bounds.position.x, bounds.position.y});
-    sf::Vector2f bottomLeft = transform.transformPoint({bounds.position.x, bounds.position.y+bounds.size.y});
-    sf::Vector2f topRight = transform.transformPoint({bounds.position.x+bounds.size.x, bounds.position.y});
-    sf::Vector2f bottomRight = transform.transformPoint({bounds.position.x+bounds.size.x, bounds.position.y+bounds.size.y});
-    // add verts to the vertex array
-    sf::Color colour = sprite->getColor();
-    onFireTriangles.emplace_back(sf::Vertex{topLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y)}});
-    onFireTriangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
-    onFireTriangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
+void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Character>>& characters){
+    std::sort(characters.begin(), characters.end(),
+    [](const std::reference_wrapper<Character>& firstCharacter, const std::reference_wrapper<Character>& secondCharacter) {
+        if (!firstCharacter.get().isAlive && secondCharacter.get().isAlive) {
+            return true;
+        }
+        if (firstCharacter.get().isAlive && !secondCharacter.get().isAlive) {
+            return false;
+        }
+        return firstCharacter.get().GetYOrdering() < secondCharacter.get().GetYOrdering();
+    });
+
+    static std::map<MonsterE, sf::Texture*> monsterTextureMap {
+        {MonsterE::LOW, AnimUtil::lowMonsterTexture},
+    };
+     // clear previous vertices
+    ClearMonsterTriangles();
+    hpBarTriangles.clear();
+     // add each sprites vertices to vertex array
+    for(auto& character : characters){
+        if(auto zombie = dynamic_cast<Zombie*>(&character.get())) {
+            AddSpriteToBatch(zombie->sprite, monsterTriangles[MonsterE::LOW]);
+        } else if(auto smallDemon = dynamic_cast<SmallDemon*>(&character.get())) {
+            AddSpriteToBatch(smallDemon->sprite, monsterTriangles[MonsterE::LOW]);
+        } else if(auto bigDemon = dynamic_cast<BigDemon*>(&character.get())) {
+            AddSpriteToBatch(bigDemon->sprite, monsterTriangles[MonsterE::LOW]);
+        } else if(auto player = dynamic_cast<Player*>(&character.get())) {
+            // if it's a player, draw all of the monsters prior, draw player on top
+            for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
+                window.draw((it->second).data(), (it->second).size(), sf::PrimitiveType::Triangles, monsterTextureMap[it->first]);
+            }
+            window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
+            ClearMonsterTriangles();
+            hpBarTriangles.clear();
+            player->Draw(window, *this);
+            continue;
+        }
+        AddRectangleToBatch(character.get().hud.hpBar, hpBarTriangles);
+    }
     
-    onFireTriangles.emplace_back(sf::Vertex{bottomLeft, colour, {static_cast<float>(textureFrame.position.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    onFireTriangles.emplace_back(sf::Vertex{bottomRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y + textureFrame.size.y)}});
-    onFireTriangles.emplace_back(sf::Vertex{topRight, colour, {static_cast<float>(textureFrame.position.x + textureFrame.size.x), static_cast<float>(textureFrame.position.y)}});
+    for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
+        window.draw((it->second).data(), (it->second).size(), sf::PrimitiveType::Triangles, monsterTextureMap[it->first]);
+    }
+    window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
 }

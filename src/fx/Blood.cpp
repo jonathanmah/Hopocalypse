@@ -19,17 +19,15 @@ static constexpr float ON_HIT_GROUND_POSITION_OFFSET = 10.f;
 Construct a blood
     
 AnimData animData : given the animation data
-sf::Vector2f position : starting position of the projectile in pixels
+sf::Vector2f position : position of character
      
-#TODO i think the calling function figures out rotation details with projectile direction,  that logic should probably 
-live here
 */
 
 // position center of character global bounds
 Blood::Blood(AnimData animData, sf::Vector2f position) : animData(animData), colour(sf::Color::White){
     setOrigin({static_cast<float>(animData.textureFrame.size.x)/2.f, static_cast<float>(animData.textureFrame.size.y)/2.f});
     setPosition({position.x, position.y});
-    setScale({1.5f, 1.5f});
+    setScale({.9f, .9f});
     bloodcount++;
 }
 
@@ -58,16 +56,6 @@ void Blood::SetRotation(sf::Vector2f incomingProjectilePos) {
     move(difference.normalized()*ON_HIT_SPRAY_POSITION_OFFSET);
 }
 
-// #DEV MODE  render the hitbox of a blood object // this could be a common utility function outside of blood maybe...
-// void DrawHitboxt(sf::Sprite& sprite, sf::RenderWindow& window) {
-//     sf::FloatRect bounds = sprite.getGlobalBounds();
-//     sf::RectangleShape rect(sf::Vector2f(bounds.size));
-//     rect.setPosition(bounds.position);
-//     rect.setFillColor(sf::Color::Transparent);
-//     rect.setOutlineColor(sf::Color::Red);
-//     rect.setOutlineThickness(2.0f);
-//     window.draw(rect);
-// }
 
 // render a blood object
 // void Blood::Draw(sf::RenderWindow& window) {
@@ -91,13 +79,13 @@ AnimData Blood::GetNextSprayAnim() {
 }
 
 // update blood spray and ground blood after projectile collision
-void Blood::CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect characterGlobalBounds, 
+void Blood::CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect hitbox, 
     std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood){
-    Blood newBloodSpray(Blood::GetNextSprayAnim(), characterGlobalBounds.getCenter());
+    Blood newBloodSpray(Blood::GetNextSprayAnim(), hitbox.getCenter());
     newBloodSpray.SetRotation(incomingProjectilePos);
     newBloodSpray.CachePositionVertices();
-    bloodSpray.push_back(newBloodSpray);
-    GroundBlood newGroundBlood(AnimUtil::BloodAnim::ground, characterGlobalBounds.getCenter());
+    bloodSpray.push_back(newBloodSpray);    /// even lower for ground blood
+    GroundBlood newGroundBlood(AnimUtil::BloodAnim::ground, {hitbox.getCenter().x, hitbox.getCenter().y + hitbox.size.y*.15f});
     newGroundBlood.SetRotation(incomingProjectilePos);
     newGroundBlood.CachePositionVertices();
     groundBlood.push_back(newGroundBlood);
@@ -152,13 +140,13 @@ bool GroundBlood::HasGroundBloodCollision(const sf::FloatRect& globalBounds, std
 }
 // same constructor as base class but also intializes an oval to represent a collider and scales down the texture
 GroundBlood::GroundBlood(AnimData animData, sf::Vector2f position) : Blood(animData, position){
-    collider.setRadius(21.f);
+    collider.setRadius(10.f);
     collider.setOrigin(collider.getGeometricCenter());
     collider.setFillColor(sf::Color::Blue);
     collider.setPosition(GetPosition());
     collider.setScale({2.f,1.f});
     // overwrites completely 
-    setScale({1.f,1.f});
+    setScale({.65f,.65f});
 }
 
 bool Blood::UpdateBloodSprayAnim(float deltaTime) {

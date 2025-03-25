@@ -12,7 +12,7 @@ public:
     bool updatedSize;
     float initialTime;
     
-    Shrink(Character* character);
+    Shrink(Character& character);
     void ApplyShrink(float duration, float newSizeFactor);
     bool UpdateStatusEffect(float deltaTime) override;
 };

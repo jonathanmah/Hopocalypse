@@ -6,7 +6,7 @@
 
 constexpr float INTERPOLATION_FACTOR = 0.1f;
 
-Shrink::Shrink(Character* character)
+Shrink::Shrink(Character& character)
 : StatusEffect(character),
     originalScale({0,0}),
     sizeFactor(1.f),
@@ -16,17 +16,17 @@ Shrink::Shrink(Character* character)
 
 void Shrink::ApplyShrink(float duration, float newSizeFactor) {
     ApplyEffect(duration);
-    if(!updatedSize&&character->health > 0.f){
+    if(!updatedSize&&character.health > 0.f){
         initialTime = duration;
-        originalScale = character->GetSprite().getScale();
+        originalScale = character.GetSprite().getScale();
         sizeFactor = newSizeFactor;
-        character->GetSprite().setScale(originalScale*sizeFactor);
+        character.GetSprite().setScale(originalScale*sizeFactor);
         updatedSize = true;
     }
 }
 
 bool Shrink::UpdateStatusEffect(float deltaTime) {
-    Monster* monster = dynamic_cast<Monster*>(character);
+    Monster* monster = dynamic_cast<Monster*>(&character);
     if(UpdateTimeLeft(deltaTime)) { // returns true if timer is empty and no effect on
         // for other statuses, can reset to defaults here after effect ends
         if(monster->xAxisInverted) {

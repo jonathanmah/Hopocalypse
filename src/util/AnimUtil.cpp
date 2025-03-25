@@ -15,8 +15,7 @@ sf::Texture* AnimUtil::statusEffectsTexture = TextureUtil::GetTexture("../assets
 sf::Texture* AnimUtil::onFireTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_alpha.png");
 sf::Texture* AnimUtil::onFireUpgradedTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_upgraded.png");
 sf::Texture* AnimUtil::energyExplosionTexture = TextureUtil::GetTexture("../assets/textures/fx/energybomb_impact.png");
-sf::Texture* AnimUtil::zombieTexture = TextureUtil::GetTexture("../assets/textures/characters/monsters/zombie.png");
-
+sf::Texture* AnimUtil::lowMonsterTexture = TextureUtil::GetTexture("../assets/textures/characters/monsters/low.png");
 // PLAYER
 const AnimData AnimUtil::PlayerAnim::stand = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
 const AnimData AnimUtil::PlayerAnim::walk = {playerTexture, sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
@@ -25,19 +24,21 @@ const AnimData AnimUtil::PlayerAnim::shootWalk = {playerTexture, sf::IntRect({0,
 
 // MONSTERS
 
-const AnimData AnimUtil::BigDemonAnim::walk = {dungeonTexture, sf::IntRect({148,432},{24,32}), 32, 0, 4, .1f, 0.f};
-const AnimData AnimUtil::SmallDemonAnim::walk = {dungeonTexture, sf::IntRect({432,272},{16,24}), 16, 0, 4, .05f, 0.f};
-const AnimData AnimUtil::SlugAnim::walk = {dungeonTexture, sf::IntRect({368,374},{16,18}), 16, 0, 4, .1f, 0.f};
 
+const AnimData AnimUtil::ZombieAnim::walk = {lowMonsterTexture, sf::IntRect({0,128},{122,128}), 128, 0, 10, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::idle = {lowMonsterTexture, sf::IntRect({1152,0},{122,128}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::attack = {lowMonsterTexture, sf::IntRect({0,0},{122,128}), 128, 0, 4, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::death = {lowMonsterTexture, sf::IntRect({512,0},{122,128}), 128, 0, 5, .1f, 0.f};
 
-const AnimData AnimUtil::ZombieAnim::walk = {dungeonTexture, sf::IntRect({0,128},{128,128}), 32, 0, 10, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::idle = {dungeonTexture, sf::IntRect({1152,0},{128,128}), 32, 0, 6, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::attack = {dungeonTexture, sf::IntRect({0,0},{128,128}), 32, 0, 4, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::death = {dungeonTexture, sf::IntRect({512,0},{128,128}), 32, 0, 5, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::walk = {lowMonsterTexture, sf::IntRect({6,384},{128,128}), 128, 0, 11, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1030,256},{128,128}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::attack = {lowMonsterTexture, sf::IntRect({6,256},{128,128}), 128, 0, 5, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::death = {lowMonsterTexture, sf::IntRect({646,256},{128,128}), 128, 0, 5, .1f, 0.f};
 
-
-// ZOMBIE
-
+const AnimData AnimUtil::BigDemonAnim::walk = {lowMonsterTexture, sf::IntRect({6,640},{128,128}), 128, 0, 12, .1f, 0.f};
+const AnimData AnimUtil::BigDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1286,512},{128,128}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::BigDemonAnim::attack = {lowMonsterTexture, sf::IntRect({6,512},{128,128}), 128, 0, 5, .1f, 0.f};
+const AnimData AnimUtil::BigDemonAnim::death = {lowMonsterTexture, sf::IntRect({646,512},{128,128}), 128, 0, 5, .1f, 0.f};
 
 
 

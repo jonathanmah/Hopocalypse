@@ -11,32 +11,31 @@ static constexpr float DEATH_DT_SUM_PER_FRAME = 0.2f;
 static constexpr int DEATH_ROTATE_PER_FRAME_DEG = 10;
 static constexpr float DISAPPEAR_TIME = 6.f;
 
-Monster::Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed) 
-: Character(animData, position, health, movementSpeed), 
+Monster::Monster(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale, float xHitRatio, float yHitRatio) 
+: Character(position, animData, health, movementSpeed, scale), 
     deathDtSum(0.f), 
     timeSinceDeath(0.f),
     xAxisInverted(false),
     disabledMovement(false),
-    onFire(this), // set to original address and then init after final version copied. and used
-    paralyzed(this),
-    slowed(this),
-    knockback(this),
-    shrink(this)
+    onFire(*this), // set to original address and then init after final version copied. and used
+    paralyzed(*this),
+    slowed(*this),
+    knockback(*this),
+    shrink(*this),
+    xHitRatio(xHitRatio),
+    yHitRatio(yHitRatio)
 {
+    sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
+    sprite.setPosition(position);
+    sprite.setScale({scale, scale});
+    sprite.setOrigin({sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2});
     monster_count++;
-}
-
-void Monster::InitPostFinalAddress() {
-    onFire = OnFire{this};
-    paralyzed = Paralyzed{this};
-    slowed = Slowed{this};
-    knockback = Knockback{this};
-    shrink = Shrink{this};
 }
 
 void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
     if(onFire.IsActive()){ // if it still has time left
         onFire.UpdateStatusEffect(deltaTime);
+        std::cout << "FROM MONSTER ADDRESS : " << this << std::endl;
     }
     if(paralyzed.IsActive()){
         paralyzed.UpdateStatusEffect(deltaTime);
@@ -54,27 +53,15 @@ void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
 
 
 void Monster::HandleDeath(float deltaTime) {
-    
-    int targetDeg = 90 ? xAxisInverted : -90;
-
-    if (deathDtSum < DEATH_DT_SUM_PER_FRAME){
-        float currRotation = sprite.getRotation().asDegrees();
-        if (xAxisInverted &&  currRotation < 89) { // bug with how sfml handles degrees and it's over rotating. idk. just use 89
-            sprite.rotate(sf::degrees(DEATH_ROTATE_PER_FRAME_DEG));
-        } else {
-            if (currRotation == 0 || currRotation > 270) {
-                sprite.rotate(sf::degrees(-DEATH_ROTATE_PER_FRAME_DEG));
-            }
-        }
-    }
     deathDtSum += deltaTime;
     timeSinceDeath += deltaTime;
 }
 
 bool Monster::Update(GameState& state, float deltaTime){
     UpdateStatusEffects(deltaTime, state.window);
+    UpdateHitbox();
     Monster::UpdateCollisions(state);
-    hud.Update(health, GetGlobalBounds());
+    hud.Update(health, hitbox);
     if(isAlive) {
         if(!paralyzed.IsActive()){
             AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
@@ -121,3 +108,36 @@ void Monster::Move(std::vector<Player>& players) {
     
 }
 
+void Monster::UpdateCollisions(GameState& state){
+    for(auto it = state.projectiles.begin(); it != state.projectiles.end();){
+        // DETECTS IF HIT HERE GLOBAL BOUNDS OF MONSTER VS GLOBAL BOUNDS OF PROJECTILE, NEED TO UPDATE.
+        if((hitbox.findIntersection((*it)->GetGlobalBounds()) && isAlive)){
+            // if projectile hasn't went through a monster hitbox yet
+            if(!(*it)->HasHit(id)){
+                if((*it)->createsBlood){
+                    Blood::CreateProjectileBlood((*it)->GetPosition(), hitbox, state.bloodSpray, state.groundBlood);
+                }
+                TakeDamage((*it)->GetDamage());
+            }
+            // ADD NEW AOE HERE
+            (*it)->UpdateProjectileStatus(*this, state, it);
+        } else {
+            ++it;
+        }
+    }
+}
+
+void Monster::DebugHitbox(GameState& state) {
+    HitboxDebugger::DrawSpriteGlobalBoundsHitbox(state.window, sprite, sf::Color::Red);
+    HitboxDebugger::DrawSpriteOrigin(state.window, sprite, sf::Color::Green);
+    HitboxDebugger::DrawGlobalRect(state.window, hitbox, sf::Color::Magenta);
+}
+
+void Monster::UpdateHitbox() {
+    sf::FloatRect origBounds = sprite.getGlobalBounds();
+    float posX = origBounds.position.x + origBounds.size.x*xHitRatio;
+    float posY = origBounds.position.y + origBounds.size.y*yHitRatio;
+    float width = origBounds.size.x - (origBounds.size.x*xHitRatio*2.f);
+    float height = origBounds.size.y*(1-yHitRatio);
+    hitbox = {{posX, posY}, {width, height}};
+}

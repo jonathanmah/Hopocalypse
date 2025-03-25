@@ -20,16 +20,9 @@ enum class MonsterState {
 };
 
 class Monster: public Character {
-
-private:
-    float timeSinceDeath;
-    float deathDtSum;
-    
-    void HandleDeath(float deltaTime);
-    
     
 public:
-
+    std::unordered_map<MonsterState, AnimData> animMap; // State - Animation map
     // STATUS EFFECTS
     OnFire onFire;
     Paralyzed paralyzed;
@@ -37,16 +30,29 @@ public:
     Knockback knockback;
     Shrink shrink;
 
-    bool xAxisInverted;
+    bool xAxisInverted; // true if monster turns left
     bool disabledMovement; // flag for dev
+    float timeSinceDeath; // 
+    float deathDtSum;
 
-    std::unordered_map<MonsterState, AnimData> animMap;
+    sf::FloatRect hitbox;
+    float xHitRatio;
+    float yHitRatio;
 
-    Monster(AnimData animData, sf::Vector2f position, int health, float movementSpeed);
+
+    Monster(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale, float xHitRatio, float yHitratio);
+    virtual ~Monster() = default;
+
+    void DebugHitbox(GameState& state);
+
     void UpdateStatusEffects(float deltaTime, sf::RenderWindow& window);
-    virtual void InitAnimMap() {return;};
+    void UpdateHitbox();
+
+    void UpdateCollisions(GameState& state) override;
+
+    virtual void InitAnimMap() {return;}
+    void HandleDeath(float deltaTime);
     bool Update(GameState& state, float deltaTime);
     void Move(std::vector<Player>& players);
-    void InitPostFinalAddress();
     
 };

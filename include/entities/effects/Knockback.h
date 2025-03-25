@@ -6,12 +6,12 @@ class Character;
 class Knockback {
 
 public:
-    Character* character;
 
+    Character& character;
     float knockbackDebt;
     sf::Vector2f knockbackVector;
 
-    Knockback(Character* character);
+    Knockback(Character& character);
 
     inline bool IsActive() {return knockbackDebt > 0.f;}
     void SetKnockback(float newKnockbackDistance, sf::Vector2f newKnockbackVector);

@@ -24,7 +24,7 @@ void HitboxDebugger::DrawSpriteLocalBoundsHitbox(sf::RenderWindow& window, const
 void HitboxDebugger::DrawSpriteOrigin(sf::RenderWindow& window, const sf::Sprite& sprite, sf::Color colour){
     sf::CircleShape shape(5.f);
     shape.setFillColor(colour);
-    
+    shape.setOrigin(shape.getGeometricCenter());
     shape.setPosition(sprite.getPosition());
     window.draw(shape);
 }

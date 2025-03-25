@@ -4,11 +4,6 @@
 
 static int ID_COUNTER = 0;
 
-// all monsters have atleast
-// IDLE
-// WALK
-//ATTACK 
-//DEATH
 
 
 /*
@@ -22,12 +17,12 @@ Construct a Character
     float scale : scale transformation on sprite
     
 */
-Character::Character(AnimData animData, sf::Vector2f position, int health, float movementSpeed, float scale, int id)
+Character::Character(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale)
   : animData(animData), 
     sprite(*animData.texture),
-    health(100), 
+    health(health), 
     movementSpeed(movementSpeed), 
-    scale(scale),
+    scale(scale), 
     isAlive(true), 
     id(ID_COUNTER++)
 {
@@ -35,7 +30,7 @@ Character::Character(AnimData animData, sf::Vector2f position, int health, float
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setPosition(position);
     sprite.setScale({scale, scale});
-    sprite.setOrigin({sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2});
+    sprite.setOrigin({animData.textureFrame.size.x / 2.f, animData.textureFrame.size.y / 2.f});
 }
 
 // Render the character and HP bar
@@ -57,39 +52,9 @@ void Character::CheckDeath() {
 void Character::TakeDamage(int damage) {
     health = std::max(0,health-damage);
 }
-/*
-For all projectiles in the game:
-    if a projectile collides with this current character:
-        create a bloodSpray and ground blood
-        #TODO keep this blood creation / blood rotation logic out of this class and keep in blood class
-        // just do something simple like a push_back(Blood::func()) that returns a new blood object)
-        remove projectile from array
-*/ 
-// logic for ALL characters
-void Character::UpdateCollisions(GameState& state){
-    for(auto it = state.projectiles.begin(); it != state.projectiles.end();){
-        
-        // if((*it)->ReachedDest()){
-        //     (*it)->UpdateProjectileStatus(*this, state, it);
-        // }
-        // DETECTS IF HIT HERE GLOBAL BOUNDS OF MONSTER VS GLOBAL BOUNDS OF PROJECTILE, NEED TO UPDATE.
-        // maybe run another loop through AOE, and determine what to do to intersections with it
-        // elsewhere, just use this as an entry for creating the AOE
-        if((this->GetGlobalBounds().findIntersection((*it)->GetGlobalBounds()) && isAlive)){
-            
-            // if projectile hasn't went through a monster hitbox yet
-            if(!(*it)->HasHit(id)){
-                if((*it)->createsBlood){
-                    Blood::CreateProjectileBlood((*it)->GetPosition(), GetGlobalBounds(), state.bloodSpray, state.groundBlood);
-                }
-                // UPDATES DAMAGE ELSWHERE. AFTER EXPLOSION LOOPS. this just for 
-                // projectile making contact.x
-                TakeDamage((*it)->GetDamage());
-            }
-            // ADD NEW AOE HERE
-            (*it)->UpdateProjectileStatus(*this, state, it);
-        } else {
-            ++it;
-        }
-    }
+
+
+float Character::GetYOrdering() {
+    auto bounds = sprite.getGlobalBounds();
+    return bounds.position.y + bounds.size.y;
 }

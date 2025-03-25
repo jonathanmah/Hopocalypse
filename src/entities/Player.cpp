@@ -31,8 +31,14 @@
     float timeSinceLastShot : time since last projectile fired, used with a weapons cooldown 
 */
 // default curr weapon to pistol later
-Player::Player(AnimData animData, sf::Vector2f position) : 
-    Character(animData,position,100,5.f,1.f), 
+Player::Player(sf::Vector2f position, AnimData animData) : 
+    Character(
+        position,
+        animData,
+        100,
+        5.f,
+        1.f
+    ),
     deathTimer(0.f), 
     currWeapon(std::make_unique<Ak47>()) 
     {}

@@ -11,7 +11,7 @@ public:
     AnimData animData;
     float disabledCd;
 
-    Paralyzed(Character* character);
+    Paralyzed(Character& character);
     bool UpdateStatusEffect(float deltaTime) override;
     void UpdateDisabledCd(float deltaTime);
     void AttemptApplyEffect(float duration);
