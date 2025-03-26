@@ -15,6 +15,7 @@ struct AnimData {
     float deltaTimeSum = 0.f;
     int rowLength = 100;
     int yFrameSpacing = 0;
+    bool hangLastFrame = false;
 };
 // 
 
@@ -59,10 +60,12 @@ public:
     static bool UpdateSubRect(SubRectData& subRectData, float deltaTime);
 
     struct PlayerAnim {
-        static const AnimData stand;
+        static const AnimData idle;
         static const AnimData walk;
-        static const AnimData shootStand;
+        static const AnimData shootIdle;
         static const AnimData shootWalk;
+        static const AnimData death;
+        static const AnimData dance;
     };
 
     // MONSTERS

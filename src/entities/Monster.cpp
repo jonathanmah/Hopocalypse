@@ -9,10 +9,10 @@
 static int monster_count = 0;
 static constexpr float DEATH_DT_SUM_PER_FRAME = 0.2f;
 static constexpr int DEATH_ROTATE_PER_FRAME_DEG = 10;
-static constexpr float DISAPPEAR_TIME = 6.f;
+static constexpr float DISAPPEAR_TIME = 12.f;
 
 Monster::Monster(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale, float xHitRatio, float yHitRatio) 
-: Character(position, animData, health, movementSpeed, scale), 
+: Character(position, animData, sf::Color::Red, sf::Color::Yellow, health, movementSpeed, scale), 
     deathDtSum(0.f), 
     timeSinceDeath(0.f),
     xAxisInverted(false),
@@ -23,7 +23,8 @@ Monster::Monster(sf::Vector2f position, AnimData animData, int health, float mov
     knockback(*this),
     shrink(*this),
     xHitRatio(xHitRatio),
-    yHitRatio(yHitRatio)
+    yHitRatio(yHitRatio),
+    animState(MonsterState::WALK)
 {
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setPosition(position);
@@ -35,7 +36,6 @@ Monster::Monster(sf::Vector2f position, AnimData animData, int health, float mov
 void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
     if(onFire.IsActive()){ // if it still has time left
         onFire.UpdateStatusEffect(deltaTime);
-        std::cout << "FROM MONSTER ADDRESS : " << this << std::endl;
     }
     if(paralyzed.IsActive()){
         paralyzed.UpdateStatusEffect(deltaTime);
@@ -53,15 +53,29 @@ void Monster::UpdateStatusEffects(float deltaTime, sf::RenderWindow& window) {
 
 
 void Monster::HandleDeath(float deltaTime) {
-    deathDtSum += deltaTime;
+    static float dtsum = 0.f;
+    dtsum += deltaTime;
+    AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
     timeSinceDeath += deltaTime;
 }
 
-bool Monster::Update(GameState& state, float deltaTime){
+
+void Monster::UpdateCommon(GameState& state, float deltaTime) {
     UpdateStatusEffects(deltaTime, state.window);
     UpdateHitbox();
     Monster::UpdateCollisions(state);
+    if(animState != MonsterState::DEATH && CheckDeath()){
+        std::cout << "KILLED" << std::endl;
+        animData = animMap[MonsterState::DEATH];
+        animState = MonsterState::DEATH;
+
+    }
     hud.Update(health, hitbox);
+}
+
+
+bool Monster::Update(GameState& state, float deltaTime){
+    UpdateCommon(state, deltaTime);
     if(isAlive) {
         if(!paralyzed.IsActive()){
             AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
@@ -82,7 +96,7 @@ bool Monster::Update(GameState& state, float deltaTime){
             return true;
         }
     }
-    CheckDeath();
+
     return false;
 }
 
@@ -115,7 +129,7 @@ void Monster::UpdateCollisions(GameState& state){
             // if projectile hasn't went through a monster hitbox yet
             if(!(*it)->HasHit(id)){
                 if((*it)->createsBlood){
-                    Blood::CreateProjectileBlood((*it)->GetPosition(), hitbox, state.bloodSpray, state.groundBlood);
+                    Blood::CreateProjectileBlood((*it)->sourcePosition, hitbox, state.bloodSpray, state.groundBlood);
                 }
                 TakeDamage((*it)->GetDamage());
             }

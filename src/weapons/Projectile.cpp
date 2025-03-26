@@ -15,12 +15,12 @@ static constexpr float COLLATERAL_REDUCTION_FACTOR = 0.8f;
     int damage : amount of damage the projectiles does when collides
 */
 
-Projectile::Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized)
+Projectile::Projectile(ProjectileData projectileData, sf::Vector2f sourcePosition, sf::Vector2f normalized)
 : sprite(*projectileData.anim.texture), animData(projectileData.anim), velocity(projectileData.speed*normalized), damage(projectileData.damage), 
 collateralCount(projectileData.collateralCount), scale(projectileData.scale), acceleration(projectileData.acceleration),
-lifetime(projectileData.lifetime), createsBlood(true){
+lifetime(projectileData.lifetime), createsBlood(true), sourcePosition(sourcePosition){
     sprite.setTextureRect(sf::IntRect(projectileData.anim.textureFrame.position, projectileData.anim.textureFrame.size));
-    sprite.setPosition({position.x, position.y});
+    sprite.setPosition({sourcePosition.x, sourcePosition.y});
     sprite.setScale({scale, scale});
     sprite.setOrigin({sprite.getLocalBounds().size.x / 2, sprite.getLocalBounds().size.y / 2});
     Rotate(velocity);

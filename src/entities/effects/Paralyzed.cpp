@@ -36,8 +36,5 @@ void Paralyzed::AttemptApplyEffect(float duration) {
 }
 
 void Paralyzed::UpdateDisabledCd(float deltaTime) {
-    // if(OnCooldown()){
-    //     std::cout << "ON COOLDOWN : " << disabledCd << std::endl;
-    // }
     disabledCd = std::max(0.f, disabledCd-deltaTime);
 }

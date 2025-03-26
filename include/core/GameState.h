@@ -8,6 +8,7 @@
 #include "environment/Map.h"
 #include "core/BatchRenderer.h"
 #include "weapons/Projectile.h"
+#include "fx/DamageNumberManager.h"
 
 
 class GameState {
@@ -21,6 +22,7 @@ public:
 
     sf::RenderWindow window;
     std::unique_ptr<BatchRenderer> batchRenderer;
+    std::unique_ptr<DamageNumberManager> damageNumberManager;
     std::unique_ptr<Map> map;
     std::vector<Player> players;
     std::vector<std::unique_ptr<Monster>> monsters;

@@ -17,15 +17,15 @@ sf::Texture* AnimUtil::onFireUpgradedTexture = TextureUtil::GetTexture("../asset
 sf::Texture* AnimUtil::energyExplosionTexture = TextureUtil::GetTexture("../assets/textures/fx/energybomb_impact.png");
 sf::Texture* AnimUtil::lowMonsterTexture = TextureUtil::GetTexture("../assets/textures/characters/monsters/low.png");
 // PLAYER
-const AnimData AnimUtil::PlayerAnim::stand = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::idle = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
 const AnimData AnimUtil::PlayerAnim::walk = {playerTexture, sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
-const AnimData AnimUtil::PlayerAnim::shootStand = {playerTexture, sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::shootIdle = {playerTexture, sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
 const AnimData AnimUtil::PlayerAnim::shootWalk = {playerTexture, sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
 
 // MONSTERS
 
 
-const AnimData AnimUtil::ZombieAnim::walk = {lowMonsterTexture, sf::IntRect({0,128},{122,128}), 128, 0, 10, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::walk = {lowMonsterTexture, sf::IntRect({0,130},{122,126}), 128, 0, 10, .1f, 0.f};
 const AnimData AnimUtil::ZombieAnim::idle = {lowMonsterTexture, sf::IntRect({1152,0},{122,128}), 128, 0, 6, .1f, 0.f};
 const AnimData AnimUtil::ZombieAnim::attack = {lowMonsterTexture, sf::IntRect({0,0},{122,128}), 128, 0, 4, .1f, 0.f};
 const AnimData AnimUtil::ZombieAnim::death = {lowMonsterTexture, sf::IntRect({512,0},{122,128}), 128, 0, 5, .1f, 0.f};
@@ -38,7 +38,7 @@ const AnimData AnimUtil::SmallDemonAnim::death = {lowMonsterTexture, sf::IntRect
 const AnimData AnimUtil::BigDemonAnim::walk = {lowMonsterTexture, sf::IntRect({6,640},{128,128}), 128, 0, 12, .1f, 0.f};
 const AnimData AnimUtil::BigDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1286,512},{128,128}), 128, 0, 6, .1f, 0.f};
 const AnimData AnimUtil::BigDemonAnim::attack = {lowMonsterTexture, sf::IntRect({6,512},{128,128}), 128, 0, 5, .1f, 0.f};
-const AnimData AnimUtil::BigDemonAnim::death = {lowMonsterTexture, sf::IntRect({646,512},{128,128}), 128, 0, 5, .1f, 0.f};
+const AnimData AnimUtil::BigDemonAnim::death = {lowMonsterTexture, sf::IntRect({646,512},{128,128}), 128, 0, 3, .1f, 0.f};
 
 
 
@@ -232,6 +232,9 @@ const AnimData AnimUtil::ProjectileAnim::electricBullet = {projectilesTexture, s
 // // NOTE: this tracks a deltaTimeSum to track time passed since loading a frame
 // //  animSpeed determines how long a single frame will be rendered for in seconds, multiple passes will render the same frame.
 bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime) {
+    if(animData.hangLastFrame && animData.currFrame == animData.totalFrames){
+        return false;
+    }
     // if deltaTime >= animSpeed, ready for next frame
     if(animData.deltaTimeSum >= animData.animSpeed) {
         // update the sub rectangle of the texture to point to the next frame
@@ -240,6 +243,9 @@ bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float de
         animData.currFrame++;
         // if the last frame of a sequence has been rendered, loop back to the first one
         if (animData.currFrame >= animData.totalFrames) {
+            if(animData.hangLastFrame) {
+                return false;
+            }
             animData.currFrame = 0; 
             return true;
         }

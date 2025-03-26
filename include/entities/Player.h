@@ -9,11 +9,11 @@ class Monster;
 
 enum class PlayerState {
     WALK,
-    SHOOTING_WALK,
-    SHOOTING_STAND,
+    SHOOT_WALK,
+    SHOOT_IDLE,
     HIT,
     DEATH,
-    STAND
+    IDLE
 };
 
 class Player: public Character{

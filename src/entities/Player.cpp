@@ -35,7 +35,9 @@ Player::Player(sf::Vector2f position, AnimData animData) :
     Character(
         position,
         animData,
-        100,
+        sf::Color::Green,
+        sf::Color::Red,
+        500,
         5.f,
         1.f
     ),
@@ -45,7 +47,7 @@ Player::Player(sf::Vector2f position, AnimData animData) :
 
 void Player::HandleDeath(float deltaTime) {
     if(Player::currState != PlayerState::DEATH){
-        animData = AnimUtil::PlayerAnim::stand;
+        animData = AnimUtil::PlayerAnim::idle;
         Player::currState = PlayerState::DEATH;
     }
     if(Player::deathTimer < animData.animSpeed*animData.totalFrames) {
@@ -64,7 +66,7 @@ void Player::SetFacingDirection() {
 }
 
 void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) { 
-    playerState = PlayerState::STAND;
+    playerState = PlayerState::IDLE;
     sf::Vector2f nextMove = {0,0};
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
         playerState = PlayerState::WALK;
@@ -93,9 +95,9 @@ void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) {
         }
     }
     if(triggerHappy > 2.5f && playerState == PlayerState::WALK){
-        playerState = PlayerState::SHOOTING_WALK;
+        playerState = PlayerState::SHOOT_WALK;
     } else if (triggerHappy > 2.5) {
-        playerState = PlayerState::SHOOTING_STAND;
+        playerState = PlayerState::SHOOT_IDLE;
     }
 
     if(sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
@@ -172,8 +174,8 @@ void Player::SetMousePositions(sf::RenderWindow& window) {
 // change anim data depending on player state
 void Player::SetAnimDataByState(PlayerState newState) {
     switch(newState) {
-        case PlayerState::STAND:
-            animData = AnimUtil::PlayerAnim::stand;
+        case PlayerState::IDLE:
+            animData = AnimUtil::PlayerAnim::idle;
             break;
         case PlayerState::WALK:
             animData = AnimUtil::PlayerAnim::walk;
@@ -181,11 +183,11 @@ void Player::SetAnimDataByState(PlayerState newState) {
         case PlayerState::HIT:
             animData = AnimUtil::PlayerAnim::walk;
             break;
-        case PlayerState::SHOOTING_WALK:
+        case PlayerState::SHOOT_WALK:
             animData = AnimUtil::PlayerAnim::shootWalk;
             break;
-        case PlayerState::SHOOTING_STAND:
-            animData = AnimUtil::PlayerAnim::shootStand;
+        case PlayerState::SHOOT_IDLE:
+            animData = AnimUtil::PlayerAnim::shootIdle;
             break;
         case PlayerState::DEATH:
             break;
@@ -205,7 +207,7 @@ void Player::Update(GameState& state, float deltaTime){
         return;
     }
     // #TODO need to figure out how to deal with states better maybe...later problem
-    PlayerState playerState = PlayerState::STAND;
+    PlayerState playerState = PlayerState::IDLE;
     
     // check for actions that may change state, if all good then can move?
     // Handle key presses for movement, update footprints
@@ -251,5 +253,5 @@ void Player::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     if(Player::isAlive){
         currWeapon->Draw(window, batchRenderer);
     }
-    hud.Draw(window);
+    //hud.Draw(window);
 }

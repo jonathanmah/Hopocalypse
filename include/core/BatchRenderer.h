@@ -25,6 +25,7 @@ public:
     std::map<MonsterE, std::vector<sf::Vertex>> monsterTriangles{
         {MonsterE::LOW, std::vector<sf::Vertex>{}},
     };
+    
 
     BatchRenderer(sf::RenderWindow& window);
 
@@ -69,7 +70,9 @@ public:
     void ClearMonsterTriangles();
     void BatchRenderCharacters(std::vector<std::reference_wrapper<Character>>& characters);
 
-    
+    void AddHpBarTriangles(std::reference_wrapper<Character>& character);
+    void DrawBufferedMonsterTriangles();
+
     void SetFlameTriangles(std::vector<Flame>& flames, float initialRadius);
     void RenderFlameTriangles();
     void AppendOnFireTriangles(sf::Sprite* sprite);

@@ -23,6 +23,7 @@ class Monster: public Character {
     
 public:
     std::unordered_map<MonsterState, AnimData> animMap; // State - Animation map
+    MonsterState animState;
     // STATUS EFFECTS
     OnFire onFire;
     Paralyzed paralyzed;
@@ -42,17 +43,18 @@ public:
 
     Monster(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale, float xHitRatio, float yHitratio);
     virtual ~Monster() = default;
+    bool Update(GameState& state, float deltaTime);
+    void Move(std::vector<Player>& players);
 
+    void UpdateCommon(GameState& state, float deltaTime);
     void DebugHitbox(GameState& state);
-
     void UpdateStatusEffects(float deltaTime, sf::RenderWindow& window);
     void UpdateHitbox();
-
     void UpdateCollisions(GameState& state) override;
 
     virtual void InitAnimMap() {return;}
     void HandleDeath(float deltaTime);
-    bool Update(GameState& state, float deltaTime);
-    void Move(std::vector<Player>& players);
+    
+    
     
 };

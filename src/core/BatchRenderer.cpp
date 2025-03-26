@@ -96,6 +96,25 @@ void BatchRenderer::RenderFlameTriangles(){
     }
 }
 
+void BatchRenderer::AddHpBarTriangles(std::reference_wrapper<Character>& character) {
+    AddRectangleToBatch(character.get().hud.hpBarBackground, hpBarTriangles);
+    AddRectangleToBatch(character.get().hud.damageBar, hpBarTriangles);
+    AddRectangleToBatch(character.get().hud.hpBar, hpBarTriangles);
+    for(auto& line : character.get().hud.segmentLines) {
+        AddRectangleToBatch(line, hpBarTriangles);
+    }
+}
+
+void BatchRenderer::DrawBufferedMonsterTriangles() {
+    static std::map<MonsterE, sf::Texture*> monsterTextureMap {
+        {MonsterE::LOW, AnimUtil::lowMonsterTexture},
+    };
+
+    for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
+        window.draw((it->second).data(), (it->second).size(), sf::PrimitiveType::Triangles, monsterTextureMap[it->first]);
+    }
+}
+
 void BatchRenderer::ClearMonsterTriangles(){
     for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
         it->second.clear();
@@ -113,10 +132,6 @@ void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Cha
         }
         return firstCharacter.get().GetYOrdering() < secondCharacter.get().GetYOrdering();
     });
-
-    static std::map<MonsterE, sf::Texture*> monsterTextureMap {
-        {MonsterE::LOW, AnimUtil::lowMonsterTexture},
-    };
      // clear previous vertices
     ClearMonsterTriangles();
     hpBarTriangles.clear();
@@ -129,21 +144,17 @@ void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Cha
         } else if(auto bigDemon = dynamic_cast<BigDemon*>(&character.get())) {
             AddSpriteToBatch(bigDemon->sprite, monsterTriangles[MonsterE::LOW]);
         } else if(auto player = dynamic_cast<Player*>(&character.get())) {
-            // if it's a player, draw all of the monsters prior, draw player on top
-            for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
-                window.draw((it->second).data(), (it->second).size(), sf::PrimitiveType::Triangles, monsterTextureMap[it->first]);
-            }
-            window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
+            // if it's a player, draw all of the monsters prior, draw player on top, clear buffer
+            DrawBufferedMonsterTriangles();
+            AddHpBarTriangles(character);
             ClearMonsterTriangles();
-            hpBarTriangles.clear();
             player->Draw(window, *this);
             continue;
         }
-        AddRectangleToBatch(character.get().hud.hpBar, hpBarTriangles);
+        if(character.get().isAlive){
+            AddHpBarTriangles(character);
+        }   
     }
-    
-    for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
-        window.draw((it->second).data(), (it->second).size(), sf::PrimitiveType::Triangles, monsterTextureMap[it->first]);
-    }
+    DrawBufferedMonsterTriangles();
     window.draw(hpBarTriangles.data(), hpBarTriangles.size(),  sf::PrimitiveType::Triangles, sf::RenderStates::Default);
 }

@@ -17,13 +17,22 @@ Construct a Character
     float scale : scale transformation on sprite
     
 */
-Character::Character(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale)
-  : animData(animData), 
+Character::Character(
+    sf::Vector2f position, 
+    AnimData animData, 
+    sf::Color healthColour, 
+    sf::Color damageColour, 
+    int health, 
+    float movementSpeed, 
+    float scale
+) : 
+    animData(animData), 
     sprite(*animData.texture),
     health(health), 
     movementSpeed(movementSpeed), 
     scale(scale), 
-    isAlive(true), 
+    isAlive(true),
+    hud(Hud{health, healthColour, damageColour}), 
     id(ID_COUNTER++)
 {
   
@@ -42,11 +51,13 @@ void Character::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
         
 }
 
-void Character::CheckDeath() {
+bool Character::CheckDeath() {
     if(health <= 0) {
         isAlive = false;
         health = 0;
+        return true;
     }
+    return false;
 }
 
 void Character::TakeDamage(int damage) {

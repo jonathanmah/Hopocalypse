@@ -4,7 +4,7 @@
 static const ProjectileData ump45BulletReg = {
     AnimUtil::ProjectileAnim::medBulletReg,
     20.f, // speed
-    1.f, // damage 
+    5.f, // damage 
     1.f, // bullet scale
     1, // collateral count
 };

@@ -11,7 +11,7 @@ static const ProjectileData barrett50BulletReg = {
 static const ProjectileData barrett50BulletUpgrade = {
     AnimUtil::ProjectileAnim::barrett50BulletUpgrade,
     65.f, // speed
-    400.f, // damage 
+    499.f, // damage 
     .4f, // bullet scale
     100, // collateral count
 };

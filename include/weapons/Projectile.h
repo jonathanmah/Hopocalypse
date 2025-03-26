@@ -27,14 +27,14 @@ protected:
 
 public:
     sf::Vector2f velocity;
-    sf::Vector2f position;
+    sf::Vector2f sourcePosition;
     float damage;
     float lifetime;
     float scale;
 
     bool createsBlood;
     
-    Projectile(ProjectileData projectileData, sf::Vector2f position, sf::Vector2f normalized);
+    Projectile(ProjectileData projectileData, sf::Vector2f sourcePosition, sf::Vector2f normalized);
 
     bool HasHit(int characterId);
     // this should receive delta time, every frame it runs

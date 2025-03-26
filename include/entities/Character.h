@@ -20,9 +20,10 @@ public:
     float scale;
     float movementSpeed;
 
-    Character(sf::Vector2f position, AnimData animData, int health, float movementSpeed, float scale);
+
+    Character(sf::Vector2f position, AnimData animData, sf::Color healthColour, sf::Color damageColour, int health, float movementSpeed, float scale);
     virtual void UpdateCollisions(GameState& state) {return;}
-    void CheckDeath();
+    bool CheckDeath();
     void TakeDamage(int damage);
     float GetYOrdering();
     virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);

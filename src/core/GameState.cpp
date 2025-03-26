@@ -7,8 +7,6 @@
 #include "fx/AoE.h"
 #include "weapons/Projectile.h"
 #include "weapons/Weapon.h"
-#include "fx/Blood.h"
-#include "fx/Footprint.h"
 #include "entities/MonsterFactory.h"
 #include "util/RandomUtil.h"
 #include "core/BatchRenderer.h"
@@ -29,6 +27,7 @@ GameState::GameState(){
     window =  sf::RenderWindow{sf::VideoMode({1200, 720}), "CMake exe", sf::State::Windowed, settings};
     window.setFramerateLimit(60);
     batchRenderer = std::make_unique<BatchRenderer>(window);
+    damageNumberManager = std::make_unique<DamageNumberManager>();
     map = std::make_unique<Map>(*TextureUtil::GetTexture("../assets/textures/tilesheet.png"));
     map->Load();
     InitPlayers();
@@ -41,38 +40,27 @@ void GameState::SetRandomMonsterSpawn(int count){
 }
 
 void GameState::SetSingleTest(){
-    // BigDemon bigDemon{{100.f,100.f}};
-    // SmallDemon smallDemon{{200.f,600.f}};
     std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{100.f,400.f});
     zombie->disabledMovement = true;
-    std::unique_ptr<Monster> smallDemon = std::make_unique<SmallDemon>(sf::Vector2f{400.f,400.f});
-    smallDemon->disabledMovement = true;
-    std::unique_ptr<Monster> bigDemon = std::make_unique<BigDemon>(sf::Vector2f{700.f,400.f});
-    bigDemon->disabledMovement = true;
-    std::unique_ptr<Monster> bigDemon2 = std::make_unique<BigDemon>(sf::Vector2f{700.f,430.f});
-    bigDemon2->disabledMovement = true;
-    std::unique_ptr<Monster> bigDemon3 = std::make_unique<BigDemon>(sf::Vector2f{700.f,460.f});
-    bigDemon3->disabledMovement = true;
-    std::unique_ptr<Monster> bigDemon4 = std::make_unique<BigDemon>(sf::Vector2f{700.f,490.f});
-    bigDemon4->disabledMovement = true;
+    // std::unique_ptr<Monster> smallDemon = std::make_unique<SmallDemon>(sf::Vector2f{400.f,400.f});
+    // smallDemon->disabledMovement = true;
+    // std::unique_ptr<Monster> bigDemon = std::make_unique<BigDemon>(sf::Vector2f{700.f,400.f});
+    // bigDemon->disabledMovement = true;
     monsters.push_back(std::move(zombie));
-    monsters.push_back(std::move(smallDemon));
-    monsters.push_back(std::move(bigDemon));
-    monsters.push_back(std::move(bigDemon2));
-    monsters.push_back(std::move(bigDemon3));
-    monsters.push_back(std::move(bigDemon4));
+    // monsters.push_back(std::move(smallDemon));
+    // monsters.push_back(std::move(bigDemon));
 }
 
 void GameState::SetCollateralLineup(){
     for(float i = 0; i < 5; i++) {
-        Zombie zombie{{400.f,400.f}};
+        Zombie zombie{{200.f*i,400.f}};
         zombie.disabledMovement = true;
         monsters.push_back(std::make_unique<Zombie>(std::move(zombie))); // check later if have to do this way
     }
 }
 
 void GameState::InitPlayers() {
-    Player bunny({1200/2,700/2}, AnimUtil::PlayerAnim::stand);
+    Player bunny({1200/2,700/2}, AnimUtil::PlayerAnim::idle);
     players.push_back(std::move(bunny)); // why cant emplace back
 }
 
@@ -83,6 +71,12 @@ void GameState::InitMonsters() {
 }
 
 void GameState::Update(float deltaTime) {
+    // ADD LATER
+    //damageNumberManager->Update(deltaTime);
+
+
+
+
     map->Update(deltaTime);
     Projectile::UpdateProjectiles(*this, deltaTime);
 
@@ -95,7 +89,8 @@ void GameState::Update(float deltaTime) {
         // update player movement/animations, projectiles shot, create footprints intersecting with ground blood
         player.Update(*this, deltaTime);
     }
-    for(auto it = monsters.begin(); it != monsters.end();){
+    // MONSTER UPDATE STARTS HERE
+    for(auto it = monsters.begin(); it != monsters.end();) {
         if((**it).Update(*this, deltaTime)){
             it = monsters.erase(it);
         } else {
@@ -109,9 +104,11 @@ void GameState::RenderCharacters() {
     std::vector<std::reference_wrapper<Character>> drawCharacters;
     for (auto& monster: monsters) {
         drawCharacters.push_back(*monster);
+        //monster->hud.Draw(window);
     }
     for (auto& player: players) {
         drawCharacters.push_back(player);
+        //player.hud.Draw(window);
     }
     batchRenderer->BatchRenderCharacters(drawCharacters);
 }
@@ -127,11 +124,13 @@ void GameState::Render() {
     StatusEffect::RenderStatusEffects(monsters, window, *batchRenderer);
     batchRenderer->RenderFlameTriangles(); // render flamethrower particles
     
-
-    if(MONSTER_HITBOX==1){
+    if(MONSTER_HITBOX){
         for(auto& monster : monsters){
             monster->DebugHitbox(*this);
         }
     }
+    // ADD LATER
+    //damageNumberManager->Draw(window);
+
     window.display();
 }
