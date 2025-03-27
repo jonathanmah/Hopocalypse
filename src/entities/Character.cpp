@@ -31,7 +31,6 @@ Character::Character(
     health(health), 
     movementSpeed(movementSpeed), 
     scale(scale), 
-    isAlive(true),
     hud(Hud{health, healthColour, damageColour}), 
     id(ID_COUNTER++)
 {
@@ -51,9 +50,8 @@ void Character::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
         
 }
 
-bool Character::CheckDeath() {
+bool Character::IsDead() {
     if(health <= 0) {
-        isAlive = false;
         health = 0;
         return true;
     }

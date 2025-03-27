@@ -21,14 +21,15 @@ const AnimData AnimUtil::PlayerAnim::idle = {playerTexture, sf::IntRect({0,10},{
 const AnimData AnimUtil::PlayerAnim::walk = {playerTexture, sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
 const AnimData AnimUtil::PlayerAnim::shootIdle = {playerTexture, sf::IntRect({756,637},{70,73}), 84, 0, 3, .1f, 0.f};
 const AnimData AnimUtil::PlayerAnim::shootWalk = {playerTexture, sf::IntRect({0,465},{70,73}), 84, 0, 8, .1f, 0.f};
+const AnimData AnimUtil::PlayerAnim::death = {playerTexture, sf::IntRect({336,819},{84,91}), 84, 0, 8, .1f, 0.f};
 
 // MONSTERS
 
 
 const AnimData AnimUtil::ZombieAnim::walk = {lowMonsterTexture, sf::IntRect({0,130},{122,126}), 128, 0, 10, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::idle = {lowMonsterTexture, sf::IntRect({1152,0},{122,128}), 128, 0, 6, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::attack = {lowMonsterTexture, sf::IntRect({0,0},{122,128}), 128, 0, 4, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::death = {lowMonsterTexture, sf::IntRect({512,0},{122,128}), 128, 0, 5, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::idle = {lowMonsterTexture, sf::IntRect({1152,0},{122,126}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::attack = {lowMonsterTexture, sf::IntRect({0,0},{122,126}), 128, 0, 4, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::death = {lowMonsterTexture, sf::IntRect({512,0},{122,126}), 128, 0, 5, .1f, 0.f};
 
 const AnimData AnimUtil::SmallDemonAnim::walk = {lowMonsterTexture, sf::IntRect({6,384},{128,128}), 128, 0, 11, .1f, 0.f};
 const AnimData AnimUtil::SmallDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1030,256},{128,128}), 128, 0, 6, .1f, 0.f};

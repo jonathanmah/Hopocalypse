@@ -33,7 +33,7 @@ public:
     
     void HandleDeath(float deltaTime);
     void Move(PlayerState& playerState, GameState& state, float deltaTime);
-    void CheckDeath(std::vector<std::unique_ptr<Monster>>& monster);
+    void ProcessUpdates(GameState& state, float deltaTime);
     void DrawHitbox(sf::RenderWindow& window);
     void SetMousePositions(sf::RenderWindow& window);
     void SetFacingDirection();

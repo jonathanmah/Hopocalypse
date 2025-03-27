@@ -1,5 +1,6 @@
-#include "entities/monsters/BigDemon.h"
+#include "entities/monster/derived/BigDemon.h"
 #include "util/AnimUtil.h"
+#include "entities/monster/attack/MeleeAttack.h"
 
 BigDemon::BigDemon(sf::Vector2f position) 
 : 
@@ -8,6 +9,14 @@ BigDemon::BigDemon(sf::Vector2f position)
     InitAnimMap();
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setOrigin({animData.textureFrame.size.x*.5f, animData.textureFrame.size.y*.6f});
+}
+
+void BigDemon::HandleAttacks(GameState& state, float deltaTime) {
+    return;
+}
+
+void BigDemon::InitAttackMap() {
+    attackMap[MonsterState::ATTACK1] = std::make_unique<MeleeAttack>(MonsterState::ATTACK1, this, 5.f, hitbox, hitbox, 2, 20);
 }
 
 void BigDemon::InitAnimMap() {

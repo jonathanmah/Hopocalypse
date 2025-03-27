@@ -31,7 +31,7 @@ void Hud::InterpolateHpBar() {
     
     if (damageHpWidth > targetHpWidth) {
         float diff = damageHpWidth - targetHpWidth;
-        damageHpWidth -= std::max(diff * INTERPOLATION_FACTOR * 0.7f, 0.15f); // min amount to move
+        damageHpWidth -= std::max(diff * INTERPOLATION_FACTOR * 0.65f, 0.15f); // min amount to move
     } else {
         damageHpWidth = targetHpWidth; // If no damage, keep same size
     }

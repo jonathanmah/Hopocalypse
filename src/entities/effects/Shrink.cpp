@@ -1,7 +1,7 @@
 #include "entities/effects/Shrink.h"
 #include "util/AnimUtil.h"
 #include "entities/Character.h"
-#include "entities/Monster.h"
+#include "entities/monster/Monster.h"
 #include <cmath>
 
 constexpr float INTERPOLATION_FACTOR = 0.1f;
@@ -37,7 +37,7 @@ bool Shrink::UpdateStatusEffect(float deltaTime) {
         updatedSize = false;
         return true;
     }
-    if(monster->isAlive && timeLeft < .5f){
+    if(!monster->IsDead() && timeLeft < .5f){
         auto currScale = monster->GetSprite().getScale();
         sf::Vector2f scaleAbs = sf::Vector2f{abs(currScale.x),currScale.y} + sf::Vector2f{(abs(originalScale.x) - abs(currScale.x)), originalScale.y-currScale.y} * INTERPOLATION_FACTOR;
         if(monster->xAxisInverted) {

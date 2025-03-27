@@ -25,7 +25,7 @@ public:
     static AnimData GetNextSprayAnim();
     static void RenderBlood(GameState& state, sf::RenderWindow& window);
     void SetPosition(sf::Vector2f position);
-    static void CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::FloatRect hitbox, 
+    static void CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::Vector2f sourcePosition, sf::FloatRect hitbox, 
         std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood);
     bool UpdateBloodSprayAnim(float deltaTime);
     void CachePositionVertices() {cachedVertices = RenderUtil::CalculatePositionVertices(animData.textureFrame, getTransform());}

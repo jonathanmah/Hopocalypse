@@ -80,7 +80,6 @@ void MagnumWaveBullet::UpdateAnimation(float deltaTime) {
     if(sprite.getScale().x < 2.5f){
         sprite.setScale(sprite.getScale()*1.1f);
     }
-
 }
 
 void MagnumWaveBullet::UpdateProjectileStatus(Character& character, GameState& state, 

@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "util/AnimUtil.h"
 #include "core/BatchRenderer.h"
-#include "Hud.h"
+#include "entities/Hud.h"
 
 
 class GameState;
@@ -14,7 +14,6 @@ public:
     Hud hud;
     AnimData animData;
     sf::Sprite sprite;
-    bool isAlive;
     int health;
     int id = -1;
     float scale;
@@ -23,7 +22,7 @@ public:
 
     Character(sf::Vector2f position, AnimData animData, sf::Color healthColour, sf::Color damageColour, int health, float movementSpeed, float scale);
     virtual void UpdateCollisions(GameState& state) {return;}
-    bool CheckDeath();
+    bool IsDead();
     void TakeDamage(int damage);
     float GetYOrdering();
     virtual void Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer);

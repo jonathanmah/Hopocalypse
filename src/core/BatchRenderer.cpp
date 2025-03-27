@@ -2,9 +2,9 @@
 #include "core/BatchRenderer.h"
 #include "weapons/Weapon.h"
 #include "util/AnimUtil.h"
-#include "entities/monsters/Zombie.h"
-#include "entities/monsters/SmallDemon.h"
-#include "entities/monsters/BigDemon.h"
+#include "entities/monster/derived/Zombie.h"
+#include "entities/monster/derived/SmallDemon.h"
+#include "entities/monster/derived/BigDemon.h"
 #include "entities/Player.h"
 #include "entities/Character.h"
 
@@ -124,10 +124,10 @@ void BatchRenderer::ClearMonsterTriangles(){
 void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Character>>& characters){
     std::sort(characters.begin(), characters.end(),
     [](const std::reference_wrapper<Character>& firstCharacter, const std::reference_wrapper<Character>& secondCharacter) {
-        if (!firstCharacter.get().isAlive && secondCharacter.get().isAlive) {
+        if (firstCharacter.get().IsDead() && !secondCharacter.get().IsDead()) {
             return true;
         }
-        if (firstCharacter.get().isAlive && !secondCharacter.get().isAlive) {
+        if (!firstCharacter.get().IsDead() && secondCharacter.get().IsDead()) {
             return false;
         }
         return firstCharacter.get().GetYOrdering() < secondCharacter.get().GetYOrdering();
@@ -146,12 +146,14 @@ void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Cha
         } else if(auto player = dynamic_cast<Player*>(&character.get())) {
             // if it's a player, draw all of the monsters prior, draw player on top, clear buffer
             DrawBufferedMonsterTriangles();
-            AddHpBarTriangles(character);
+            if(!character.get().IsDead()){
+                AddHpBarTriangles(character);
+            }
             ClearMonsterTriangles();
             player->Draw(window, *this);
             continue;
         }
-        if(character.get().isAlive){
+        if(!character.get().IsDead()){
             AddHpBarTriangles(character);
         }   
     }

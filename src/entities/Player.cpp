@@ -1,6 +1,6 @@
 #include <iostream>
 #include "entities/Player.h"
-#include "entities/Monster.h"
+#include "entities/monster/Monster.h"
 #include "util/HitboxDebugger.h"
 #include "core/GameState.h"
 #include "weapons/Projectile.h"
@@ -46,14 +46,13 @@ Player::Player(sf::Vector2f position, AnimData animData) :
     {}
 
 void Player::HandleDeath(float deltaTime) {
-    if(Player::currState != PlayerState::DEATH){
-        animData = AnimUtil::PlayerAnim::idle;
-        Player::currState = PlayerState::DEATH;
-    }
-    if(Player::deathTimer < animData.animSpeed*animData.totalFrames) {
+    if(currState != PlayerState::DEATH){
+        animData = AnimUtil::PlayerAnim::death;
+        animData.hangLastFrame = true;
+        currState = PlayerState::DEATH;
+    } else {
         AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
     }
-    Player::deathTimer += deltaTime;
 }
 
 void Player::SetFacingDirection() {
@@ -65,7 +64,9 @@ void Player::SetFacingDirection() {
     }
 }
 
-void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) { 
+void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) {
+    // do incoming updates here from attacks dead, etc.
+
     playerState = PlayerState::IDLE;
     sf::Vector2f nextMove = {0,0};
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) {
@@ -73,14 +74,12 @@ void Player::Move(PlayerState& playerState, GameState& state, float deltaTime) {
         if (sprite.getPosition().x - movementSpeed >= MapBounds::LEFT){
             nextMove.x += -1;
         }
-        //sprite.setScale({-scale, scale}); 
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) {
         playerState = PlayerState::WALK;
         if (sprite.getPosition().x + movementSpeed <= MapBounds::RIGHT){
             nextMove.x += 1;
         }
-        //sprite.setScale({scale, scale}); 
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) {
         playerState = PlayerState::WALK;
@@ -190,22 +189,30 @@ void Player::SetAnimDataByState(PlayerState newState) {
             animData = AnimUtil::PlayerAnim::shootIdle;
             break;
         case PlayerState::DEATH:
-            break;
+            animData = AnimUtil::PlayerAnim::death;
     }
     
     currState = newState;
 }
 
+void Player::ProcessUpdates(GameState& state, float deltaTime) {
+    // set relative mouse position first
+    SetMousePositions(state.window);
+
+    // update health bar to show current HP   
+    hud.Update(health, GetGlobalBounds());
+
+}
 
 void Player::Update(GameState& state, float deltaTime){
-    // set relative mouse position first
-    Player::SetMousePositions(state.window);
-
+    
     // If Player is marked as dead, update state and death anim
-    if (!Player::isAlive) {
-        Player::HandleDeath(deltaTime);
+    if (IsDead()) {
+        HandleDeath(deltaTime);
         return;
     }
+    // Process various updates to the player here
+    ProcessUpdates(state, deltaTime);
     // #TODO need to figure out how to deal with states better maybe...later problem
     PlayerState playerState = PlayerState::IDLE;
     
@@ -213,33 +220,19 @@ void Player::Update(GameState& state, float deltaTime){
     // Handle key presses for movement, update footprints
     Player::Move(playerState, state, deltaTime);
 
+    // update player attack related logic, and weapon fx 
     currWeapon->Update(state, *this, mousePosGlobal, deltaTime);
    
+    // start a new animation from 0 if player has changed state
     if (Player::currState != playerState) {
         Player::SetAnimDataByState(playerState);
     }
     // update player animation
     AnimUtil::UpdateSpriteAnim(sprite, animData, deltaTime);
 
-    // update health bar to show current HP
-    hud.Update(health, Player::GetGlobalBounds());
-
-    // set isAlive flag if a monster has intersected
-    Player::CheckDeath(state.monsters);
+   
 }
 
-// marks a player as Dead
-void Player::CheckDeath(std::vector<std::unique_ptr<Monster>>& monsters) {
-
-    if(!Player::isAlive){
-        return;
-    }
-    for(auto& monster : monsters){
-        if(monster->GetGlobalBounds().findIntersection(Player::GetGlobalBounds()) && monster->isAlive){
-            Player::isAlive = true;
-        }
-    }
-}
 // draw hit box of a players global bounds and feet.  should be in character class for when monsters get footprints
 void Player::DrawHitbox(sf::RenderWindow& window) {
     HitboxDebugger::DrawSpriteGlobalBoundsHitbox(window, sprite, sf::Color::Red);
@@ -249,9 +242,7 @@ void Player::DrawHitbox(sf::RenderWindow& window) {
 // Render a player, hitbox, and weapon
 void Player::Draw(sf::RenderWindow& window, BatchRenderer& batchRenderer) {
     window.draw(sprite);
-    //DrawHitbox(window);
-    if(Player::isAlive){
+    if(!IsDead()){
         currWeapon->Draw(window, batchRenderer);
     }
-    //hud.Draw(window);
 }

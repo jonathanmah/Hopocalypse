@@ -3,7 +3,7 @@
 #include "util/TextureUtil.h"
 #include "util/RandomUtil.h"
 #include "core/GameState.h"
-#include "entities/Monster.h"
+#include "entities/monster/Monster.h"
 #include "entities/effects/OnFire.h"
 
 static const sf::Texture* PROJECTILE_TEXTURE = TextureUtil::GetTexture("../assets/textures/weapons/projectiles_atlas.png");
@@ -95,13 +95,13 @@ void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, 
         flame.colour.a = static_cast<u_int8_t>(RandomUtil::GetRandomInt(25,40) * (flame.lifetime)); // 15-25 is good
         if(flame.lifetime > 0.25f*INIT_FLAME_LIFETIME) {
             for (Monster& monster : closeMonsters) {
-                if(monster.GetGlobalBounds().contains(flame.position)){
+                if(monster.hitbox.contains(flame.position)){
                     if(!monster.onFire.FlamethrowerDamageOnCooldown()){
                         int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
                         monster.TakeDamage(damage);
                         monster.onFire.SetFlameThrowerDamageCooldown(0.2f);
                     }
-                    if(monster.isAlive){
+                    if(!monster.IsDead()){
                         monster.onFire.ApplyEffect(5.f);
                     }
                         

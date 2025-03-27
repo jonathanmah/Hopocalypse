@@ -3,27 +3,27 @@
 #include "util/AnimUtil.h"
 #include "entities/Player.h"
 #include "environment/Map.h"
-#include "entities/Monster.h"
+#include "entities/monster/Monster.h"
 #include "fx/AoE.h"
 #include "weapons/Projectile.h"
 #include "weapons/Weapon.h"
-#include "entities/MonsterFactory.h"
+#include "entities/monster/MonsterFactory.h"
 #include "util/RandomUtil.h"
 #include "core/BatchRenderer.h"
-#include "entities/monsters/Zombie.h"
-#include "entities/monsters/BigDemon.h"
-#include "entities/monsters/SmallDemon.h"
+#include "entities/monster/derived/Zombie.h"
+#include "entities/monster/derived/BigDemon.h"
+#include "entities/monster/derived/SmallDemon.h"
 
 GameState::GameState(){
-    MONSTER_HITBOX = 0;
-    PLAYER_HITBOX = 0;
+    MONSTER_HITBOX = 1;
+    PLAYER_HITBOX = 1;
     PROJECTILE_HITBOX = 0;
     AOE_HITBOX = 0;
 
     RandomUtil::Initialize();
     TextureUtil::SetStaticMemberTextures();
     sf::ContextSettings settings;
-    settings.antiAliasingLevel = 8;
+    settings.antiAliasingLevel = 0;
     window =  sf::RenderWindow{sf::VideoMode({1200, 720}), "CMake exe", sf::State::Windowed, settings};
     window.setFramerateLimit(60);
     batchRenderer = std::make_unique<BatchRenderer>(window);
@@ -40,7 +40,7 @@ void GameState::SetRandomMonsterSpawn(int count){
 }
 
 void GameState::SetSingleTest(){
-    std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{100.f,400.f});
+    std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{400.f,400.f});
     zombie->disabledMovement = true;
     // std::unique_ptr<Monster> smallDemon = std::make_unique<SmallDemon>(sf::Vector2f{400.f,400.f});
     // smallDemon->disabledMovement = true;
@@ -53,15 +53,14 @@ void GameState::SetSingleTest(){
 
 void GameState::SetCollateralLineup(){
     for(float i = 0; i < 5; i++) {
-        Zombie zombie{{200.f*i,400.f}};
-        zombie.disabledMovement = true;
-        monsters.push_back(std::make_unique<Zombie>(std::move(zombie))); // check later if have to do this way
+        std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{200.f*i,400.f});
+        zombie->disabledMovement = true;
+        monsters.push_back(std::move(zombie)); // check later if have to do this way
     }
 }
 
 void GameState::InitPlayers() {
-    Player bunny({1200/2,700/2}, AnimUtil::PlayerAnim::idle);
-    players.push_back(std::move(bunny)); // why cant emplace back
+    players.push_back(std::make_unique<Player>(sf::Vector2f{1200/2,700/2}, AnimUtil::PlayerAnim::idle)); // why cant emplace back
 }
 
 void GameState::InitMonsters() {
@@ -85,9 +84,9 @@ void GameState::Update(float deltaTime) {
     AoE::UpdateAoE(*this, deltaTime);
     //StatusEffect::UpdateStatusEffect(*this,deltaTime);
 
-    for (Player& player : players) {
+    for (auto& player : players) {
         // update player movement/animations, projectiles shot, create footprints intersecting with ground blood
-        player.Update(*this, deltaTime);
+        player->Update(*this, deltaTime);
     }
     // MONSTER UPDATE STARTS HERE
     for(auto it = monsters.begin(); it != monsters.end();) {
@@ -100,15 +99,12 @@ void GameState::Update(float deltaTime) {
 }
 
 void GameState::RenderCharacters() {
-    //#TODO will have to figure out a way to keep monsters as pointers while being able to render them in order...
     std::vector<std::reference_wrapper<Character>> drawCharacters;
     for (auto& monster: monsters) {
         drawCharacters.push_back(*monster);
-        //monster->hud.Draw(window);
     }
     for (auto& player: players) {
-        drawCharacters.push_back(player);
-        //player.hud.Draw(window);
+        drawCharacters.push_back(*player);
     }
     batchRenderer->BatchRenderCharacters(drawCharacters);
 }
@@ -127,6 +123,11 @@ void GameState::Render() {
     if(MONSTER_HITBOX){
         for(auto& monster : monsters){
             monster->DebugHitbox(*this);
+        }
+    }
+    if(PLAYER_HITBOX){
+        for(auto& player: players){
+            player->DrawHitbox(window);
         }
     }
     // ADD LATER

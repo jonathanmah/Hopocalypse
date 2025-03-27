@@ -1,4 +1,4 @@
-#include "entities/Monster.h"
+#include "entities/monster/Monster.h"
 #include "entities/effects/StatusEffect.h"
 #include "entities/effects/OnFire.h"
 
@@ -20,6 +20,7 @@ void StatusEffect::ApplyEffect(float duration) {
 
 void StatusEffect::RenderStatusEffects(std::vector<std::unique_ptr<Monster>>& monsters, sf::RenderWindow& window, BatchRenderer batchRenderer){
     for(auto& monster : monsters) {
+        if(monster->IsDead()) continue;
         // #TO DO LATER IS BATCH RENDER EFFECTS
         if(monster->onFire.IsActive()) {
             window.draw(monster->onFire.sprite);

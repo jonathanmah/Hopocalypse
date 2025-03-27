@@ -1,5 +1,6 @@
-#include "entities/monsters/SmallDemon.h"
+#include "entities/monster/derived/SmallDemon.h"
 #include "util/AnimUtil.h"
+#include "entities/monster/attack/MeleeAttack.h"
 
 SmallDemon::SmallDemon(sf::Vector2f position) 
 : 
@@ -8,6 +9,13 @@ SmallDemon::SmallDemon(sf::Vector2f position)
     InitAnimMap();
     sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     sprite.setOrigin({animData.textureFrame.size.x*.5f, animData.textureFrame.size.y*.8f});
+}
+void SmallDemon::HandleAttacks(GameState& state, float deltaTime) {
+    return;
+}
+
+void SmallDemon::InitAttackMap() {
+    attackMap[MonsterState::ATTACK1] = std::make_unique<MeleeAttack>(MonsterState::ATTACK1, this, 5.f, hitbox, hitbox, 2, 20);
 }
 
 void SmallDemon::InitAnimMap() {

@@ -1,10 +1,10 @@
 #include <iostream>
-#include "entities/MonsterFactory.h"
-#include "entities/Monster.h"
+#include "entities/monster/MonsterFactory.h"
+#include "entities/monster/Monster.h"
 #include "environment/Map.h"
-#include "entities/monsters/Zombie.h"
-#include "entities/monsters/BigDemon.h"
-#include "entities/monsters/SmallDemon.h"
+#include "entities/monster/derived/Zombie.h"
+#include "entities/monster/derived/BigDemon.h"
+#include "entities/monster/derived/SmallDemon.h"
 
 static constexpr int WINDOW_LEFT_BOUND = 0;
 static constexpr int WINDOW_RIGHT_BOUND = 1200;

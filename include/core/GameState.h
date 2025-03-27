@@ -4,7 +4,7 @@
 #include "fx/Blood.h"
 #include "fx/Footprint.h"
 #include "entities/Player.h"
-#include "entities/Monster.h"
+#include "entities/monster/Monster.h"
 #include "environment/Map.h"
 #include "core/BatchRenderer.h"
 #include "weapons/Projectile.h"
@@ -24,7 +24,7 @@ public:
     std::unique_ptr<BatchRenderer> batchRenderer;
     std::unique_ptr<DamageNumberManager> damageNumberManager;
     std::unique_ptr<Map> map;
-    std::vector<Player> players;
+    std::vector<std::unique_ptr<Player>> players;
     std::vector<std::unique_ptr<Monster>> monsters;
     std::vector<std::unique_ptr<Projectile>> projectiles;
     std::vector<std::unique_ptr<Weapon>> weapons;

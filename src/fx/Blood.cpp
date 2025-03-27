@@ -79,9 +79,9 @@ AnimData Blood::GetNextSprayAnim() {
 }
 
 // update blood spray and ground blood after projectile collision from projectile source position
-void Blood::CreateProjectileBlood(sf::Vector2f sourcePosition, sf::FloatRect hitbox, 
+void Blood::CreateProjectileBlood(sf::Vector2f projectilePosition, sf::Vector2f sourcePosition, sf::FloatRect hitbox, 
     std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood){
-    Blood newBloodSpray(Blood::GetNextSprayAnim(), hitbox.getCenter());
+    Blood newBloodSpray(Blood::GetNextSprayAnim(), {hitbox.getCenter().x, projectilePosition.y});
     newBloodSpray.SetRotation(sourcePosition);
     newBloodSpray.CachePositionVertices();
     bloodSpray.push_back(newBloodSpray);    /// even lower for ground blood

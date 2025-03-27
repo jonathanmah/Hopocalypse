@@ -36,11 +36,10 @@ void HitboxDebugger::DrawGlobalRect(sf::RenderWindow& window, const sf::FloatRec
     rectShape.setOutlineColor(colour);
     rectShape.setOutlineThickness(thickness);
     window.draw(rectShape);
-    sf::CircleShape shape(5.f);
-    shape.setFillColor(sf::Color::White);
+    sf::CircleShape shape(2.f);
+    shape.setFillColor(colour);
     shape.setPosition(rectShape.getPosition());
-    window.draw(shape);
-    
+    //window.draw(shape);
 }
 
 void HitboxDebugger::DrawCircle(sf::RenderWindow& window, sf::Vector2f position, const float radius, sf::Color colour, float thickness){
