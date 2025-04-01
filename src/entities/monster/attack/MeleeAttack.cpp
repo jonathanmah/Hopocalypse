@@ -14,68 +14,71 @@ MeleeAttack::MeleeAttack(
     sf::FloatRect aggroBox,
     sf::FloatRect damageBox, 
     int damageFrame,
-    int damage
+    int damage,
+    sf::Vector2f damageBoxOffset
 )   :
-    Attack(attackState, monster, cooldown, aggroBox),
-    damageBox(damageBox),
+    Attack(attackState, monster, cooldown, aggroBox, damageBox),
     damageFrame(damageFrame),
-    damage(damage)
+    damage(damage),
+    damageBoxOffset(damageBoxOffset)
 {}
 
+// update aggro and damage box bounds 
 void MeleeAttack::UpdateBoxBounds() {
-    aggroBox = monster->hitbox;
-    damageBox = monster->hitbox;
+    aggroBox.setPosition(monster->hitbox.position);
+    damageBox.setPosition(monster->hitbox.position);
     if(!monster->xAxisInverted) {
-        aggroBox.position.x += aggroBox.size.x;    
-        damageBox.position.x += damageBox.size.x;
+        aggroBox.move({aggroBox.getSize().x + damageBoxOffset.x,damageBoxOffset.y});    
+        damageBox.move({damageBox.getSize().x + damageBoxOffset.x, damageBoxOffset.y});
     } else {
-        aggroBox.position.x -= aggroBox.size.x; 
-        damageBox.position.x -= damageBox.size.x;
+        aggroBox.move({-aggroBox.getSize().x - damageBoxOffset.x, damageBoxOffset.y}); 
+        damageBox.move({-damageBox.getSize().x - damageBoxOffset.x, damageBoxOffset.y});
     }
-    
 }
 
-// for testing, increase anim speed to long duration to slowly swap between frames
-// update everything except for monster animation
+// #NOTE for testing, increase anim speed to long duration to slowly swap between frames
+// apply damage once damage frame reached, reset state to walk if attack animation finished
 void MeleeAttack::UpdateDuringAttack(std::vector<std::unique_ptr<Player>>& players, float deltaTime) {
-
     if(cooldownTimer <= 0.f && monster->animData.currFrame == damageFrame) {
         for(auto& player : players) {
             if(player->IsDead()) continue;
-            if(damageBox.findIntersection(player->GetGlobalBounds())){
+            if(damageBox.getGlobalBounds().findIntersection(player->GetGlobalBounds())){
                 player->TakeDamage(damage);
             }
             SetAttackOnCooldown();
+            dealt = true;
         }
     }
-    if(monster->animData.currFrame == monster->animData.totalFrames-1) {
+    if(monster->animData.currFrame == 0 && dealt) {
         monster->animData = monster->animMap[MonsterState::WALK];
         monster->animState = MonsterState::WALK;
     }
-    // for wolf, move monster towards player using sfml move sprite...
 }
 
-// 1. set monster to an attacking state, skip Update Move if this is true in monster update loop
-void MeleeAttack::StartAttack() {
+//set monster to an attacking state
+void MeleeAttack::StartAttack(std::unique_ptr<Player>& player) {
     monster->animData = monster->animMap[attackState];
     monster->animState = attackState;
+    dealt = false;
 }
 
 // players are in range of aggro box, and attack is not on cooldown
 void MeleeAttack::CheckConditionsAndAttack(std::vector<std::unique_ptr<Player>>& players) {
     for(auto& player : players) {
-        // if player is dead then leave it
+        // if player is dead then continue
         if(player->IsDead()) continue;
-        // if attack is not on cooldown and player in range
-        if(cooldownTimer <= 0.f && aggroBox.findIntersection(player->GetGlobalBounds())) {
-            // attack 
-            StartAttack();
+        // if attack is not on cooldown and player in range of aggro box
+        if(cooldownTimer <= 0.f && aggroBox.getGlobalBounds().findIntersection(player->GetGlobalBounds())) {
+            // start attack
+            StartAttack(player);
             break;
         }
     }
 }
 
+// draw aggro and damage bounds for debugging
 void MeleeAttack::DrawAggroAndDamageBoxes(sf::RenderWindow& window) {
-    HitboxDebugger::DrawGlobalRect(window, aggroBox, sf::Color::Black);
-    HitboxDebugger::DrawGlobalRect(window, damageBox, sf::Color::Yellow);
+    HitboxDebugger::DrawGlobalRect(window, aggroBox.getGlobalBounds(), sf::Color::Green);
+    HitboxDebugger::DrawGlobalRect(window, damageBox.getGlobalBounds(), sf::Color::Yellow);
+    //HitboxDebugger::DrawCircle(window,monster->hitbox.getCenter(), 170, sf::Color::Black);
 }

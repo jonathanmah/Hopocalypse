@@ -6,7 +6,8 @@
 #include <map>
 
 enum class MonsterE{
-    LOW
+    LOW,
+    WOLF,
 };
 
 class Character;
@@ -24,6 +25,8 @@ public:
 
     std::map<MonsterE, std::vector<sf::Vertex>> monsterTriangles{
         {MonsterE::LOW, std::vector<sf::Vertex>{}},
+        {MonsterE::WOLF, std::vector<sf::Vertex>{}},
+        
     };
     
 

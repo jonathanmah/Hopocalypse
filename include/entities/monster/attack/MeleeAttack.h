@@ -5,22 +5,23 @@
 class MeleeAttack : public Attack {
 
 public:
-    sf::FloatRect damageBox;
     int damageFrame;
     int damage;
+    sf::Vector2f damageBoxOffset;
+    bool dealt;
 
     // keep in mind monster has the animData
     MeleeAttack(MonsterState attackState, Monster* monster, float cooldown, sf::FloatRect aggroBox,
-        sf::FloatRect damageBox, int damageFrame, int damage
+        sf::FloatRect damageBox, int damageFrame, int damage, sf::Vector2f damageBoxOffset={0,0}
     );
-    void UpdateBoxBounds() override;
-
-    // 1. set monster to an attacking state, skip Update Move if this is true in monster update loop
-    void StartAttack() override;
-    // update everything except for monster animation
+    // update the aggro box and damage box bounds 
+    virtual void UpdateBoxBounds() override;
+    // set monster to an attacking state, and set any other variables related to initial target position
+    virtual void StartAttack(std::unique_ptr<Player>& player) override;
+    // apply damage once damage frame reached, reset state to walk if attack animation finished
     virtual void UpdateDuringAttack(std::vector<std::unique_ptr<Player>>& players, float deltaTime) override;
     // players are in range of aggro box, and attack is not on cooldown
-    void CheckConditionsAndAttack(std::vector<std::unique_ptr<Player>>& players) override;
-
+    virtual void CheckConditionsAndAttack(std::vector<std::unique_ptr<Player>>& players) override;
+    // draw aggro and damage bounds for debugging
     void DrawAggroAndDamageBoxes(sf::RenderWindow& window) override;
 };

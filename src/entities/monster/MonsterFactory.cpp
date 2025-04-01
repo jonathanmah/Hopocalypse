@@ -5,6 +5,7 @@
 #include "entities/monster/derived/Zombie.h"
 #include "entities/monster/derived/BigDemon.h"
 #include "entities/monster/derived/SmallDemon.h"
+#include "entities/monster/derived/Wolf.h"
 
 static constexpr int WINDOW_LEFT_BOUND = 0;
 static constexpr int WINDOW_RIGHT_BOUND = 1200;
@@ -12,7 +13,7 @@ static constexpr int WINDOW_TOP_BOUND = 0;
 static constexpr int WINDOW_BOTTOM_BOUND = 720;
 
 MonsterFactory::MonsterFactory() : gen(seedGen()), windowHeightDist(WINDOW_TOP_BOUND, WINDOW_BOTTOM_BOUND),
-windowWidthDist(WINDOW_LEFT_BOUND,WINDOW_RIGHT_BOUND), windowSideDist(1,4), monsterDist(1,3), positionOffsetDist(300,500){}
+windowWidthDist(WINDOW_LEFT_BOUND,WINDOW_RIGHT_BOUND), windowSideDist(1,4), monsterDist(4,4), positionOffsetDist(300,500){}
 
 sf::Vector2f MonsterFactory::GetRandomPosition(int screenSide){
     float x, y;
@@ -51,6 +52,8 @@ std::vector<std::unique_ptr<Monster>> MonsterFactory::GetMonsters(int spawnCount
             monsters.push_back(std::make_unique<SmallDemon>(position));
         } else if (monsterType == 3) {
             monsters.push_back(std::make_unique<BigDemon>(position));
+        } else if( monsterType == 4) {
+            monsters.push_back(std::make_unique<Wolf>(position));
         }
     }
     return std::move(monsters);

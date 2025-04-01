@@ -13,10 +13,11 @@
 #include "entities/monster/derived/Zombie.h"
 #include "entities/monster/derived/BigDemon.h"
 #include "entities/monster/derived/SmallDemon.h"
+#include "entities/monster/derived/Wolf.h"
 
 GameState::GameState(){
-    MONSTER_HITBOX = 1;
-    PLAYER_HITBOX = 1;
+    MONSTER_HITBOX = 0;
+    PLAYER_HITBOX = 0;
     PROJECTILE_HITBOX = 0;
     AOE_HITBOX = 0;
 
@@ -40,15 +41,19 @@ void GameState::SetRandomMonsterSpawn(int count){
 }
 
 void GameState::SetSingleTest(){
-    std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{400.f,400.f});
+    std::unique_ptr<Monster> zombie = std::make_unique<Zombie>(sf::Vector2f{100.f,400.f});
     zombie->disabledMovement = true;
-    // std::unique_ptr<Monster> smallDemon = std::make_unique<SmallDemon>(sf::Vector2f{400.f,400.f});
-    // smallDemon->disabledMovement = true;
-    // std::unique_ptr<Monster> bigDemon = std::make_unique<BigDemon>(sf::Vector2f{700.f,400.f});
-    // bigDemon->disabledMovement = true;
-    monsters.push_back(std::move(zombie));
+    std::unique_ptr<Monster> smallDemon = std::make_unique<SmallDemon>(sf::Vector2f{350.f,400.f});
+    smallDemon->disabledMovement = true;
+    std::unique_ptr<Monster> bigDemon = std::make_unique<BigDemon>(sf::Vector2f{500.f,400.f});
+    bigDemon->disabledMovement = true;
+    std::unique_ptr<Monster> wolf = std::make_unique<Wolf>(sf::Vector2f{500.f,300.f});
+    wolf->disabledMovement = false;
+
+    // monsters.push_back(std::move(zombie));
     // monsters.push_back(std::move(smallDemon));
     // monsters.push_back(std::move(bigDemon));
+    //monsters.push_back(std::move(wolf));
 }
 
 void GameState::SetCollateralLineup(){
@@ -60,21 +65,19 @@ void GameState::SetCollateralLineup(){
 }
 
 void GameState::InitPlayers() {
-    players.push_back(std::make_unique<Player>(sf::Vector2f{1200/2,700/2}, AnimUtil::PlayerAnim::idle)); // why cant emplace back
+    players.push_back(std::make_unique<Player>(sf::Vector2f{700,600}, AnimUtil::PlayerAnim::idle)); // why cant emplace back
 }
 
 void GameState::InitMonsters() {
-    //SetRandomMonsterSpawn(300);
+    SetRandomMonsterSpawn(5);
     //SetCollateralLineup();
-    SetSingleTest();
+    //SetSingleTest();
 }
 
 void GameState::Update(float deltaTime) {
+    window.clear(sf::Color::Black);
     // ADD LATER
     //damageNumberManager->Update(deltaTime);
-
-
-
 
     map->Update(deltaTime);
     Projectile::UpdateProjectiles(*this, deltaTime);
@@ -82,13 +85,13 @@ void GameState::Update(float deltaTime) {
     // // update the blood spray and ground blood animations
     Blood::Update(*this, deltaTime);
     AoE::UpdateAoE(*this, deltaTime);
-    //StatusEffect::UpdateStatusEffect(*this,deltaTime);
 
     for (auto& player : players) {
         // update player movement/animations, projectiles shot, create footprints intersecting with ground blood
         player->Update(*this, deltaTime);
     }
-    // MONSTER UPDATE STARTS HERE
+    
+    // update monsters
     for(auto it = monsters.begin(); it != monsters.end();) {
         if((**it).Update(*this, deltaTime)){
             it = monsters.erase(it);
@@ -110,7 +113,7 @@ void GameState::RenderCharacters() {
 }
 
 void GameState::Render() {
-    window.clear(sf::Color::Black);
+    //
     map->Draw(window);
     Blood::RenderBlood(*this, window);
     RenderCharacters();

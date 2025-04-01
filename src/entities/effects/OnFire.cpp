@@ -21,7 +21,8 @@ OnFire::OnFire(Character& character)
 }
 
 void OnFire::UpdateColour() {
-    if(!updatedColour&&character.health <= 0.f){
+    if(!updatedColour&&character.IsDead()){
+        std::cout << "UPDATED COLOUR BURNT" << std::endl;
         auto updateColour = character.GetSprite().getColor();
         updateColour.r = updateColour.r * 0.15f;
         updateColour.g = updateColour.g * 0.15f;

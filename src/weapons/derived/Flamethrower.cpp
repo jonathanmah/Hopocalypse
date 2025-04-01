@@ -97,7 +97,7 @@ void Flamethrower::FlameUpdate(std::vector<std::unique_ptr<Monster>>& monsters, 
             for (Monster& monster : closeMonsters) {
                 if(monster.hitbox.contains(flame.position)){
                     if(!monster.onFire.FlamethrowerDamageOnCooldown()){
-                        int damage = !isUpgraded ? 15 : 30; // UPDATE DAMAGE HERE
+                        int damage = !isUpgraded ? 100 : 300; // UPDATE DAMAGE HERE
                         monster.TakeDamage(damage);
                         monster.onFire.SetFlameThrowerDamageCooldown(0.2f);
                     }

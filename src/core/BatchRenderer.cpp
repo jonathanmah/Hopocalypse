@@ -5,6 +5,7 @@
 #include "entities/monster/derived/Zombie.h"
 #include "entities/monster/derived/SmallDemon.h"
 #include "entities/monster/derived/BigDemon.h"
+#include "entities/monster/derived/Wolf.h"
 #include "entities/Player.h"
 #include "entities/Character.h"
 
@@ -105,9 +106,10 @@ void BatchRenderer::AddHpBarTriangles(std::reference_wrapper<Character>& charact
     }
 }
 
-void BatchRenderer::DrawBufferedMonsterTriangles() {
-    static std::map<MonsterE, sf::Texture*> monsterTextureMap {
-        {MonsterE::LOW, AnimUtil::lowMonsterTexture},
+void BatchRenderer::DrawBufferedMonsterTriangles() { // #TODO WILL NEED TO HANDLE BUFFER, CLEARING, TEXTURE SWITCHES WITH MONSTERS BETTER
+    static std::map<MonsterE, sf::Texture*> monsterTextureMap { // LOOP THROUGH MONSTER TEXTURE MAP, DRAW WHATEVER MONSTERS IS NOT NULL?
+        {MonsterE::LOW, AnimUtil::lowMonsterTexture}, // WHILE KEEPING TRACK OF CURRENT MONSTER TEXTURE?
+        {MonsterE::WOLF, AnimUtil::wolfTexture}, // #TODO FIX Y ORDER FOR MONSTERS
     };
 
     for (auto it = monsterTriangles.begin(); it != monsterTriangles.end(); ++it) {
@@ -122,6 +124,7 @@ void BatchRenderer::ClearMonsterTriangles(){
 }
 
 void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Character>>& characters){
+    // #TODO FIX Y ORDER FOR MONSTERS
     std::sort(characters.begin(), characters.end(),
     [](const std::reference_wrapper<Character>& firstCharacter, const std::reference_wrapper<Character>& secondCharacter) {
         if (firstCharacter.get().IsDead() && !secondCharacter.get().IsDead()) {
@@ -143,6 +146,8 @@ void BatchRenderer::BatchRenderCharacters(std::vector<std::reference_wrapper<Cha
             AddSpriteToBatch(smallDemon->sprite, monsterTriangles[MonsterE::LOW]);
         } else if(auto bigDemon = dynamic_cast<BigDemon*>(&character.get())) {
             AddSpriteToBatch(bigDemon->sprite, monsterTriangles[MonsterE::LOW]);
+        } else if(auto wolf = dynamic_cast<Wolf*>(&character.get())) {
+            AddSpriteToBatch(wolf->sprite, monsterTriangles[MonsterE::WOLF]);
         } else if(auto player = dynamic_cast<Player*>(&character.get())) {
             // if it's a player, draw all of the monsters prior, draw player on top, clear buffer
             DrawBufferedMonsterTriangles();

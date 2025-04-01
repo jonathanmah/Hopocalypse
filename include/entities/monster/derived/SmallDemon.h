@@ -7,5 +7,4 @@ public:
     SmallDemon(sf::Vector2f position);
     void InitAttackMap() override;
     void InitAnimMap() override;
-    void HandleAttacks(GameState& state, float deltaTime) override;
 };

@@ -16,8 +16,8 @@ struct AnimData {
     int rowLength = 100;
     int yFrameSpacing = 0;
     bool hangLastFrame = false;
+    int initCurrFrame = 0;
 };
-// 
 
 struct SubRectData {
     std::vector<sf::IntRect> frameSequence;
@@ -56,6 +56,9 @@ public:
     // update a consistent sequence on a 2D sheet
     static bool UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime);
 
+    // update an offset sequence on 2Dsheet
+    static bool UpdateSpriteXYOffsetAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime);
+
     // animate a hardcoded sequence of subrects
     static bool UpdateSubRect(SubRectData& subRectData, float deltaTime);
 
@@ -80,6 +83,7 @@ public:
     struct WolfAnim {
         static const AnimData walk;
         static const AnimData idle;
+        static const AnimData run;
         static const AnimData attack;
         static const AnimData death;
     };

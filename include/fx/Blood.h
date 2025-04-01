@@ -6,6 +6,7 @@
 class GameState;
 class Footprint;
 class GroundBlood;
+class Monster;
 
 class Blood : public sf::Transformable{
 
@@ -26,7 +27,7 @@ public:
     static void RenderBlood(GameState& state, sf::RenderWindow& window);
     void SetPosition(sf::Vector2f position);
     static void CreateProjectileBlood(sf::Vector2f incomingProjectilePos, sf::Vector2f sourcePosition, sf::FloatRect hitbox, 
-        std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood);
+        std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, Monster* monster);
     bool UpdateBloodSprayAnim(float deltaTime);
     void CachePositionVertices() {cachedVertices = RenderUtil::CalculatePositionVertices(animData.textureFrame, getTransform());}
     inline std::array<sf::Vector2f, 4> GetCachedVertices() {return cachedVertices;}

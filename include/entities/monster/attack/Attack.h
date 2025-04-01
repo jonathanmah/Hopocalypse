@@ -31,31 +31,38 @@ class Attack {
     
 public:
 
-    MonsterState attackState;
-    Monster* monster;
+    MonsterState attackState; // attack state representing an attack
+    Monster* monster; // monster owner of attack
     AnimData animData; // animation of a monster while attacking, if currframe = a frame of the attack, then create the damage box for melee.
-    sf::FloatRect aggroBox; // represents range required for a monster to start attack
+    sf::RectangleShape aggroBox; // represents range required for a monster to start attack
+    sf::RectangleShape damageBox; // represents range required for a monster to start attack
     float cooldown; //cooldown after an attack
-    float cooldownTimer; // current cooldown
+    float cooldownTimer; // current cooldown timer
+    sf::Vector2f targetPosition; // can set a target position if necessary in StartAttack()
+    sf::Vector2f normalizedDir; // can set a normalized direction for a projectile or jump attack in StartAttack()
     
-    Attack(MonsterState attackState, Monster* monster, float cooldown, sf::FloatRect aggroBox);
+    Attack(MonsterState attackState, Monster* monster, float cooldown, sf::FloatRect aggroBox, sf::FloatRect damageBox);
     virtual ~Attack() = default;
-    // 1. set monster to an attacking state, skip Update Move if this is true in monster update loop
-    virtual void StartAttack() = 0;
 
+    // set monster to an attacking state, and set any other variables related to initial target position
+    virtual void StartAttack(std::unique_ptr<Player>& player) = 0;
+
+    // update the aggro box and damage box bounds 
     virtual void UpdateBoxBounds() = 0;
 
-    // update everything except for monster animation
+    // apply damage once damage frame reached, reset state to walk if attack animation finished
     virtual void UpdateDuringAttack(std::vector<std::unique_ptr<Player>>& players, float deltaTime) = 0;
     
     // players are in range of aggro box, and attack is not on cooldown
     virtual void CheckConditionsAndAttack(std::vector<std::unique_ptr<Player>>& players) = 0;
 
+    // draw aggro and damage bounds for debugging
     virtual void DrawAggroAndDamageBoxes(sf::RenderWindow& window) = 0;
 
+    // set attack on cooldown
     void SetAttackOnCooldown() {cooldownTimer = cooldown;}
 
-    // attack is ready to be used
+    // returns true if attack on cooldown
     bool IsOnCooldown() {return cooldownTimer  > 0.f;}
 
 };

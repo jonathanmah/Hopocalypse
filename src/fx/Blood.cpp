@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cmath>
 #include "util/RandomUtil.h"
+#include "entities/monster/derived/Wolf.h"
+#include "entities/monster/Monster.h"
 
 
 static int bloodcount = 0;
@@ -80,12 +82,19 @@ AnimData Blood::GetNextSprayAnim() {
 
 // update blood spray and ground blood after projectile collision from projectile source position
 void Blood::CreateProjectileBlood(sf::Vector2f projectilePosition, sf::Vector2f sourcePosition, sf::FloatRect hitbox, 
-    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood){
-    Blood newBloodSpray(Blood::GetNextSprayAnim(), {hitbox.getCenter().x, projectilePosition.y});
+    std::vector<Blood>& bloodSpray, std::vector<GroundBlood>& groundBlood, Monster* monster){
+    sf::Vector2f bloodSprayOrigin;
+    if(dynamic_cast<Wolf*>(monster)){ // #TODO hardcoded dynamic casting wolf to make bloodspray because horizontal hitbox
+        bloodSprayOrigin = {projectilePosition.x, hitbox.getCenter().y};
+    } else {
+        bloodSprayOrigin = {hitbox.getCenter().x, projectilePosition.y};
+    }
+    Blood newBloodSpray(Blood::GetNextSprayAnim(), bloodSprayOrigin);
     newBloodSpray.SetRotation(sourcePosition);
     newBloodSpray.CachePositionVertices();
-    bloodSpray.push_back(newBloodSpray);    /// even lower for ground blood
-    GroundBlood newGroundBlood(AnimUtil::BloodAnim::ground, {hitbox.getCenter().x, hitbox.getCenter().y + hitbox.size.y*.3f});
+    bloodSpray.push_back(newBloodSpray); 
+    // center ground blood a little lower with .3*monster hitbox y
+    GroundBlood newGroundBlood(AnimUtil::BloodAnim::ground, {hitbox.getCenter().x, hitbox.getCenter().y + hitbox.size.y*.3f}); 
     newGroundBlood.SetRotation(sourcePosition);
     newGroundBlood.CachePositionVertices();
     groundBlood.push_back(newGroundBlood);

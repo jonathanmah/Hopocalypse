@@ -16,6 +16,8 @@ sf::Texture* AnimUtil::onFireTexture = TextureUtil::GetTexture("../assets/textur
 sf::Texture* AnimUtil::onFireUpgradedTexture = TextureUtil::GetTexture("../assets/textures/fx/flame_effect_upgraded.png");
 sf::Texture* AnimUtil::energyExplosionTexture = TextureUtil::GetTexture("../assets/textures/fx/energybomb_impact.png");
 sf::Texture* AnimUtil::lowMonsterTexture = TextureUtil::GetTexture("../assets/textures/characters/monsters/low.png");
+sf::Texture* AnimUtil::wolfTexture = TextureUtil::GetTexture("../assets/textures/characters/monsters/wolf.png");
+
 // PLAYER
 const AnimData AnimUtil::PlayerAnim::idle = {playerTexture, sf::IntRect({0,10},{70,73}), 84, 0, 12, .1f, 0.f};
 const AnimData AnimUtil::PlayerAnim::walk = {playerTexture, sf::IntRect({0,373},{70,73}), 84, 0, 8, .1f, 0.f};
@@ -24,25 +26,33 @@ const AnimData AnimUtil::PlayerAnim::shootWalk = {playerTexture, sf::IntRect({0,
 const AnimData AnimUtil::PlayerAnim::death = {playerTexture, sf::IntRect({336,819},{84,91}), 84, 0, 8, .1f, 0.f};
 
 // MONSTERS
-
-
 const AnimData AnimUtil::ZombieAnim::walk = {lowMonsterTexture, sf::IntRect({0,130},{122,126}), 128, 0, 10, .1f, 0.f};
-const AnimData AnimUtil::ZombieAnim::idle = {lowMonsterTexture, sf::IntRect({1152,0},{122,126}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::ZombieAnim::idle = {lowMonsterTexture, sf::IntRect({1152,0},{122,126}), 128, 0, 6, .15f, 0.f};
 const AnimData AnimUtil::ZombieAnim::attack = {lowMonsterTexture, sf::IntRect({0,0},{122,126}), 128, 0, 4, .1f, 0.f};
 const AnimData AnimUtil::ZombieAnim::death = {lowMonsterTexture, sf::IntRect({512,0},{122,126}), 128, 0, 5, .1f, 0.f};
 
 const AnimData AnimUtil::SmallDemonAnim::walk = {lowMonsterTexture, sf::IntRect({6,384},{128,128}), 128, 0, 11, .1f, 0.f};
-const AnimData AnimUtil::SmallDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1030,256},{128,128}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::SmallDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1280,256},{128,128}), 128, 0, 5, .15f, 0.f};
 const AnimData AnimUtil::SmallDemonAnim::attack = {lowMonsterTexture, sf::IntRect({6,256},{128,128}), 128, 0, 5, .1f, 0.f};
 const AnimData AnimUtil::SmallDemonAnim::death = {lowMonsterTexture, sf::IntRect({646,256},{128,128}), 128, 0, 5, .1f, 0.f};
 
 const AnimData AnimUtil::BigDemonAnim::walk = {lowMonsterTexture, sf::IntRect({6,640},{128,128}), 128, 0, 12, .1f, 0.f};
-const AnimData AnimUtil::BigDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1286,512},{128,128}), 128, 0, 6, .1f, 0.f};
+const AnimData AnimUtil::BigDemonAnim::idle = {lowMonsterTexture, sf::IntRect({1024,512},{128,128}), 128, 0, 6, .15f, 0.f};
 const AnimData AnimUtil::BigDemonAnim::attack = {lowMonsterTexture, sf::IntRect({6,512},{128,128}), 128, 0, 5, .1f, 0.f};
 const AnimData AnimUtil::BigDemonAnim::death = {lowMonsterTexture, sf::IntRect({646,512},{128,128}), 128, 0, 3, .1f, 0.f};
 
+const AnimData AnimUtil::WolfAnim::walk = {wolfTexture, sf::IntRect({1030,1464},{206,122}), 206, 6, 36, .02f, 0.f, 9, 122, false, 6};
+const AnimData AnimUtil::WolfAnim::idle = {wolfTexture, sf::IntRect({1236,610},{206,122}), 206, 7, 21, .05f, 0.f, 9, 122, false, 7};
+const AnimData AnimUtil::WolfAnim::run = {wolfTexture, sf::IntRect({0,976},{206,122}), 206, 0, 41, .002f, 0.f, 9, 122, false, 0};
+const AnimData AnimUtil::WolfAnim::attack = {wolfTexture, sf::IntRect({10,0},{206,122}), 206, 0, 51, .001f, 0.f, 9, 122}; // .001 speed 
+const AnimData AnimUtil::WolfAnim::death = {wolfTexture, sf::IntRect({0,1958},{256,128}), 256, 0, 6, .01f, 0.f, 6, 128, true, 0}; // .01f
 
-
+//wolf 206x122, 9 row length
+// walk 1030,1464 start, last frame 1648, 1287, 6th col start, bad row, 31 total frames
+// idle 1236, 610 start, 7th col, 6th row,   last frame - 1648x854 9th col, 8th row  total frames 21, bad row, 7th start curr frame =6
+// run 0,976 start, 824,1464 end, 41 total frames, good start at 0x
+// attack // 0,0 start, 1030/610 last frame pos on 6th row, total frames    5x9 + 6, good start at 0x
+// death
 
 
 
@@ -232,32 +242,37 @@ const AnimData AnimUtil::ProjectileAnim::electricBullet = {projectilesTexture, s
 // // sequence ends
 // // NOTE: this tracks a deltaTimeSum to track time passed since loading a frame
 // //  animSpeed determines how long a single frame will be rendered for in seconds, multiple passes will render the same frame.
+// simple for linear sequences
 bool AnimUtil::UpdateSpriteAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime) {
     if(animData.hangLastFrame && animData.currFrame == animData.totalFrames){
         return false;
+    } else if (animData.currFrame == 0) {
+        sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
     }
     // if deltaTime >= animSpeed, ready for next frame
     if(animData.deltaTimeSum >= animData.animSpeed) {
-        // update the sub rectangle of the texture to point to the next frame
-        int textureCoordsPosX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
-        sprite.setTextureRect(sf::IntRect({textureCoordsPosX, animData.textureFrame.position.y}, animData.textureFrame.size));
         animData.currFrame++;
-        // if the last frame of a sequence has been rendered, loop back to the first one
         if (animData.currFrame >= animData.totalFrames) {
             if(animData.hangLastFrame) {
                 return false;
             }
             animData.currFrame = 0; 
+            animData.deltaTimeSum = 0.f;
             return true;
         }
+        // update the sub rectangle of the texture to point to the next frame
+        int textureCoordsPosX = animData.textureFrame.position.x + (animData.currFrame % animData.totalFrames) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+        sprite.setTextureRect(sf::IntRect({textureCoordsPosX, animData.textureFrame.position.y}, animData.textureFrame.size));
+        // if the last frame of a sequence has been rendered, loop back to the first one
         animData.deltaTimeSum = 0.f;
-        
     }
     animData.deltaTimeSum += deltaTime;
     return false;
 }
 
+// for multi dimension sequences
 bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime){
+    
         // if deltaTime >= animSpeed, ready for next frame
         if(animData.deltaTimeSum >= animData.animSpeed) {
             // update the sub rectangle of the texture to point to the next frame
@@ -268,13 +283,55 @@ bool AnimUtil::UpdateSpriteXYAnim(sf::Sprite& sprite, AnimData& animData, float 
             animData.currFrame++;
             // if the last frame of a sequence has been rendered, loop back to the first one
             if (animData.currFrame >= animData.totalFrames) {
+                if(animData.hangLastFrame) {
+                    return false;
+                }
                 animData.currFrame = 0; 
+                animData.deltaTimeSum = 0.f;
                 return true; // return true when done
             }
             animData.deltaTimeSum = 0.f;
         }
         animData.deltaTimeSum += deltaTime;
         return false;
+}
+
+// for multi dimension sequences with an offset, assuming lined to 0 margin
+bool AnimUtil::UpdateSpriteXYOffsetAnim(sf::Sprite& sprite, AnimData& animData, float deltaTime){
+    // if(animData.currFrame > 49 || animData.currFrame < 3) { // 5 going to 6 freezes
+    //     animData.animSpeed = 2.f;
+    //     std::cout << "CURRFRAME SLOWED : " << animData.currFrame << std::endl;
+    // } else {
+    //     animData.animSpeed = .002f;
+    // }
+
+    if(animData.currFrame == animData.initCurrFrame) {
+        sprite.setTextureRect(sf::IntRect(animData.textureFrame.position, animData.textureFrame.size));
+    }
+
+    // std::cout << "DELTA TIME SUM : " << animData.deltaTimeSum << std::endl;
+    // if deltaTime >= animSpeed, ready for next frame
+    if(animData.deltaTimeSum >= animData.animSpeed) {
+        // update the sub rectangle of the texture to point to the next frame
+        // frame spacing is inclusive of frame, amount to increment x each frame
+        int posX = 0 + (animData.currFrame % animData.rowLength) * animData.frameSpacing;  // 0 mod 4 = 0, 4 mod 4 = 0
+        int posY = animData.textureFrame.position.y + (animData.currFrame/animData.rowLength) * animData.yFrameSpacing; // get the Y
+        sprite.setTextureRect(sf::IntRect({posX, posY}, animData.textureFrame.size));
+        animData.currFrame++;
+        // if the last frame of a sequence has been rendered, loop back to the first one
+        if (animData.currFrame >= animData.totalFrames) {
+            //std::cout << "ENTERED RESET CURR FRAME : " << animData.currFrame << std::endl;
+            if(animData.hangLastFrame) {
+                return false;
+            }
+            animData.currFrame = animData.initCurrFrame; 
+            animData.deltaTimeSum = 0.f;
+            return true; // return true when done
+        }
+        animData.deltaTimeSum = 0.f;
+    }
+    animData.deltaTimeSum += deltaTime;
+    return false;
 }
 
 // update a subrectangle vector, and hide when it's done 
@@ -285,9 +342,11 @@ bool AnimUtil::UpdateSubRect(SubRectData& subRectData, float deltaTime) {
         if(subRectData.currFrame >= subRectData.frameSequence.size()){
             subRectData.currFrame = 0;
             if(subRectData.repeat){
+                subRectData.deltaTimeSum = 0.f;
                 return false;
             } else {
                 subRectData.hide = true;
+                subRectData.deltaTimeSum = 0.f;
                 return true;
             }
         }

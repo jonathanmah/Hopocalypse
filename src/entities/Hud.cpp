@@ -52,17 +52,19 @@ void Hud::Update(int currHp, sf::FloatRect globalBounds) {
 
 void Hud::UpdateSegments(int maxHealth) {
     segmentLines.clear();
-    int numSegments = maxHealth / SEGMENT_SIZE;
-    float segmentSpacing = HP_WIDTH_PIXELS / numSegments;
-
-    for (int i = 1; i < numSegments; ++i) {
-        float xPosition = (i * segmentSpacing) - (HP_WIDTH_PIXELS / 2);
-        if(xPosition+(HP_WIDTH_PIXELS/2) > targetHpWidth) break; // dont draw lines over dmg bar
+    float barLeft = hpBar.getPosition().x - (HP_WIDTH_PIXELS / 2); // starting position of left side of hp bar. - origin offset
+    for (int hp = 100; hp < maxHealth; hp += 100) {
+        float xPosition = (hp / static_cast<float>(maxHealth)) * HP_WIDTH_PIXELS;
+        if (xPosition > targetHpWidth) break;
         sf::RectangleShape line;
-        line.setSize({SEGMENT_LINE_THICKNESS, HP_HEIGHT_PIXELS});
+        if (hp % 1000 == 0) {
+            line.setSize({SEGMENT_LINE_THICKNESS * 2, HP_HEIGHT_PIXELS}); // every 1000 hp a more bold line and full height
+        } else {
+            line.setSize({SEGMENT_LINE_THICKNESS, HP_HEIGHT_PIXELS * 0.5f}); // for 100 hp, only half height and thinner
+        }
         line.setFillColor(sf::Color::Black);
-        line.setOrigin({0, HP_HEIGHT_PIXELS / 2});
-        line.setPosition({std::round(hpBar.getPosition().x + xPosition), std::round(hpBar.getPosition().y)});
+        line.setOrigin({0, 0});
+        line.setPosition({std::round(barLeft + xPosition), std::round(hpBar.getPosition().y - HP_HEIGHT_PIXELS / 2)});
         segmentLines.push_back(line);
     }
     sf::RectangleShape topBorder;

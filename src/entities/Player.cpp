@@ -211,6 +211,7 @@ void Player::Update(GameState& state, float deltaTime){
         HandleDeath(deltaTime);
         return;
     }
+    std::cout << health << std::endl;
     // Process various updates to the player here
     ProcessUpdates(state, deltaTime);
     // #TODO need to figure out how to deal with states better maybe...later problem
