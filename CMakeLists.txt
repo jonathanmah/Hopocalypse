@@ -8,17 +8,12 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 find_package(SFML 3 COMPONENTS REQUIRED Audio Graphics Window Network System)
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
-file(GLOB SOURCES
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS
     src/*.cpp
-    src/**/*.cpp
-    src/**/**/*.cpp
 )
-
-#add_subdirectory(external/tinyxml2)
 
 # Create executable
 add_executable(sfml-app ${SOURCES})
 
 #Tells the linker what specific library files to link, it will look in the directories you specified with link_directories
 target_link_libraries(sfml-app SFML::Audio SFML::Graphics SFML::Window SFML::Network SFML::System)
-#target_link_libraries(sfml-app tinyxml2)
